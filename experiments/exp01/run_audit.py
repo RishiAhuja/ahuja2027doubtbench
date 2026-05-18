@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from core.audit import aggregate_audits, rewrite_prompt, run_single_audit
+from core.env import load_dotenv
 from core.json_utils import write_json, write_jsonl
 from core.llm_client import ProviderError, provider_available
 from core.models import DEFAULT_DEV_JUDGES, DEFAULT_HOLDOUT_JUDGES, DEFAULT_REWRITER, parse_model_ref
@@ -75,6 +76,7 @@ def write_summary_csv(path: Path, aggregates) -> None:
 
 
 def main() -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default=None, help="Output directory.")
     parser.add_argument("--judges", default=",".join(DEFAULT_DEV_JUDGES))

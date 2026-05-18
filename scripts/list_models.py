@@ -10,6 +10,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from core.env import load_dotenv
 from core.llm_client import ProviderError, list_provider_models, provider_available
 
 
@@ -25,6 +26,7 @@ def extract_ids(payload):
 
 
 def main() -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--providers",

@@ -4,7 +4,7 @@ The docs and the first code harness are ready.
 
 ## 1. Set API Keys Locally
 
-Do not commit real keys. Set them in your shell:
+Do not commit real keys. Set them in your shell or local `.env`:
 
 ```bash
 export OPENAI_API_KEY="..."
@@ -35,17 +35,16 @@ python -m experiments.exp01.run_audit \
 Default dev judges:
 
 ```text
-groq:llama-3.1-8b-instant
-groq:openai/gpt-oss-20b
-openai:gpt-5.4-nano
+openai:gpt-5.4-mini
+openai:gpt-5.4
+openai:gpt-4.1
 ```
 
 Default holdout judges:
 
 ```text
-groq:openai/gpt-oss-120b
-openai:gpt-5.4-mini
-anthropic:claude-haiku-4-5
+openai:gpt-5.5
+anthropic:claude-haiku-4-5-20251001
 ```
 
 ## 4. Run EXP-01 With Prompt Polishing

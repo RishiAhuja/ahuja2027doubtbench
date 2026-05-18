@@ -1,4 +1,4 @@
-"""Provider/model registry for low-budget experiment planning."""
+"""Provider/model registry for experiment planning."""
 
 from __future__ import annotations
 
@@ -50,9 +50,9 @@ MODEL_REGISTRY: list[ModelInfo] = [
     ),
     ModelInfo(
         provider="anthropic",
-        model="claude-haiku-4-5",
+        model="claude-haiku-4-5-20251001",
         role="holdout_judge",
-        notes="Lowest-cost Claude holdout judge.",
+        notes="Lowest-cost Claude holdout judge available on this account.",
         input_cost_per_mtok=1.00,
         output_cost_per_mtok=5.00,
     ),
@@ -89,6 +89,14 @@ MODEL_REGISTRY: list[ModelInfo] = [
         output_cost_per_mtok=15.00,
     ),
     ModelInfo(
+        provider="openai",
+        model="gpt-5.5",
+        role="frontier_holdout_judge",
+        notes="Strong OpenAI final holdout judge; useful when OpenAI budget is healthy.",
+        input_cost_per_mtok=5.00,
+        output_cost_per_mtok=30.00,
+    ),
+    ModelInfo(
         provider="xai",
         model="grok-4.3",
         role="optional_holdout_judge",
@@ -100,18 +108,17 @@ MODEL_REGISTRY: list[ModelInfo] = [
 
 
 DEFAULT_DEV_JUDGES = [
-    "groq:llama-3.1-8b-instant",
-    "groq:openai/gpt-oss-20b",
-    "openai:gpt-5.4-nano",
+    "openai:gpt-5.4-mini",
+    "openai:gpt-5.4",
+    "openai:gpt-4.1",
 ]
 
 DEFAULT_HOLDOUT_JUDGES = [
-    "groq:openai/gpt-oss-120b",
-    "openai:gpt-5.4-mini",
-    "anthropic:claude-haiku-4-5",
+    "openai:gpt-5.5",
+    "anthropic:claude-haiku-4-5-20251001",
 ]
 
-DEFAULT_REWRITER = "openai:gpt-5.4-mini"
+DEFAULT_REWRITER = "openai:gpt-5.4"
 
 
 def parse_model_ref(model_ref: str) -> tuple[str, str]:

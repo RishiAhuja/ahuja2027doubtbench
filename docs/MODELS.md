@@ -1,34 +1,37 @@
-# Model Options for Low-Budget EXP-01
+# Model Options for EXP-01
 
 Current date checked: 2026-05-19.
 
 Use API models for prompt audit and polishing only. Use open/local models for large benchmark sweeps wherever possible.
 
+Updated budget assumption: OpenAI budget is comfortable, Anthropic budget is more limited, Groq is cheap, and xAI is optional if the key works.
+
 ## Recommended Setup
 
 Development audit judges:
 
-- `groq:llama-3.1-8b-instant`
-- `groq:openai/gpt-oss-20b`
-- `openai:gpt-5.4-nano`
+- `openai:gpt-5.4-mini`
+- `openai:gpt-5.4`
+- `openai:gpt-4.1`
 
 Holdout judges:
 
-- `groq:openai/gpt-oss-120b`
-- `openai:gpt-5.4-mini`
-- `anthropic:claude-haiku-4-5`
+- `openai:gpt-5.5`
+- `anthropic:claude-haiku-4-5-20251001`
 
 Prompt rewriter:
 
-- `openai:gpt-5.4-mini`
+- `openai:gpt-5.4`
 
-Optional independent judge if the xAI key works:
+Optional stronger spot checks:
 
-- `xai:grok-4.3`
+- `anthropic:claude-sonnet-4-6`
+- `openai:gpt-5.5`
+- `anthropic:claude-opus-4-7`
 
 ## Why This Mix
 
-Groq is cheapest for repeated dev-loop judging. OpenAI nano/mini gives a different model family at still-manageable cost. Claude Haiku gives a third vendor for final holdout. Sonnet/flagship models should be saved for spot checks, not every audit row.
+OpenAI should carry the main rewriting and strong judging. Claude Haiku gives a third-vendor holdout without burning much Anthropic budget. Sonnet/Opus-class Anthropic models should be saved for small spot checks or external prompt generation, not every audit row. Groq/xAI are useful if their keys are active, but they are not defaults because the current account check did not show usable access.
 
 ## Provider Notes
 
@@ -98,6 +101,8 @@ Source:
 
 ## Account-Specific Availability
 
+Put real keys in local `.env` or shell env. `.env` is gitignored.
+
 Run:
 
 ```bash
@@ -112,3 +117,10 @@ The script reads:
 - `XAI_API_KEY`
 
 It does not store or print keys.
+
+As of the latest account check:
+
+- OpenAI key works and exposes GPT-5.5, GPT-5.4, GPT-5.4-mini, GPT-4.1, GPT-4o, and older models.
+- Anthropic key works and exposes Claude Opus 4.7, Opus 4.6, Sonnet 4.6, and Haiku 4.5.
+- Groq key returned HTTP 403 / error code 1010.
+- xAI key returned HTTP 403 because the team has no credits/licenses.
