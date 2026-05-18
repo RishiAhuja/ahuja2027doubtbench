@@ -88,6 +88,21 @@ python -m experiments.exp02.run_smoke \
   --out outputs/EXP-02/smoke_$(date +%Y%m%d_%H%M%S)
 ```
 
+## Cluster GPU Smoke Command
+
+Use only after cloning on the cluster and selecting one MIG UUID with `nvidia-smi -L`.
+
+```bash
+cd /Data3/it_FA0571/caisc
+export PATH=/opt/pbs/bin:$PATH
+qsub \
+  -v MIG_UUID=<single-mig-uuid>,MODEL=Qwen/Qwen2.5-0.5B-Instruct,COUNTS=gsm8k:5,mmlu:5 \
+  -o outputs/EXP-02/pbs_gpu_smoke.log \
+  scripts/pbs_exp02_gpu_smoke.pbs
+```
+
+The cluster GPU smoke uses `experiments.exp02.run_open`, not the API runner.
+
 ## Success Criteria
 
 Strong result:

@@ -21,3 +21,12 @@ Run EXP-02 smoke:
 ```bash
 python -m experiments.exp02.run_smoke --out outputs/EXP-02/smoke_$(date +%Y%m%d_%H%M%S)
 ```
+
+Run EXP-02 open-model smoke:
+
+```bash
+python -m experiments.exp02.run_open \
+  --model Qwen/Qwen2.5-0.5B-Instruct \
+  --counts gsm8k:5,mmlu:5 \
+  --out outputs/EXP-02/open_$(date +%Y%m%d_%H%M%S)
+```

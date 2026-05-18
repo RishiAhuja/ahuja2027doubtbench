@@ -10,9 +10,9 @@ set -euo pipefail
 cd "$PBS_O_WORKDIR"
 
 RUN_DIR="${RUN_DIR:-$PBS_O_WORKDIR/outputs/EXP-02/gpu_smoke_${PBS_JOBID}}"
-PYTHON="${PYTHON:-python3}"
+PYTHON="${PYTHON:-/Data3/it_FA0571/.conda/envs/cultural_env/bin/python}"
 HF_HOME="${HF_HOME:-/Data3/it_FA0571/hf_cache}"
-MODEL="${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+MODEL="${MODEL:-Qwen/Qwen2.5-0.5B-Instruct}"
 COUNTS="${COUNTS:-gsm8k:5,mmlu:5}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
 
@@ -53,8 +53,9 @@ echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 echo "RUN_DIR=$RUN_DIR"
 nvidia-smi -L || true
 
-# Placeholder until the local/open backend is implemented.
-# The API smoke runner is intentionally not used here because API jobs are CPU/network-bound.
-"$PYTHON" - <<'PY'
-print("GPU smoke PBS template validated. Implement experiments.exp02.run_open before real GPU inference.")
-PY
+"$PYTHON" -m experiments.exp02.run_open \
+  --model "$MODEL" \
+  --counts "$COUNTS" \
+  --conditions "$CONDITIONS" \
+  --cache-dir "$HF_HOME" \
+  --out "$RUN_DIR"
