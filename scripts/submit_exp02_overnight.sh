@@ -60,14 +60,12 @@ for model in "${MODELS[@]}"; do
   log_path="$BATCH_DIR/${slug}.pbs.log"
   mkdir -p "$(dirname "$run_dir")"
 
-  vars="MIG_UUID=$MIG_UUID"
-  vars="$vars,MODEL=$model"
-  vars="$vars,COUNT_GSM8K=$COUNT_GSM8K"
-  vars="$vars,COUNT_MMLU=$COUNT_MMLU"
-  vars="$vars,MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
-  vars="$vars,WALLTIME=$WALLTIME"
-  vars="$vars,CONDITIONS=$CONDITIONS"
-  vars="$vars,RUN_DIR=$run_dir"
+  # PBS -v uses commas as delimiters; never pass comma-containing values (e.g. CONDITIONS).
+  vars="MIG_UUID=${MIG_UUID},MODEL=${model}"
+  vars="${vars},COUNT_GSM8K=${COUNT_GSM8K}"
+  vars="${vars},COUNT_MMLU=${COUNT_MMLU}"
+  vars="${vars},MAX_NEW_TOKENS=${MAX_NEW_TOKENS}"
+  vars="${vars},RUN_DIR=${run_dir}"
 
   job_name="caisc_${slug}"
   job_name="${job_name:0:15}"
