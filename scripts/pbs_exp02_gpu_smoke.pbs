@@ -2,7 +2,7 @@
 #PBS -N caisc_exp02_smoke
 #PBS -q workq
 #PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
-#PBS -l walltime=02:00:00
+#PBS -l walltime=06:00:00
 #PBS -j oe
 
 set -euo pipefail
