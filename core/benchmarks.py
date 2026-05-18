@@ -116,9 +116,16 @@ def parse_answer(dataset: str, output: str) -> str:
 
 
 def parse_gsm8k_answer(output: str) -> str:
+    boxed = re.findall(r"\\boxed\{([^}]+)\}", output)
+    if boxed:
+        parsed = normalize_number(boxed[-1])
+        if parsed:
+            return parsed
     final = re.findall(r"final answer\s*:\s*([^\n]+)", output, flags=re.IGNORECASE)
     if final:
-        return normalize_number(final[-1])
+        parsed = normalize_number(final[-1])
+        if parsed:
+            return parsed
     numbers = re.findall(r"[-+]?\d[\d,]*(?:\.\d+)?", output)
     return normalize_number(numbers[-1]) if numbers else ""
 

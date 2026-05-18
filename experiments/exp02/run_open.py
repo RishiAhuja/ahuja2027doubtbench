@@ -116,8 +116,14 @@ def run_one(tokenizer, model, model_name: str, condition: str, sample, max_new_t
     started = datetime.now(timezone.utc)
     raw_output = generate(tokenizer, model, rendered, max_new_tokens=max_new_tokens)
     ended = datetime.now(timezone.utc)
-    parsed = parse_answer(sample.dataset, raw_output)
-    score = score_prediction(sample.dataset, parsed, sample.gold)
+    parse_error = None
+    try:
+        parsed = parse_answer(sample.dataset, raw_output)
+        score = score_prediction(sample.dataset, parsed, sample.gold)
+    except Exception as exc:  # noqa: BLE001
+        parsed = ""
+        score = False
+        parse_error = f"{type(exc).__name__}: {exc}"
     return {
         "experiment_id": "EXP-02",
         "run_id": None,
@@ -142,7 +148,7 @@ def run_one(tokenizer, model, model_name: str, condition: str, sample, max_new_t
         "parsed_answer": parsed,
         "gold": sample.gold,
         "score": score,
-        "error": None,
+        "error": parse_error,
         "started_utc": started.isoformat(),
         "ended_utc": ended.isoformat(),
     }
