@@ -45,9 +45,11 @@ hpc_cluster:
   github_sync_status:
     checked_date: 2026-05-19
     https_clone: blocked_requires_github_credentials
-    ssh_clone: blocked_cluster_key_lacks_repo_access
-    cluster_public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDL+v+Ke9UljfqNiP5piQVlCnmUX7hdD0vES5RBvlqt vlm-cluster-github
-    next_action: Add cluster public key as deploy key for RishiAhuja/caisc or make repo public.
+    ssh_clone: working_with_caisc_deploy_key
+    deploy_key_path: /Data3/it_FA0571/.ssh/caisc_github_ed25519
+    cluster_public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO5vty2ZYbD14kfmTCTdNjyBtuKHTwjc4Gu4mL5+48i+ caisc-cluster-github
+    cluster_clone_path: /Data3/it_FA0571/caisc
+    next_action: Use git pull with GIT_SSH_COMMAND before cluster runs.
 
 experiments:
   - id: EXP-01
@@ -134,6 +136,7 @@ experiments:
       cluster_smoke_results: docs/EXP-02_CLUSTER_SMOKE.md
     code:
       smoke_runner: experiments/exp02/run_smoke.py
+      open_model_runner: experiments/exp02/run_open.py
       benchmark_loaders: core/benchmarks.py
       metrics: core/metrics.py
     planned_conditions:
@@ -193,18 +196,29 @@ experiments:
     completed_cluster_smoke:
       run_date: 2026-05-19
       clone_path: /Data3/it_FA0571/caisc
-      successful_job_id: 19568.master
+      successful_job_id: 19569.master
+      previous_successful_job_id: 19568.master
       failed_job_id: 19567.master
       failed_job_reason: >
         Parser crashed when a GSM8K output contained a final-answer marker with
         no numeric content. Fixed by making normalize_number return an empty
         parsed answer when no numeric token exists.
+      git_commit: 1fe39fa
       queue: workq
       mig_uuid: MIG-c747c071-8b61-5993-a5e0-33f4b566bd6e
       python: /Data3/it_FA0571/.conda/envs/cultural_env/bin/python
       model: Qwen/Qwen2.5-0.5B-Instruct
-      local_output: /Data3/it_FA0571/caisc/outputs/EXP-02/gpu_smoke_19568.master/
+      local_output: /Data3/it_FA0571/caisc/outputs/EXP-02/gpu_smoke_19569.master/
       total_rows: 30
+      parse_failure_rate:
+        gsm8k:
+          baseline: 0.0
+          melancholic: 0.0
+          negative_capability: 0.0
+        mmlu:
+          baseline: 0.0
+          melancholic: 0.2
+          negative_capability: 0.2
       accuracy:
         gsm8k:
           baseline: 0.4

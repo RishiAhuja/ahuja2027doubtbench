@@ -46,6 +46,14 @@ Retry job:
 
 Outcome: completed.
 
+Latest committed-code verification job:
+
+```text
+19569.master
+```
+
+Outcome: completed after cloning/pulling the repo from GitHub at commit `1fe39fa`.
+
 ## PBS Details
 
 Queue:
@@ -101,7 +109,7 @@ Total rows:
 Remote output:
 
 ```text
-/Data3/it_FA0571/caisc/outputs/EXP-02/gpu_smoke_19568.master/
+/Data3/it_FA0571/caisc/outputs/EXP-02/gpu_smoke_19569.master/
 ```
 
 ## Results
@@ -115,7 +123,7 @@ Parse failures:
 
 | Dataset | Baseline | Melancholic | Negative Capability |
 |---|---:|---:|---:|
-| GSM8K | 0.00 | 0.20 | 0.20 |
+| GSM8K | 0.00 | 0.00 | 0.00 |
 | MMLU | 0.00 | 0.20 | 0.20 |
 
 Deltas:
@@ -135,6 +143,7 @@ The cluster path is validated:
 - One MIG UUID was used.
 - The Hugging Face backend loaded a model and generated outputs.
 - Results and metrics were written.
+- The latest verification job generated all 30 rows and exited cleanly.
 
 The scientific result is not meaningful yet because the model is only 0.5B and the dataset is only 5 items per task. Use it only as a cluster smoke test.
 

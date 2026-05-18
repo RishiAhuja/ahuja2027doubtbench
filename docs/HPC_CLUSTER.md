@@ -101,23 +101,30 @@ Checked on 2026-05-19:
 
 - SSH to the cluster works from the NITJ network.
 - HTTPS clone of `RishiAhuja/caisc` prompts for GitHub credentials, so anonymous clone is not available.
-- The cluster has an SSH key at `~/.ssh/vlm_github_ed25519`, but that key currently does not have access to `RishiAhuja/caisc`.
+- SSH clone works with the CAISc deploy key at `~/.ssh/caisc_github_ed25519`.
+- The repo is cloned at `/Data3/it_FA0571/caisc`.
 
-Cluster public key to add as a GitHub deploy key if needed:
+Current CAISc cluster public key:
 
 ```text
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDL+v+Ke9UljfqNiP5piQVlCnmUX7hdD0vES5RBvlqt vlm-cluster-github
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO5vty2ZYbD14kfmTCTdNjyBtuKHTwjc4Gu4mL5+48i+ caisc-cluster-github
 ```
 
-After adding this key to the CAISc GitHub repo as a read-only deploy key, clone with:
+Clone or pull with:
 
 ```bash
 cd /Data3/it_FA0571
-GIT_SSH_COMMAND="ssh -i ~/.ssh/vlm_github_ed25519 -o IdentitiesOnly=yes" \
+GIT_SSH_COMMAND="ssh -i ~/.ssh/caisc_github_ed25519 -o IdentitiesOnly=yes" \
   git clone git@github.com:RishiAhuja/caisc.git caisc
 ```
 
-If deploy-key access is not available, use `scp`/`rsync` as a temporary transfer method, but GitHub sync is cleaner for reproducible cluster work.
+For an existing clone:
+
+```bash
+cd /Data3/it_FA0571/caisc
+GIT_SSH_COMMAND="ssh -i ~/.ssh/caisc_github_ed25519 -o IdentitiesOnly=yes" \
+  git pull --ff-only
+```
 
 ## Queue Selection
 
