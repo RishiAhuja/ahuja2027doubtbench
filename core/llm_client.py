@@ -160,17 +160,28 @@ def _call_openai(
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         raise ProviderError("OPENAI_API_KEY is not set")
-    raw = _post_json(
-        "https://api.openai.com/v1/responses",
-        {"Authorization": f"Bearer {key}"},
-        {
-            "model": model,
-            "instructions": system,
-            "input": user,
-            "max_output_tokens": max_tokens,
-            "temperature": temperature,
-        },
-    )
+    body = {
+        "model": model,
+        "instructions": system,
+        "input": user,
+        "max_output_tokens": max_tokens,
+        "temperature": temperature,
+    }
+    try:
+        raw = _post_json(
+            "https://api.openai.com/v1/responses",
+            {"Authorization": f"Bearer {key}"},
+            body,
+        )
+    except ProviderError as exc:
+        if "Unsupported parameter" not in str(exc) or "temperature" not in str(exc):
+            raise
+        body.pop("temperature", None)
+        raw = _post_json(
+            "https://api.openai.com/v1/responses",
+            {"Authorization": f"Bearer {key}"},
+            body,
+        )
     text = raw.get("output_text")
     if not text:
         text = _extract_openai_response_text(raw)

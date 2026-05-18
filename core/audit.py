@@ -33,7 +33,7 @@ Return JSON with these fields:
 - reliability_assertion: number from -3 to 3
 - task_directive_contamination: number from 0 to 3
 - target_emotion_match: boolean
-- target_emotion_label: one of baseline, sadness, joy, anxiety, grandiosity, capability_denial, other
+- target_emotion_label: one of baseline, sadness, joy, anxiety, grandiosity, neutral_persona, capability_denial, other
 - rationale: one short sentence
 
 Scoring definitions:
@@ -167,6 +167,17 @@ def aggregate_audits(condition: ConditionPrompt, prompt_text: str, round_index: 
         )
     elif condition.condition == "negative_capability":
         passed = cap is not None and cap <= -1.0 and target_match_rate >= 0.8
+    elif condition.target_label == "neutral_persona":
+        passed = (
+            cap is not None
+            and rel is not None
+            and task is not None
+            and abs(cap) <= 0.5
+            and abs(rel) <= 0.5
+            and task <= 0.5
+            and target_match_rate >= 0.8
+            and not rule_flags
+        )
     else:
         passed = target_match_rate >= 0.8
 

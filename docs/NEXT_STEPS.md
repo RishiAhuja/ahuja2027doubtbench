@@ -23,7 +23,24 @@ python scripts/list_models.py
 
 This calls provider model-list endpoints and prints model IDs. It does not print or store keys.
 
-## 3. Run EXP-01 Without Polishing First
+## 3. Audit Opus Candidate Prompts First
+
+Score all prompt candidates and select one per condition:
+
+```bash
+python -m experiments.exp01.audit_candidates \
+  --out outputs/EXP-01/candidates_$(date +%Y%m%d_%H%M%S)
+```
+
+Then, if the selected prompts look good, run holdout judges only on selected prompts:
+
+```bash
+python -m experiments.exp01.holdout_selected \
+  --selected outputs/EXP-01/<candidate_run>/selected_prompts.json \
+  --out outputs/EXP-01/holdout_$(date +%Y%m%d_%H%M%S)
+```
+
+## 4. Run EXP-01 Without Polishing First
 
 This gives a clean baseline audit of the current prompts:
 
@@ -47,7 +64,7 @@ openai:gpt-5.5
 anthropic:claude-haiku-4-5-20251001
 ```
 
-## 4. Run EXP-01 With Prompt Polishing
+## 5. Run EXP-01 With Prompt Polishing
 
 Only do this after the baseline audit, so we can report how much polishing was needed:
 
@@ -65,7 +82,7 @@ The harness:
 - audits the frozen prompt with holdout judges
 - writes `frozen_prompts.json`, `prompt_audit_summary.csv`, and `metrics.json`
 
-## 5. Pass Criteria
+## 6. Pass Criteria
 
 Primary emotional prompts pass if:
 
@@ -77,7 +94,7 @@ Primary emotional prompts pass if:
 
 If EXP-01 fails, revise prompts and rerun it. Do not run benchmark experiments yet.
 
-## 6. After EXP-01
+## 7. After EXP-01
 
 After holdout judges pass the final prompt registry:
 
