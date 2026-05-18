@@ -131,6 +131,7 @@ experiments:
     docs:
       runbook: docs/EXP-02_capability_emotion_decomposition.md
       smoke_results: docs/EXP-02_RESULTS.md
+      cluster_smoke_results: docs/EXP-02_CLUSTER_SMOKE.md
     code:
       smoke_runner: experiments/exp02/run_smoke.py
       benchmark_loaders: core/benchmarks.py
@@ -189,6 +190,33 @@ experiments:
       interpretation: >
         Null smoke result on a robust API model and tiny sample. Useful as a
         harness validation, not a final test of H1.
+    completed_cluster_smoke:
+      run_date: 2026-05-19
+      clone_path: /Data3/it_FA0571/caisc
+      successful_job_id: 19568.master
+      failed_job_id: 19567.master
+      failed_job_reason: >
+        Parser crashed when a GSM8K output contained a final-answer marker with
+        no numeric content. Fixed by making normalize_number return an empty
+        parsed answer when no numeric token exists.
+      queue: workq
+      mig_uuid: MIG-c747c071-8b61-5993-a5e0-33f4b566bd6e
+      python: /Data3/it_FA0571/.conda/envs/cultural_env/bin/python
+      model: Qwen/Qwen2.5-0.5B-Instruct
+      local_output: /Data3/it_FA0571/caisc/outputs/EXP-02/gpu_smoke_19568.master/
+      total_rows: 30
+      accuracy:
+        gsm8k:
+          baseline: 0.4
+          melancholic: 0.2
+          negative_capability: 0.6
+        mmlu:
+          baseline: 0.2
+          melancholic: 0.0
+          negative_capability: 0.2
+      interpretation: >
+        Cluster workflow validated using PBS, one MIG UUID, and local Hugging
+        Face inference. Dataset/model are too small for scientific claims.
     planned_full_open_models:
       - meta-llama/Llama-3.1-8B-Instruct
       - mistralai/Mistral-7B-Instruct-v0.3

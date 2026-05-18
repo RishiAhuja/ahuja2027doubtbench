@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N caisc_exp02_smoke
 #PBS -q workq
-#PBS -l select=1:ncpus=8:ngpus=1
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
 #PBS -l walltime=02:00:00
 #PBS -j oe
 
@@ -13,8 +13,11 @@ RUN_DIR="${RUN_DIR:-$PBS_O_WORKDIR/outputs/EXP-02/gpu_smoke_${PBS_JOBID}}"
 PYTHON="${PYTHON:-/Data3/it_FA0571/.conda/envs/cultural_env/bin/python}"
 HF_HOME="${HF_HOME:-/Data3/it_FA0571/hf_cache}"
 MODEL="${MODEL:-Qwen/Qwen2.5-0.5B-Instruct}"
-COUNTS="${COUNTS:-gsm8k:5,mmlu:5}"
+COUNT_GSM8K="${COUNT_GSM8K:-5}"
+COUNT_MMLU="${COUNT_MMLU:-5}"
+COUNTS="${COUNTS:-gsm8k:${COUNT_GSM8K},mmlu:${COUNT_MMLU}}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
+MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
 
 mkdir -p "$RUN_DIR"
 
@@ -48,6 +51,7 @@ echo "HOSTNAME=$(hostname)"
 echo "MODEL=$MODEL"
 echo "COUNTS=$COUNTS"
 echo "CONDITIONS=$CONDITIONS"
+echo "MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
 echo "PYTHON=$PYTHON"
 echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 echo "RUN_DIR=$RUN_DIR"
@@ -58,4 +62,5 @@ nvidia-smi -L || true
   --counts "$COUNTS" \
   --conditions "$CONDITIONS" \
   --cache-dir "$HF_HOME" \
+  --max-new-tokens "$MAX_NEW_TOKENS" \
   --out "$RUN_DIR"
