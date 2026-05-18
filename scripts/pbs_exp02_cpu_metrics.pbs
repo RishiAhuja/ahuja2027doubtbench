@@ -1,0 +1,35 @@
+#!/bin/bash
+#PBS -N caisc_exp02_metrics
+#PBS -q cpuq
+#PBS -l select=1:ncpus=16
+#PBS -l walltime=02:00:00
+#PBS -j oe
+
+set -euo pipefail
+
+cd "$PBS_O_WORKDIR"
+
+PYTHON="${PYTHON:-python3}"
+INPUT_DIR="${INPUT_DIR:?Set INPUT_DIR to an EXP-02 output directory}"
+
+export PYTHONNOUSERSITE=1
+export PYTHONUNBUFFERED=1
+
+echo "===== CAISC EXP-02 CPU METRICS ====="
+date
+echo "PBS_JOBID=${PBS_JOBID:-}"
+echo "HOSTNAME=$(hostname)"
+echo "INPUT_DIR=$INPUT_DIR"
+echo "PYTHON=$PYTHON"
+
+"$PYTHON" - <<PY
+from pathlib import Path
+from core.json_utils import write_json
+from core.metrics import exp02_metrics
+import json
+
+input_dir = Path("$INPUT_DIR")
+rows = [json.loads(line) for line in (input_dir / "parsed_outputs.jsonl").read_text().splitlines()]
+write_json(input_dir / "metrics_recomputed.json", exp02_metrics(rows))
+print("recomputed metrics:", input_dir / "metrics_recomputed.json")
+PY
