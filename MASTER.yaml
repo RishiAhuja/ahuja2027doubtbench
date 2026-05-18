@@ -1,0 +1,151 @@
+project:
+  name: identity_level_emotional_conditioning
+  short_title: Who Are You Today?
+  repo: https://github.com/RishiAhuja/caisc
+  timezone: Asia/Kolkata
+  created_date: 2026-05-19
+  thesis: >
+    Test whether system-level emotional identity prompts affect LLM behavior
+    after removing capability, reliability, and task-performance assertions.
+
+paper_relevant_design_rules:
+  - Freeze prompts before benchmark results are inspected.
+  - Separate prompt-development judges from final holdout judges.
+  - Use raw condition deltas as the primary behavioral outcome.
+  - Treat ESI and IRS as summary/stability metrics, not replacements for raw deltas.
+  - Use within-family post-training ablation for H3; do not infer RLHF effects from vendor comparisons alone.
+  - Keep API keys out of the repository and record exact model IDs used in every run.
+
+artifacts:
+  proposal: initial_propsal.tex
+  top_level_plan: plan.md
+  docs_index: docs/README.md
+  operational_plan: docs/PLAN.md
+  model_notes: docs/MODELS.md
+  exp01_results: docs/EXP-01_RESULTS.md
+  frozen_prompts: experiments/exp01/frozen_prompts.json
+  prompt_registry_code: core/prompts.py
+
+experiments:
+  - id: EXP-01
+    name: multi_judge_prompt_audit_and_selection
+    status: completed
+    purpose: >
+      Validate that primary emotional identity prompts express the intended
+      affective state without contaminating the intervention with capability,
+      reliability, or task-performance language.
+    dates:
+      run_date: 2026-05-19
+    docs:
+      runbook: docs/EXP-01_prompt_audit.md
+      result_summary: docs/EXP-01_RESULTS.md
+      opus_generation_brief: docs/OPUS_PROMPT_GENERATION_BRIEF.md
+    code:
+      candidate_audit: experiments/exp01/audit_candidates.py
+      holdout_audit: experiments/exp01/holdout_selected.py
+      full_audit_polisher: experiments/exp01/run_audit.py
+      candidates: experiments/exp01/candidate_prompts.json
+      frozen_prompts: experiments/exp01/frozen_prompts.json
+    local_outputs:
+      dev_candidate_audit: outputs/EXP-01/candidates_fixed_20260519_010107/
+      final_holdout: outputs/EXP-01/holdout_full_20260519_010518/
+    prompt_generation:
+      source_model: claude_opus_4_7
+      candidates_per_condition: 3
+      conditions:
+        primary_emotional:
+          - melancholic
+          - euphoric
+          - anxious
+          - grandiose
+        neutral_controls:
+          - neutral_archivist
+          - neutral_cartographer
+          - neutral_librarian
+    dev_judges:
+      - openai:gpt-5.4-mini
+      - openai:gpt-5.4
+      - openai:gpt-4.1
+    holdout_judges:
+      - openai:gpt-5.5
+      - anthropic:claude-haiku-4-5-20251001
+    pass_criteria:
+      primary_emotional:
+        abs_mean_capability_assertion_lte: 0.5
+        abs_mean_reliability_assertion_lte: 0.5
+        mean_task_directive_contamination_lte: 0.5
+        target_match_rate_gte: 0.8
+        rule_based_capability_flags: none
+    selected_variants:
+      melancholic: 0
+      euphoric: 0
+      anxious: 0
+      grandiose: 0
+      neutral_archivist: 0
+      neutral_cartographer: 0
+      neutral_librarian: 1
+    key_results:
+      all_primary_prompts_passed_dev_audit: true
+      all_primary_prompts_passed_holdout: true
+      holdout_primary_capability_assertion: 0.0
+      holdout_primary_reliability_assertion: 0.0
+      holdout_primary_task_directive_contamination: 0.0
+      notable_failed_candidate: >
+        grandiose variant 1 failed development audit with mean capability
+        assertion 0.667, so it was excluded from the frozen registry.
+    paper_use:
+      - Supports the methodological claim that the final emotional prompts are capability-decoupled.
+      - Provides an appendix table for prompt audit scores and excluded candidates.
+      - Justifies freezing prompts before EXP-02/EXP-03 benchmark results.
+    commit: 7b06051
+
+  - id: EXP-02
+    name: capability_emotion_decomposition
+    status: planned
+    purpose: >
+      Test whether the confounded negative-capability condition changes task
+      performance more than a pure melancholic identity condition.
+    docs:
+      runbook: docs/EXP-02_capability_emotion_decomposition.md
+    planned_conditions:
+      - baseline
+      - melancholic
+      - negative_capability
+    planned_smoke_test:
+      model: openai:gpt-4.1-mini
+      datasets:
+        gsm8k: 20
+        mmlu: 20
+      decoding:
+        temperature: 0
+      reason_for_model: >
+        Cheap API model for debugging prompt formatting, answer parsing, output
+        schema, and metrics before running open/local models.
+    planned_full_open_models:
+      - meta-llama/Llama-3.1-8B-Instruct
+      - mistralai/Mistral-7B-Instruct-v0.3
+      - Qwen/Qwen2.5-7B-Instruct
+    primary_metrics:
+      - accuracy_by_condition
+      - delta_melancholic_vs_baseline
+      - delta_negative_capability_vs_baseline
+      - confound_excess_abs_delta
+      - parse_failure_rate
+    decision_gate_after_smoke:
+      continue_if:
+        - parse_failure_rate_below_2_percent
+        - baseline_accuracy_plausible_for_model_and_subset
+        - every row has condition/model/dataset/sample_id/raw_output/parsed_answer/gold/score
+      revise_if:
+        - answer_parser_fails_often
+        - model_ignores_required_answer_format
+        - baseline_accuracy_is_obviously_broken
+    expected_interpretation:
+      strong_support: >
+        negative_capability has larger absolute performance shift than melancholic.
+      useful_null: >
+        melancholic has near-zero effect but negative_capability moves performance,
+        supporting the capability-emotion confound critique.
+      concern: >
+        melancholic and negative_capability move performance equally, requiring
+        closer prompt audit and interpretation.
