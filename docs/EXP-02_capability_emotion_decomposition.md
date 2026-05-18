@@ -22,7 +22,7 @@ This is the headline confound experiment.
 
 Smoke test:
 
-- `meta-llama/Llama-3.1-8B-Instruct`
+- `openai:gpt-4.1-mini`
 
 Full P0:
 
@@ -76,6 +76,16 @@ outputs/EXP-02/<run_id>/
   figures/
     exp02_delta_bars.png
   notes.md
+```
+
+## Smoke Command
+
+```bash
+python -m experiments.exp02.run_smoke \
+  --model openai:gpt-4.1-mini \
+  --counts gsm8k:20,mmlu:20 \
+  --conditions baseline,melancholic,negative_capability \
+  --out outputs/EXP-02/smoke_$(date +%Y%m%d_%H%M%S)
 ```
 
 ## Success Criteria

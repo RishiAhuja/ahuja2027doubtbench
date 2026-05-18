@@ -101,12 +101,17 @@ experiments:
 
   - id: EXP-02
     name: capability_emotion_decomposition
-    status: planned
+    status: smoke_completed
     purpose: >
       Test whether the confounded negative-capability condition changes task
       performance more than a pure melancholic identity condition.
     docs:
       runbook: docs/EXP-02_capability_emotion_decomposition.md
+      smoke_results: docs/EXP-02_RESULTS.md
+    code:
+      smoke_runner: experiments/exp02/run_smoke.py
+      benchmark_loaders: core/benchmarks.py
+      metrics: core/metrics.py
     planned_conditions:
       - baseline
       - melancholic
@@ -121,6 +126,46 @@ experiments:
       reason_for_model: >
         Cheap API model for debugging prompt formatting, answer parsing, output
         schema, and metrics before running open/local models.
+    completed_smoke_test:
+      run_date: 2026-05-19
+      local_output: outputs/EXP-02/smoke_20260519_011729/
+      model: openai:gpt-4.1-mini
+      total_calls: 120
+      datasets:
+        gsm8k: 20
+        mmlu: 20
+      conditions:
+        - baseline
+        - melancholic
+        - negative_capability
+      parse_failure_rate:
+        gsm8k_baseline: 0.0
+        gsm8k_melancholic: 0.0
+        gsm8k_negative_capability: 0.0
+        mmlu_baseline: 0.0
+        mmlu_melancholic: 0.0
+        mmlu_negative_capability: 0.0
+      accuracy:
+        gsm8k:
+          baseline: 1.0
+          melancholic: 1.0
+          negative_capability: 1.0
+        mmlu:
+          baseline: 0.85
+          melancholic: 0.85
+          negative_capability: 0.85
+      deltas:
+        gsm8k:
+          melancholic: 0.0
+          negative_capability: 0.0
+          confound_excess_abs_delta: 0.0
+        mmlu:
+          melancholic: 0.0
+          negative_capability: 0.0
+          confound_excess_abs_delta: 0.0
+      interpretation: >
+        Null smoke result on a robust API model and tiny sample. Useful as a
+        harness validation, not a final test of H1.
     planned_full_open_models:
       - meta-llama/Llama-3.1-8B-Instruct
       - mistralai/Mistral-7B-Instruct-v0.3
