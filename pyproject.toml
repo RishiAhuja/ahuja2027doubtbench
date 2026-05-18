@@ -1,0 +1,9 @@
+[project]
+name = "caisc"
+version = "0.1.0"
+description = "Identity-level emotional conditioning experiments"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
