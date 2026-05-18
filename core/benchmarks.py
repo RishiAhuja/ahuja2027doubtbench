@@ -135,7 +135,9 @@ def normalize_number(value: str) -> str:
     value = value.strip()
     value = value.replace(",", "")
     value = value.replace("$", "")
-    value = re.sub(r"[^0-9+\-./]", " ", value).strip().split()[0] if value else ""
+    if value:
+        parts = re.sub(r"[^0-9+\-./]", " ", value).strip().split()
+        value = parts[0] if parts else ""
     if not value:
         return ""
     if "/" in value and value.count("/") == 1:
