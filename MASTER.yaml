@@ -22,9 +22,32 @@ artifacts:
   docs_index: docs/README.md
   operational_plan: docs/PLAN.md
   model_notes: docs/MODELS.md
+  hpc_cluster_runbook: docs/HPC_CLUSTER.md
   exp01_results: docs/EXP-01_RESULTS.md
   frozen_prompts: experiments/exp01/frozen_prompts.json
   prompt_registry_code: core/prompts.py
+
+hpc_cluster:
+  host: 10.10.11.201
+  remote_home: /Data3/it_FA0571
+  existing_vlm_project: /Data3/it_FA0571/vlm
+  intended_caisc_project: /Data3/it_FA0571/caisc
+  pbs_path: /opt/pbs/bin
+  queues:
+    gpu: workq
+    cpu: cpuq
+  rules:
+    - Use PBS for computational jobs.
+    - Use cpuq for CPU-only jobs.
+    - Use workq only for GPU-accelerated jobs.
+    - Use one GPU/MIG instance at a time.
+    - Store heavy caches and outputs under /Data3, not small home storage.
+  github_sync_status:
+    checked_date: 2026-05-19
+    https_clone: blocked_requires_github_credentials
+    ssh_clone: blocked_cluster_key_lacks_repo_access
+    cluster_public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDL+v+Ke9UljfqNiP5piQVlCnmUX7hdD0vES5RBvlqt vlm-cluster-github
+    next_action: Add cluster public key as deploy key for RishiAhuja/caisc or make repo public.
 
 experiments:
   - id: EXP-01

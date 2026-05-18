@@ -88,12 +88,36 @@ Cluster:
 
 ```bash
 cd /Data3/it_FA0571
-git clone https://github.com/RishiAhuja/caisc.git caisc
+git clone git@github.com:RishiAhuja/caisc.git caisc
 cd caisc
 git pull
 ```
 
 Do not put `.env` files or API keys in git.
+
+### Current Cluster GitHub Access Status
+
+Checked on 2026-05-19:
+
+- SSH to the cluster works from the NITJ network.
+- HTTPS clone of `RishiAhuja/caisc` prompts for GitHub credentials, so anonymous clone is not available.
+- The cluster has an SSH key at `~/.ssh/vlm_github_ed25519`, but that key currently does not have access to `RishiAhuja/caisc`.
+
+Cluster public key to add as a GitHub deploy key if needed:
+
+```text
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDL+v+Ke9UljfqNiP5piQVlCnmUX7hdD0vES5RBvlqt vlm-cluster-github
+```
+
+After adding this key to the CAISc GitHub repo as a read-only deploy key, clone with:
+
+```bash
+cd /Data3/it_FA0571
+GIT_SSH_COMMAND="ssh -i ~/.ssh/vlm_github_ed25519 -o IdentitiesOnly=yes" \
+  git clone git@github.com:RishiAhuja/caisc.git caisc
+```
+
+If deploy-key access is not available, use `scp`/`rsync` as a temporary transfer method, but GitHub sync is cleaner for reproducible cluster work.
 
 ## Queue Selection
 
