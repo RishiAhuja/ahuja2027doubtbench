@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Compact EXP-02 cluster progress summary for overnight PBS chains."""
+"""Compact EXP-02 cluster progress summary for PBS batches."""
 
 from __future__ import annotations
 
 import json
 import os
 import subprocess
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(os.environ.get("ROOT", "/Data3/it_FA0571/caisc"))
-OVERNIGHT_LOG = ROOT / "logs" / "overnight"
+LOG_ROOTS = [ROOT / "logs" / "scaleup", ROOT / "logs" / "overnight"]
 STATE_NAMES = {
     "R": "running",
     "Q": "queued",
@@ -61,16 +61,19 @@ def qstat_jobs() -> list[dict[str, str]]:
 
 
 def latest_batch_dir() -> Path | None:
-    marker = OVERNIGHT_LOG / "latest_batch.txt"
-    if marker.exists():
-        path = Path(marker.read_text().strip())
-        if path.exists():
-            return path
-    batches = sorted(OVERNIGHT_LOG.glob("batch_*"))
-    return batches[-1] if batches else None
+    for log_root in LOG_ROOTS:
+        marker = log_root / "latest_batch.txt"
+        if marker.exists():
+            path = Path(marker.read_text().strip())
+            if path.exists():
+                return path
+    batches: list[Path] = []
+    for log_root in LOG_ROOTS:
+        batches.extend(log_root.glob("batch_*"))
+    return sorted(batches)[-1] if batches else None
 
 
-def read_manifest(batch_dir: Path) -> list[dict[str, str]]:
+def read_manifest(batch_dir: Path) -> list[dict[str, str | int]]:
     path = batch_dir / "manifest.tsv"
     if not path.exists():
         return []
@@ -85,6 +88,7 @@ def read_manifest(batch_dir: Path) -> list[dict[str, str]]:
                     "expected_rows": int(parts[2]),
                     "run_dir": parts[3],
                     "log_path": parts[4],
+                    "counts_file": parts[5] if len(parts) > 5 else "",
                 }
             )
     return rows
@@ -100,16 +104,47 @@ def count_rows(run_dir: Path) -> tuple[int, bool]:
         return 0, False
 
 
+def rows_by_dataset(run_dir: Path) -> dict[str, int]:
+    raw = run_dir / "raw_outputs.jsonl"
+    counts: dict[str, int] = defaultdict(int)
+    if not raw.exists():
+        return counts
+    for line in raw.open(encoding="utf-8"):
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        counts[payload.get("dataset", "?")] += 1
+    return dict(counts)
+
+
+def expected_by_dataset(run_dir: Path) -> dict[str, int]:
+    config = run_dir / "config.json"
+    if not config.exists():
+        return {}
+    try:
+        payload = json.loads(config.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    counts = payload.get("counts") or {}
+    conditions = payload.get("conditions") or []
+    n_conditions = len(conditions) if isinstance(conditions, list) else 3
+    expected: dict[str, int] = {}
+    for key, value in counts.items():
+        dataset = "mmlu" if key == "mmlu_stratified" else str(key)
+        expected[dataset] = expected.get(dataset, 0) + int(value) * n_conditions
+    return expected
+
+
 def scan_exp02_outputs() -> list[tuple[str, int, int]]:
-    """Fallback: scan recent gpu_smoke / open dirs if no manifest."""
     rows: list[tuple[str, int, int]] = []
     base = ROOT / "outputs" / "EXP-02"
     if not base.exists():
         return rows
     for path in sorted(base.glob("**/raw_outputs.jsonl"), key=lambda p: p.stat().st_mtime, reverse=True)[:8]:
         done, _ = count_rows(path.parent)
-        config = path.parent / "config.json"
         expected = 0
+        config = path.parent / "config.json"
         if config.exists():
             try:
                 payload = json.loads(config.read_text(encoding="utf-8"))
@@ -122,6 +157,20 @@ def scan_exp02_outputs() -> list[tuple[str, int, int]]:
                 expected = 0
         rows.append((short_path(path.parent), done, expected))
     return rows
+
+
+def print_dataset_progress(run_dir: Path) -> None:
+    done_by = rows_by_dataset(run_dir)
+    expected_by = expected_by_dataset(run_dir)
+    if not expected_by:
+        return
+    parts = []
+    for dataset in sorted(expected_by):
+        done = done_by.get(dataset, 0)
+        expected = expected_by.get(dataset, 0)
+        parts.append(f"{dataset}={done}/{expected}")
+    if parts:
+        print(f"      datasets: {' | '.join(parts)}")
 
 
 def main() -> int:
@@ -147,7 +196,7 @@ def main() -> int:
     batch_dir = latest_batch_dir()
     if not batch_dir:
         print()
-        print("Overnight batch: none (scanning recent EXP-02 outputs)")
+        print("Batch: none (scanning recent EXP-02 outputs)")
         for path, done, expected in scan_exp02_outputs():
             print(f"  {path}: {done}/{expected} ({pct(done, expected)})")
         return 0
@@ -155,24 +204,26 @@ def main() -> int:
     manifest = read_manifest(batch_dir)
     if not manifest:
         print()
-        print(f"Overnight batch: {short_path(batch_dir)} (empty manifest)")
+        print(f"Batch: {short_path(batch_dir)} (empty manifest)")
         return 0
 
     state_by_job = {job["id"]: job["state"] for job in jobs}
     state_by_job.update({job["id"].split(".")[0]: job["state"] for job in jobs})
 
-    total_expected = sum(row["expected_rows"] for row in manifest)
+    total_expected = sum(int(row["expected_rows"]) for row in manifest)
     total_done = 0
     completed_jobs = 0
+    profile = manifest[0].get("counts_file") or "?"
 
     print()
-    print(f"Overnight batch: {short_path(batch_dir)}")
+    print(f"Batch: {short_path(batch_dir)}")
+    print(f"Profile: {profile}")
     for row in manifest:
-        run_dir = Path(row["run_dir"])
+        run_dir = Path(str(row["run_dir"]))
         done, exists = count_rows(run_dir)
-        expected = row["expected_rows"]
+        expected = int(row["expected_rows"])
         total_done += done
-        state_key = state_by_job.get(row["job_id"], state_by_job.get(row["job_id"].split(".")[0], "?"))
+        state_key = state_by_job.get(str(row["job_id"]), state_by_job.get(str(row["job_id"]).split(".")[0], "?"))
         state = STATE_NAMES.get(state_key, state_key if state_key != "?" else "done")
         metrics_path = run_dir / "metrics.json"
         if metrics_path.exists():
@@ -183,9 +234,10 @@ def main() -> int:
         elif not exists and state == "?":
             state = "pending"
         print(
-            f"  {row['model'][:42]:42} {done:>4}/{expected:<4} {pct(done, expected)} "
+            f"  {str(row['model'])[:42]:42} {done:>4}/{expected:<4} {pct(done, expected)} "
             f"{state:10} {row['job_id']}"
         )
+        print_dataset_progress(run_dir)
 
     print(
         f"Batch total: {total_done}/{total_expected} rows ({pct(total_done, total_expected)}) | "

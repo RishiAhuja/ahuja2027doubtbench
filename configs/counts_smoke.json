@@ -1,0 +1,8 @@
+{
+  "gsm8k": 3,
+  "mmlu_stratified": 6,
+  "math": 3,
+  "triviaqa": 3,
+  "bigbench": 9,
+  "creative": 2
+}

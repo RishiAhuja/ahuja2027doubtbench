@@ -13,7 +13,7 @@ echo "[$(date -Is)] watch_progress_email started interval=${INTERVAL_MIN}m" | te
 
 while true; do
   echo "[$(date -Is)] sending progress email" | tee -a "$LOG_FILE"
-  if scripts/email_progress.sh --subject-prefix "CAISc EXP-02 overnight" >>"$LOG_FILE" 2>&1; then
+  if scripts/email_progress.sh --subject-prefix "CAISc EXP-02 progress" >>"$LOG_FILE" 2>&1; then
     echo "[$(date -Is)] email ok" | tee -a "$LOG_FILE"
   else
     echo "[$(date -Is)] email failed (see log)" | tee -a "$LOG_FILE"

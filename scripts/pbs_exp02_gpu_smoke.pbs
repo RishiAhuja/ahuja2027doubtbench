@@ -15,6 +15,7 @@ HF_HOME="${HF_HOME:-/Data3/it_FA0571/hf_cache}"
 MODEL="${MODEL:-Qwen/Qwen2.5-0.5B-Instruct}"
 COUNT_GSM8K="${COUNT_GSM8K:-5}"
 COUNT_MMLU="${COUNT_MMLU:-5}"
+COUNTS_FILE="${COUNTS_FILE:-}"
 COUNTS="${COUNTS:-gsm8k:${COUNT_GSM8K},mmlu:${COUNT_MMLU}}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
@@ -63,6 +64,7 @@ date
 echo "PBS_JOBID=${PBS_JOBID:-}"
 echo "HOSTNAME=$(hostname)"
 echo "MODEL=$MODEL"
+echo "COUNTS_FILE=$COUNTS_FILE"
 echo "COUNTS=$COUNTS"
 echo "CONDITIONS=$CONDITIONS"
 echo "MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
@@ -71,10 +73,11 @@ echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 echo "RUN_DIR=$RUN_DIR"
 nvidia-smi -L || true
 
-"$PYTHON" -m experiments.exp02.run_open \
-  --model "$MODEL" \
-  --counts "$COUNTS" \
-  --conditions "$CONDITIONS" \
-  --cache-dir "$HF_HOME" \
-  --max-new-tokens "$MAX_NEW_TOKENS" \
-  --out "$RUN_DIR"
+RUN_ARGS=(--model "$MODEL" --conditions "$CONDITIONS" --cache-dir "$HF_HOME" --max-new-tokens "$MAX_NEW_TOKENS" --out "$RUN_DIR")
+if [[ -n "$COUNTS_FILE" && -f "$COUNTS_FILE" ]]; then
+  RUN_ARGS+=(--counts-file "$COUNTS_FILE")
+else
+  RUN_ARGS+=(--counts "$COUNTS")
+fi
+
+"$PYTHON" -m experiments.exp02.run_open "${RUN_ARGS[@]}"
