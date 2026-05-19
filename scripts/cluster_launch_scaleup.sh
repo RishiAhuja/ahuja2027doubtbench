@@ -21,6 +21,7 @@ GIT_SSH_COMMAND="$GIT_SSH" git pull --ff-only origin "$BRANCH"
 
 echo "===== 2/5 Benchmark caches ====="
 "$PYTHON" scripts/download_benchmark_data.py 200 200 200
+"$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$COUNT_PROFILE"
 
 echo "===== 3/5 MIG UUID ====="
 MIG_UUID="${MIG_UUID:-}"

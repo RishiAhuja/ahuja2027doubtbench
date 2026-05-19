@@ -31,15 +31,17 @@ def main() -> int:
         ok = "ok" if count == expected else "check"
         print(f"  {dataset}: {count} (expected {expected}, {ok})")
 
-    missing = []
+    underfilled = []
     for key, value in counts.items():
         if value <= 0:
             continue
         dataset_key = "mmlu" if key == "mmlu_stratified" else key
-        if by_dataset.get(dataset_key, 0) == 0:
-            missing.append(key)
-    if missing:
-        print(f"ERROR: no samples for: {missing}", file=sys.stderr)
+        loaded = by_dataset.get(dataset_key, 0)
+        if loaded != value:
+            underfilled.append((key, loaded, value))
+    if underfilled:
+        details = ", ".join(f"{key}={loaded}/{expected}" for key, loaded, expected in underfilled)
+        print(f"ERROR: sample count mismatch: {details}", file=sys.stderr)
         return 1
     return 0
 

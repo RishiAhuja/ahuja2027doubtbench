@@ -6,7 +6,11 @@ ROOT="${ROOT:-/Data3/it_FA0571/caisc}"
 cd "$ROOT"
 export PATH="/opt/pbs/bin:${PATH:-}"
 
-MODEL="${MODEL:?Set MODEL=org/model-name}"
+MODEL="${MODEL:-${1:-}}"
+if [[ -z "$MODEL" ]]; then
+  echo "ERROR: set MODEL=org/model-name or pass the model as the first argument." >&2
+  exit 1
+fi
 MIG_UUID="${MIG_UUID:?Set MIG_UUID from nvidia-smi -L}"
 COUNT_PROFILE="${COUNT_PROFILE:-configs/counts_p0.json}"
 COUNT_GSM8K="${COUNT_GSM8K:-100}"

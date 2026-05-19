@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import time
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -14,6 +15,7 @@ TRIVIA_OUT = REPO_ROOT / "experiments" / "data" / "triviaqa_subset.jsonl"
 MATH_OUT = REPO_ROOT / "experiments" / "data" / "math_level3_subset.jsonl"
 BIGBENCH_OUT = REPO_ROOT / "experiments" / "data" / "bigbench_subset.jsonl"
 OPENTDB_URL = "https://opentdb.com/api.php?amount={limit}&type=multiple"
+OPENTDB_TOKEN_URL = "https://opentdb.com/api_token.php?command=request"
 MATH_HF_ROWS_URL = (
     "https://datasets-server.huggingface.co/rows"
     "?dataset=EleutherAI%2Fhendrycks_math&config={config}&split=test"
@@ -55,27 +57,45 @@ def _decode_html(text: str) -> str:
 
 
 def download_triviaqa(limit: int = 200) -> int:
-    url = OPENTDB_URL.format(limit=min(limit, 50))
-    with urlopen(url, timeout=60) as response:
-        payload = json.loads(response.read().decode("utf-8"))
-    items = payload.get("results", [])
+    with urlopen(OPENTDB_TOKEN_URL, timeout=60) as response:
+        token_payload = json.loads(response.read().decode("utf-8"))
+    token = token_payload.get("token")
 
     TRIVIA_OUT.parent.mkdir(parents=True, exist_ok=True)
     written = 0
+    seen_questions: set[str] = set()
     with TRIVIA_OUT.open("w", encoding="utf-8") as handle:
-        for index, item in enumerate(items):
-            question = _decode_html(item.get("question") or "")
-            answer = _decode_html(item.get("correct_answer") or "")
-            if not question or not answer:
-                continue
-            row = {
-                "id": f"triviaqa_{index:05d}",
-                "question": question.strip(),
-                "answer": normalize_answer(answer),
-                "source": "opentdb",
-            }
-            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-            written += 1
+        while written < limit:
+            batch_size = min(50, limit - written)
+            url = OPENTDB_URL.format(limit=batch_size)
+            if token:
+                url = f"{url}&token={token}"
+            with urlopen(url, timeout=60) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            if payload.get("response_code") not in {0, None}:
+                break
+            items = payload.get("results", [])
+            if not items:
+                break
+            for item in items:
+                question = _decode_html(item.get("question") or "")
+                answer = _decode_html(item.get("correct_answer") or "")
+                question_key = normalize_answer(question)
+                if not question or not answer or question_key in seen_questions:
+                    continue
+                seen_questions.add(question_key)
+                row = {
+                    "id": f"triviaqa_{written:05d}",
+                    "question": question.strip(),
+                    "answer": normalize_answer(answer),
+                    "source": "opentdb",
+                }
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+                written += 1
+                if written >= limit:
+                    break
+            if written < limit:
+                time.sleep(5)
     return written
 
 
@@ -188,7 +208,9 @@ def main() -> int:
     print(f"Wrote {trivia_count} rows to {TRIVIA_OUT}")
     print(f"Wrote {math_count} rows to {MATH_OUT}")
     print(f"Wrote {bigbench_count} rows to {BIGBENCH_OUT}")
-    return 0 if trivia_count and math_count and bigbench_count else 1
+    if trivia_count < trivia_limit or math_count < math_limit or bigbench_count < bigbench_limit:
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
