@@ -24,8 +24,51 @@ artifacts:
   model_notes: docs/MODELS.md
   hpc_cluster_runbook: docs/HPC_CLUSTER.md
   exp01_results: docs/EXP-01_RESULTS.md
+  current_source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   frozen_prompts: experiments/exp01/frozen_prompts.json
   prompt_registry_code: core/prompts.py
+
+current_snapshot:
+  checked_at_ist: 2026-05-20 03:25
+  branch: cursor/exp02-benchmark-scaleup
+  interpretation: >
+    Accuracy results are mostly null for pure melancholic system prompting.
+    The strongest surviving claim is methodological: prior negative-identity
+    prompts are contaminated by capability/self-doubt/sabotage components, and
+    model families differ sharply in whether those components change behavior.
+  source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
+  latest_cluster_batch:
+    batch: logs/exp05_tulu/batch_20260520_030103
+    purpose: Tulu SFT/DPO/RLVR within-family EXP-02B post-training ablation
+    status: running
+    rows_done_at_check: 739
+    rows_expected: 5250
+    jobs:
+      - model: allenai/Llama-3.1-Tulu-3-8B-SFT
+        job_id: 19622.master
+        status: running
+        rows: 739/1750
+      - model: allenai/Llama-3.1-Tulu-3-8B-DPO
+        job_id: 19623.master
+        status: held
+        rows: 0/1750
+      - model: allenai/Llama-3.1-Tulu-3.1-8B
+        job_id: 19624.master
+        status: held
+        rows: 0/1750
+  strongest_result:
+    model: meta-llama/Llama-3.1-8B-Instruct
+    condition: negative_capability
+    accuracy_delta_aggregate_objective: -0.0741
+    behavior_judge:
+      uncertainty_signed_mean: 1.00
+      self_doubt_signed_mean: 1.00
+      emotional_leakage_signed_mean: 1.00
+      refusal_avoidance_signed_mean: 0.82
+      format_compliance_signed_mean: -0.67
+  strongest_null:
+    condition: melancholic
+    summary: Pure melancholic system prompting is near-null across open and API objective benchmark runs.
 
 hpc_cluster:
   host: 10.10.11.201
