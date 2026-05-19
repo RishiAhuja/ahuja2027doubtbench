@@ -19,6 +19,33 @@ not merely lose accuracy; judged outputs show a behavioral collapse into
 uncertainty, self-doubt, emotional/persona leakage, avoidance, and worse format
 compliance.
 
+## Literature Check - 2026-05-20
+
+Recent papers make the null accuracy result less surprising:
+
+- `arXiv:2604.02236` (`Do Emotions in Prompts Matter?`): fixed emotional
+  prefixes usually make only small accuracy changes; affective framing is weak,
+  input-dependent signal, not a reliable general-purpose intervention.
+- `arXiv:2512.05858` (`Playing Pretend`): expert personas do not consistently
+  improve objective accuracy; low-knowledge personas are more plausibly harmful.
+- `arXiv:2311.10054` (`Helpful Assistant` personas): 162 system-prompt personas
+  do not reliably improve factual QA; persona effects are noisy/random.
+- `arXiv:2502.15851` (`Control Illusion`): system/user separation does not
+  reliably enforce instruction priority; social/authority framings can dominate
+  nominal role hierarchy.
+- `arXiv:2404.13208`, `arXiv:2511.04694`, `arXiv:2604.09075`: instruction
+  hierarchy is now treated as a training/reasoning problem, not something system
+  prompting alone reliably solves.
+- `arXiv:2604.17293` and `arXiv:2602.04853`: uncertainty/self-knowledge is
+  separable from accuracy; models can be accurate while still poor at explicit
+  uncertainty attribution.
+
+Implication for this project: the next defensible story is not "melancholy
+changes capability." It is: fixed affect/persona prompts mostly do not move
+objective accuracy, but prompt placement, instruction hierarchy, post-training,
+and behavioral leakage determine whether a model obeys or resists negative
+identity/capability instructions.
+
 ## Prompt Conditions
 
 Core registry: `core/prompts.py`
@@ -52,6 +79,8 @@ Recent relevant commits pushed:
 
 - `1702d59` Add Tulu EXP-02B launch and text behavior metrics
 - `c7d07d9` Use latest Tulu 3.1 RLVR checkpoint
+- `70be212` Document current EXP-02 source of truth
+- `24d55e4` Track task-vs-system campaign tooling
 
 ## Output Inventory
 
@@ -63,6 +92,8 @@ Completed scientific-ish outputs:
 - EXP-02B API decomposition: `outputs/EXP-02B/api_20260520_021346`
 - Regex text behavior: `outputs/analysis/text_behavior_current_20260520_030000`
 - LLM pairwise behavior judge: `outputs/analysis/llm_behavior_pairs_current_20260520`
+- In-progress API task-vs-system task-suffix:
+  `outputs/EXP-02B/api_task_suffix_20260520_041826`
 
 Non-scientific/debug outputs:
 
@@ -176,19 +207,31 @@ doubt prompts; explicit sabotage creates model-specific compliance differences.
 
 ## Current Cluster State
 
-Checked: 2026-05-20 03:25 IST.
+Checked: 2026-05-20 04:22 IST.
 
-Active batch: `logs/exp05_tulu/batch_20260520_030103`
+Cluster campaign has 12 jobs / 21,000 expected rows:
 
-- `19622.master` `allenai/Llama-3.1-Tulu-3-8B-SFT`: `739/1750`, running.
-- `19623.master` `allenai/Llama-3.1-Tulu-3-8B-DPO`: `0/1750`, held after SFT.
-- `19624.master` `allenai/Llama-3.1-Tulu-3.1-8B`: `0/1750`, held after DPO.
-- Batch total: `739/5250` rows.
+- Tulu system-placement batch `logs/exp05_tulu/batch_20260520_030103`:
+  SFT complete `1750/1750`; DPO running about `624/1750`; RLVR held.
+- Task-vs-system Llama: system and task-suffix jobs held.
+- Task-vs-system Qwen/Mistral: system and task-suffix jobs held.
+- Task-vs-system Tulu SFT/DPO/RLVR: task-suffix jobs held.
+- Overall at check time: about `2374/21000` rows, `1/12` jobs complete,
+  `1/12` running, `10/12` held.
 - Email watcher: PID `3447886`.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
 resistance" claim.
+
+Local API task-suffix run:
+
+- Screen: `caisc_api_exp02b_task_suffix_20260520_041826`
+- Output: `outputs/EXP-02B/api_task_suffix_20260520_041826`
+- Placement: `task_suffix`
+- Models: GPT-5.4 mini, GPT-5.5, Claude Haiku 4.5
+- Target: `1750` rows/model
+- At 04:22 IST: GPT-5.4 mini complete; Haiku and GPT-5.5 still running.
 
 ## Current Paper Interpretation
 
@@ -214,29 +257,35 @@ Best positive result:
 
 ## What To Do Next
 
-1. Let Tulu finish, pull results, and analyze the SFT -> DPO -> RLVR trend.
+1. Do not add more cluster jobs right now. The queue already contains the
+   missing Tulu and task-vs-system comparisons.
+
+2. Let Tulu finish, pull results, and analyze the SFT -> DPO -> RLVR trend.
    This decides whether the post-training identity-resistance story survives.
 
-2. Rerun corrected open-model EXP-02B for Qwen/Llama/Mistral if cluster time
+3. After local API task-suffix finishes, compare it to API system-placement:
+   `python scripts/analyze_task_vs_system.py --system-run outputs/EXP-02B/api_20260520_021346 --task-run outputs/EXP-02B/api_task_suffix_20260520_041826 --task-placement task_suffix --out outputs/analysis/api_task_vs_system_20260520.csv`
+
+4. Rerun corrected open-model EXP-02B for Qwen/Llama/Mistral if cluster time
    allows. The earlier EXP-02B open batch was bad because PBS dropped five
    conditions.
 
-3. Run task-vs-system comparison:
+5. Analyze cluster task-vs-system comparison after held jobs finish:
    - same conditions as system prompt
    - same conditions appended to task prompt
    This directly connects to EmotionPrompt/NegativePrompt literature.
 
-4. Add a second judge or holdout judge for behavior metrics:
+6. Add a second judge or holdout judge for behavior metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
    Report agreement on a subset.
 
-5. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
+7. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-6. Add human spot-checks for 50-100 pairwise outputs, especially Llama
+8. Add human spot-checks for 50-100 pairwise outputs, especially Llama
    negative_capability and Haiku explicit_sabotage.
 
-7. Reframe paper as a methodological null-result paper, not an emotional
+9. Reframe paper as a methodological null-result paper, not an emotional
    degradation paper.
