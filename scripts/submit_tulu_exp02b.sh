@@ -15,7 +15,7 @@ BATCH_PREFIX="${BATCH_PREFIX:-exp05_tulu}"
 MODELS=(
   "allenai/Llama-3.1-Tulu-3-8B-SFT"
   "allenai/Llama-3.1-Tulu-3-8B-DPO"
-  "allenai/Llama-3.1-Tulu-3-8B"
+  "allenai/Llama-3.1-Tulu-3.1-8B"
 )
 
 export COUNT_PROFILE CONDITIONS PROMPT_PLACEMENT MAX_NEW_TOKENS WALLTIME BATCH_PREFIX
