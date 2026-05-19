@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import socket
 import subprocess
 import urllib.error
@@ -71,6 +72,23 @@ def send_email(subject: str, text: str) -> None:
         raise RuntimeError(f"Resend HTTP {exc.code}: {body}") from exc
 
 
+def subject_from_progress(prefix: str, progress: str, now: str) -> str:
+    overall = re.search(
+        r"OVERALL:\s+(\d+)/(\d+)\s+rows\s+\(\s*([0-9.]+%)\).*?running=(\d+)\s+held=(\d+)",
+        progress,
+    )
+    if overall:
+        done, total, percent, running, held = overall.groups()
+        return f"{prefix} {percent} | {done}/{total} rows | R{running} H{held}"
+
+    batch = re.search(r"Batch total:\s+(\d+)/(\d+)\s+rows\s+\(\s*([0-9.]+%)\)", progress)
+    if batch:
+        done, total, percent = batch.groups()
+        return f"{prefix} {percent} | {done}/{total} rows"
+
+    return f"{prefix} status - {now}"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--subject-prefix", default="CAISc EXP-02 overnight")
@@ -79,7 +97,7 @@ def main() -> int:
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z")
     host = socket.gethostname()
     progress = run_progress()
-    subject = f"{args.subject_prefix} - {now}"
+    subject = subject_from_progress(args.subject_prefix, progress, now)
     text = f"Host: {host}\nRoot: {ROOT}\nGenerated: {now}\n\n{progress}\n"
     send_email(subject, text)
     return 0

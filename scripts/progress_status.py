@@ -14,9 +14,22 @@ ROOT = Path(os.environ.get("ROOT", "/Data3/it_FA0571/caisc"))
 LOG_ROOTS = [
     ROOT / "logs" / "exp05_tulu",
     ROOT / "logs" / "task_vs_system",
+    ROOT / "logs" / "task_vs_system_system",
+    ROOT / "logs" / "task_vs_system_task_suffix",
+    ROOT / "logs" / "task_vs_system_system_extra",
+    ROOT / "logs" / "task_vs_system_task_suffix_extra",
+    ROOT / "logs" / "task_vs_system_tulu_task_suffix",
     ROOT / "logs" / "exp02b",
     ROOT / "logs" / "scaleup",
     ROOT / "logs" / "overnight",
+]
+CAMPAIGN_ROOTS = [
+    ROOT / "logs" / "exp05_tulu",
+    ROOT / "logs" / "task_vs_system_system",
+    ROOT / "logs" / "task_vs_system_task_suffix",
+    ROOT / "logs" / "task_vs_system_system_extra",
+    ROOT / "logs" / "task_vs_system_task_suffix_extra",
+    ROOT / "logs" / "task_vs_system_tulu_task_suffix",
 ]
 STATE_NAMES = {
     "R": "running",
@@ -67,16 +80,19 @@ def qstat_jobs() -> list[dict[str, str]]:
 
 
 def latest_batch_dir() -> Path | None:
+    marked_batches: list[tuple[float, Path]] = []
     for log_root in LOG_ROOTS:
         marker = log_root / "latest_batch.txt"
         if marker.exists():
             path = Path(marker.read_text().strip())
             if path.exists():
-                return path
+                marked_batches.append((marker.stat().st_mtime, path))
+    if marked_batches:
+        return sorted(marked_batches)[-1][1]
     batches: list[Path] = []
     for log_root in LOG_ROOTS:
         batches.extend(log_root.glob("batch_*"))
-    return sorted(batches)[-1] if batches else None
+    return sorted(batches, key=lambda path: path.stat().st_mtime)[-1] if batches else None
 
 
 def read_manifest(batch_dir: Path) -> list[dict[str, str | int]]:
@@ -98,6 +114,27 @@ def read_manifest(batch_dir: Path) -> list[dict[str, str | int]]:
                 }
             )
     return rows
+
+
+def latest_batch_for_root(log_root: Path) -> Path | None:
+    marker = log_root / "latest_batch.txt"
+    if marker.exists():
+        path = Path(marker.read_text().strip())
+        if path.exists():
+            return path
+    batches = sorted(log_root.glob("batch_*"), key=lambda path: path.stat().st_mtime)
+    return batches[-1] if batches else None
+
+
+def campaign_batches() -> list[Path]:
+    batches = []
+    seen = set()
+    for log_root in CAMPAIGN_ROOTS:
+        batch = latest_batch_for_root(log_root)
+        if batch and batch not in seen and read_manifest(batch):
+            batches.append(batch)
+            seen.add(batch)
+    return sorted(batches, key=lambda path: path.stat().st_mtime)
 
 
 def count_rows(run_dir: Path) -> tuple[int, bool]:
@@ -179,6 +216,93 @@ def print_dataset_progress(run_dir: Path) -> None:
         print(f"      datasets: {' | '.join(parts)}")
 
 
+def manifest_row_progress(
+    row: dict[str, str | int],
+    state_by_job: dict[str, str],
+) -> tuple[int, int, str]:
+    run_dir = Path(str(row["run_dir"]))
+    done, exists = count_rows(run_dir)
+    expected = int(row["expected_rows"])
+    job_id = str(row["job_id"])
+    state_key = state_by_job.get(job_id, state_by_job.get(job_id.split(".")[0], "?"))
+    state = STATE_NAMES.get(state_key, state_key if state_key != "?" else "done")
+    metrics_path = run_dir / "metrics.json"
+    if metrics_path.exists():
+        state = "complete"
+    elif done >= expected and expected > 0:
+        state = "finishing"
+    elif not exists and state == "?":
+        state = "pending"
+    return done, expected, state
+
+
+def print_campaign(batches: list[Path], jobs: list[dict[str, str]]) -> bool:
+    if not batches:
+        return False
+    state_by_job = {job["id"]: job["state"] for job in jobs}
+    state_by_job.update({job["id"].split(".")[0]: job["state"] for job in jobs})
+
+    total_done = 0
+    total_expected = 0
+    total_jobs = 0
+    complete_jobs = 0
+    held_jobs = 0
+    running_jobs = 0
+
+    print()
+    print("Campaign: EXP-02B + task-vs-system queue")
+    for batch in batches:
+        manifest = read_manifest(batch)
+        if not manifest:
+            continue
+        batch_done = 0
+        batch_expected = 0
+        batch_states = Counter()
+        label = batch.parent.name
+        print()
+        print(f"{label}: {short_path(batch)}")
+        for row in manifest:
+            done, expected, state = manifest_row_progress(row, state_by_job)
+            batch_done += done
+            batch_expected += expected
+            total_done += done
+            total_expected += expected
+            total_jobs += 1
+            batch_states[state] += 1
+            if state == "complete":
+                complete_jobs += 1
+            if state == "held":
+                held_jobs += 1
+            if state == "running":
+                running_jobs += 1
+            placement = ""
+            run_dir = Path(str(row["run_dir"]))
+            cfg = run_dir / "config.json"
+            if cfg.exists():
+                try:
+                    payload = json.loads(cfg.read_text(encoding="utf-8"))
+                    placement = f" placement={payload.get('prompt_placement', '')}"
+                except (json.JSONDecodeError, OSError):
+                    placement = ""
+            print(
+                f"  {str(row['model'])[:48]:48} {done:>4}/{expected:<4} "
+                f"{pct(done, expected)} {state:10} {row['job_id']}{placement}"
+            )
+            if state == "running":
+                print_dataset_progress(run_dir)
+        print(
+            f"  batch total: {batch_done}/{batch_expected} "
+            f"({pct(batch_done, batch_expected)}) | states={dict(batch_states)}"
+        )
+
+    print()
+    print(
+        f"OVERALL: {total_done}/{total_expected} rows ({pct(total_done, total_expected)}) | "
+        f"jobs complete={complete_jobs}/{total_jobs} running={running_jobs} held={held_jobs}"
+    )
+    return True
+
+
 def main() -> int:
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     jobs = qstat_jobs()
@@ -198,6 +322,10 @@ def main() -> int:
         for job in caisc_jobs:
             state = STATE_NAMES.get(job["state"], job["state"])
             print(f"  {job['id']:16} {state:8} {job['name']}")
+
+    batches = campaign_batches()
+    if print_campaign(batches, jobs):
+        return 0
 
     batch_dir = latest_batch_dir()
     if not batch_dir:

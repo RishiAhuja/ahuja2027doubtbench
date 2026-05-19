@@ -21,7 +21,7 @@ fi
 
 export COUNT_PROFILE CONDITIONS MAX_NEW_TOKENS WALLTIME
 
-PROMPT_PLACEMENT=system BATCH_PREFIX=task_vs_system_system \
+PROMPT_PLACEMENT=system BATCH_PREFIX=task_vs_system_system INITIAL_DEPEND_JOB="${INITIAL_DEPEND_JOB:-}" \
   bash scripts/submit_exp02_scaleup.sh "${MODELS[@]}"
 
 system_batch="$(cat "$ROOT/logs/task_vs_system_system/latest_batch.txt")"
