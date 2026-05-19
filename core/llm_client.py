@@ -21,6 +21,8 @@ class LLMResponse:
     model: str
     text: str
     raw: dict[str, Any]
+    reasoning_chain: list[str] | None = None
+    usage: dict[str, int] | None = None
 
 
 def _post_json(
@@ -88,12 +90,16 @@ def call_model(
     user: str,
     max_tokens: int = 800,
     temperature: float = 0.0,
+    reasoning_effort: str | None = None,
+    thinking_budget_tokens: int | None = None,
 ) -> LLMResponse:
     provider = provider.lower()
     if provider == "openai":
-        return _call_openai(model, system, user, max_tokens, temperature)
+        return _call_openai(model, system, user, max_tokens, temperature, reasoning_effort)
     if provider == "anthropic":
-        return _call_anthropic(model, system, user, max_tokens, temperature)
+        return _call_anthropic(
+            model, system, user, max_tokens, temperature, thinking_budget_tokens
+        )
     if provider == "groq":
         return _call_openai_compatible(
             provider="groq",
@@ -156,17 +162,20 @@ def _call_openai(
     user: str,
     max_tokens: int,
     temperature: float,
+    reasoning_effort: str | None,
 ) -> LLMResponse:
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         raise ProviderError("OPENAI_API_KEY is not set")
-    body = {
+    body: dict[str, Any] = {
         "model": model,
         "instructions": system,
         "input": user,
         "max_output_tokens": max_tokens,
         "temperature": temperature,
     }
+    if reasoning_effort or model.startswith("o"):
+        body["reasoning"] = {"effort": reasoning_effort or "low"}
     try:
         raw = _post_json(
             "https://api.openai.com/v1/responses",
@@ -174,18 +183,38 @@ def _call_openai(
             body,
         )
     except ProviderError as exc:
-        if "Unsupported parameter" not in str(exc) or "temperature" not in str(exc):
+        message = str(exc)
+        if "Unsupported parameter" in message and "temperature" in message:
+            body.pop("temperature", None)
+            raw = _post_json(
+                "https://api.openai.com/v1/responses",
+                {"Authorization": f"Bearer {key}"},
+                body,
+            )
+        elif "reasoning" in body and "reasoning" in message.lower():
+            body.pop("reasoning", None)
+            raw = _post_json(
+                "https://api.openai.com/v1/responses",
+                {"Authorization": f"Bearer {key}"},
+                body,
+            )
+        else:
             raise
-        body.pop("temperature", None)
-        raw = _post_json(
-            "https://api.openai.com/v1/responses",
-            {"Authorization": f"Bearer {key}"},
-            body,
-        )
     text = raw.get("output_text")
     if not text:
         text = _extract_openai_response_text(raw)
-    return LLMResponse(provider="openai", model=model, text=text, raw=raw)
+    reasoning = _extract_openai_reasoning(raw)
+    if not reasoning:
+        reasoning = _extract_inline_reasoning(text)
+    usage = _normalize_usage(raw.get("usage"))
+    return LLMResponse(
+        provider="openai",
+        model=model,
+        text=text,
+        raw=raw,
+        reasoning_chain=reasoning,
+        usage=usage,
+    )
 
 
 def _extract_openai_response_text(raw: dict[str, Any]) -> str:
@@ -197,29 +226,116 @@ def _extract_openai_response_text(raw: dict[str, Any]) -> str:
     return "\n".join(part for part in parts if part).strip()
 
 
+def _extract_openai_reasoning(raw: dict[str, Any]) -> list[str]:
+    blocks: list[str] = []
+    for item in raw.get("output", []):
+        item_type = item.get("type", "")
+        if item_type == "reasoning":
+            summary = item.get("summary")
+            if isinstance(summary, list):
+                blocks.extend(str(part).strip() for part in summary if str(part).strip())
+            elif isinstance(summary, str) and summary.strip():
+                blocks.append(summary.strip())
+            for content in item.get("content", []):
+                text = content.get("text", "")
+                if text.strip():
+                    blocks.append(text.strip())
+        for content in item.get("content", []):
+            if content.get("type") == "reasoning":
+                text = content.get("text", "")
+                if text.strip():
+                    blocks.append(text.strip())
+    return blocks
+
+
+def _extract_anthropic_reasoning(raw: dict[str, Any]) -> list[str]:
+    blocks: list[str] = []
+    for item in raw.get("content", []):
+        if item.get("type") == "thinking":
+            thinking = item.get("thinking", "")
+            if isinstance(thinking, str) and thinking.strip():
+                blocks.append(thinking.strip())
+        if item.get("type") == "redacted_thinking":
+            blocks.append("[redacted thinking block]")
+    return blocks
+
+
+def _extract_inline_reasoning(text: str) -> list[str]:
+    if not text.strip():
+        return []
+    lowered = text.lower()
+    marker = "final answer:"
+    if marker in lowered:
+        idx = lowered.rfind(marker)
+        prefix = text[:idx].strip()
+        if prefix:
+            return [prefix]
+    return []
+
+
+def _normalize_usage(usage: Any) -> dict[str, int] | None:
+    if not isinstance(usage, dict):
+        return None
+    mapping = {
+        "input_tokens": usage.get("input_tokens") or usage.get("prompt_tokens"),
+        "output_tokens": usage.get("output_tokens") or usage.get("completion_tokens"),
+        "reasoning_tokens": usage.get("reasoning_tokens"),
+        "total_tokens": usage.get("total_tokens"),
+    }
+    cleaned = {key: int(value) for key, value in mapping.items() if value is not None}
+    return cleaned or None
+
+
 def _call_anthropic(
     model: str,
     system: str,
     user: str,
     max_tokens: int,
     temperature: float,
+    thinking_budget_tokens: int | None,
 ) -> LLMResponse:
     key = os.environ.get("ANTHROPIC_API_KEY")
     if not key:
         raise ProviderError("ANTHROPIC_API_KEY is not set")
-    raw = _post_json(
-        "https://api.anthropic.com/v1/messages",
-        {"x-api-key": key, "anthropic-version": "2023-06-01"},
-        {
-            "model": model,
-            "system": system,
-            "messages": [{"role": "user", "content": user}],
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-        },
-    )
+    body: dict[str, Any] = {
+        "model": model,
+        "system": system,
+        "messages": [{"role": "user", "content": user}],
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+    }
+    if thinking_budget_tokens:
+        body["thinking"] = {"type": "enabled", "budget_tokens": thinking_budget_tokens}
+    try:
+        raw = _post_json(
+            "https://api.anthropic.com/v1/messages",
+            {"x-api-key": key, "anthropic-version": "2023-06-01"},
+            body,
+        )
+    except ProviderError as exc:
+        if thinking_budget_tokens and "thinking" in str(exc).lower():
+            body.pop("thinking", None)
+            raw = _post_json(
+                "https://api.anthropic.com/v1/messages",
+                {"x-api-key": key, "anthropic-version": "2023-06-01"},
+                body,
+            )
+        else:
+            raise
     parts = [item.get("text", "") for item in raw.get("content", []) if item.get("type") == "text"]
-    return LLMResponse(provider="anthropic", model=model, text="\n".join(parts).strip(), raw=raw)
+    text = "\n".join(parts).strip()
+    reasoning = _extract_anthropic_reasoning(raw)
+    if not reasoning:
+        reasoning = _extract_inline_reasoning(text)
+    usage = _normalize_usage(raw.get("usage"))
+    return LLMResponse(
+        provider="anthropic",
+        model=model,
+        text=text,
+        raw=raw,
+        reasoning_chain=reasoning,
+        usage=usage,
+    )
 
 
 def _call_openai_compatible(
@@ -249,4 +365,13 @@ def _call_openai_compatible(
         },
     )
     text = raw["choices"][0]["message"].get("content", "")
-    return LLMResponse(provider=provider, model=model, text=text.strip(), raw=raw)
+    reasoning = _extract_inline_reasoning(text)
+    usage = _normalize_usage(raw.get("usage"))
+    return LLMResponse(
+        provider=provider,
+        model=model,
+        text=text.strip(),
+        raw=raw,
+        reasoning_chain=reasoning or None,
+        usage=usage,
+    )

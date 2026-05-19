@@ -32,6 +32,22 @@ def main() -> int:
     parser.add_argument("--out", default=None)
     parser.add_argument("--max-tokens", type=int, default=768)
     parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument(
+        "--reasoning-effort",
+        default=None,
+        help="OpenAI o-series / reasoning models: low|medium|high",
+    )
+    parser.add_argument(
+        "--thinking-budget",
+        type=int,
+        default=None,
+        help="Anthropic extended thinking budget (extra cost); omit for inline reasoning only",
+    )
+    parser.add_argument(
+        "--store-raw-api",
+        action="store_true",
+        help="Include full provider JSON per row (large files)",
+    )
     args = parser.parse_args()
 
     if not args.counts and not args.counts_file:
@@ -56,6 +72,8 @@ def main() -> int:
         "conditions": conditions,
         "max_tokens": args.max_tokens,
         "temperature": args.temperature,
+        "reasoning_effort": args.reasoning_effort,
+        "thinking_budget_tokens": args.thinking_budget,
     }
     write_json(out_dir / "config.json", config)
     write_samples_manifest(out_dir, samples)
@@ -77,6 +95,9 @@ def main() -> int:
                 sample=sample,
                 max_tokens=args.max_tokens,
                 temperature=args.temperature,
+                reasoning_effort=args.reasoning_effort,
+                thinking_budget_tokens=args.thinking_budget,
+                store_raw_api=args.store_raw_api,
             )
             row["run_id"] = run_id
             rows.append(row)

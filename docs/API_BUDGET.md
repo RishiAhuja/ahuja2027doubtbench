@@ -1,63 +1,96 @@
-# API budget guide (low cost)
+# API budget guide (local testing while cluster is down)
 
-Use **cloud APIs for fast validation**, not full P0 sweeps. Bulk inference stays on the HPC cluster.
+Run the **same EXP-02 protocol** as cluster jobs (baseline / melancholic / negative_capability × benchmarks), but on **cheap cloud APIs** from your laptop.
 
-## Recommended roles
+Official pricing (verify before spend):
 
-| Role | Model | Why |
-|------|-------|-----|
-| Dev smoke | `groq:llama-3.1-8b-instant` | Very fast, ~$0.05/MTok in |
-| Cross-check | `openai:gpt-4.1-mini` | Stable parsing, small $ |
-| Holdout spot-check | `anthropic:claude-haiku-4-5-20251001` | Different family, use sparingly |
+- [OpenAI API pricing](https://platform.openai.com/docs/pricing)
+- [Anthropic Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 
-Optional cheap judge: `groq:openai/gpt-oss-20b` for EXP-01-style audits.
+## Recommended cheap models (May 2026)
 
-## What to run locally
+| Model ref | Input / 1M | Output / 1M | Reasoning chain |
+|-----------|--------------|---------------|-----------------|
+| `openai:gpt-4.1-nano` | $0.10 | $0.40 | Inline text before “Final answer:” |
+| `openai:gpt-4.1-mini` | $0.40 | $1.60 | Inline text |
+| `openai:gpt-4o-mini` | $0.15 | $0.60 | Inline text |
+| `openai:o4-mini` | $1.10 | $4.40 | **Native** reasoning blocks (+ reasoning tokens) |
+| `anthropic:claude-haiku-4-5-20251001` | $1.00 | $5.00 | Inline text; optional `--thinking-budget` (costly) |
+
+Registry: `configs/api_models.json`
+
+## What “reasoning chain” means here
+
+1. **Native** — `o4-mini` returns separate reasoning items in the API response (stored in `reasoning_chain`).
+2. **Inline** — mini/nano/Haiku show steps in the answer; we capture text **before** `Final answer:` as `reasoning_chain`.
+3. **Optional Claude thinking** — `--thinking-budget 2048` enables extended thinking (much higher cost; usually skip for budget runs).
+
+Inspect after a run:
 
 ```bash
-# Load all benchmarks (free)
-SKIP_API=1 bash scripts/smoke_all.sh
-
-# ~26 API calls with counts_smoke.json (3+6+3+3+9+2 samples × 1 condition if you trim)
-SMOKE_MODEL=groq:llama-3.1-8b-instant bash scripts/smoke_all.sh
-
-# Slightly larger API validation (~100–150 calls)
-python -m experiments.exp02.run_smoke \
-  --counts-file configs/counts_smoke.json \
-  --model openai:gpt-4.1-mini
+python -m experiments.exp02.inspect_reasoning --latest --dataset gsm8k --limit 3
 ```
 
-## What NOT to run on API
+## Cost estimates (`counts_api_dev.json`)
 
-- Full `counts_p0.json` (700+ samples × 3 conditions × multiple models) → cluster only
-- 32B/70B open weights → cluster only
-- Creative final scoring → batch judge later (Groq mini judges), not during generation
+Profile: **24 questions × 3 conditions = 72 API calls per model**
 
-## Rough cost (smoke profile, 3 conditions)
+Assuming ~900 input + ~350 output tokens per call:
 
-| Model | Calls | Est. cost |
-|-------|-------|-----------|
-| Groq 8B instant | 78 | &lt; $0.10 |
-| GPT-4.1-mini | 78 | ~$0.50–2 |
-| Claude Haiku | 78 | ~$1–3 |
+| Model | Est. per full sweep |
+|-------|---------------------|
+| GPT-4.1 nano | ~$0.02 |
+| GPT-4.1 mini | ~$0.07 |
+| Claude Haiku 4.5 | ~$0.19 |
+| o4-mini | ~$0.35–0.60 (reasoning tokens vary) |
 
-Hold one frontier model for a **20-sample** manual check, not a full sweep.
+**Both OpenAI mini + Haiku:** ~**$0.25–0.30** for `counts_api_dev.json`
+
+Full smoke (`counts_smoke.json`, 26×3=78 calls): add ~30%
+
+Full P0 on API (**do not**): 860×3 ≈ 2,580 calls → **$10–40+** per model depending on size
+
+```bash
+python scripts/estimate_api_cost.py --counts-file configs/counts_api_dev.json
+python scripts/estimate_api_cost.py --counts-file configs/counts_smoke.json
+```
+
+## Commands
+
+```bash
+# One-shot local suite (OpenAI mini + Claude Haiku)
+bash scripts/run_api_local.sh
+
+# Single model
+python -m experiments.exp02.run_smoke \
+  --counts-file configs/counts_api_dev.json \
+  --model openai:gpt-4.1-mini
+
+python -m experiments.exp02.run_smoke \
+  --counts-file configs/counts_api_dev.json \
+  --model anthropic:claude-haiku-4-5-20251001
+
+# Reasoning-model spot check (fewer samples recommended)
+python -m experiments.exp02.run_smoke \
+  --counts gsm8k:3,mmlu_stratified:3 \
+  --model openai:o4-mini \
+  --reasoning-effort low
+```
 
 ## Env keys (never commit)
 
 ```bash
-export GROQ_API_KEY=...
-export OPENAI_API_KEY=...
-export ANTHROPIC_API_KEY=...
+# .env
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Load from repo `.env` locally via `core.env.load_dotenv()`.
+## What this is / isn’t
 
-## Testing “cloud-like” behavior on open models
+| Good for | Not good for |
+|----------|----------------|
+| Pipeline validation | Full P0 sweeps |
+| Cross-family trend check | Claiming open-weight results |
+| Reading reasoning / hedging under sadness | Final paper numbers (use cluster) |
 
-API smoke proves **prompts + parsers + metrics**. Cluster `run_open` proves **identity conditioning on weights**. Compare deltas across:
-
-1. Same prompts, `groq:llama-3.1-8b-instant` (API)
-2. Same prompts, `meta-llama/Llama-3.1-8B-Instruct` (HF on cluster)
-
-If API and HF Llama trends agree on GSM8K confound, parsers are sane before burning GPU hours.
+When the cluster returns, rerun the same conditions on **Qwen / Llama / Mistral** for publishable numbers.

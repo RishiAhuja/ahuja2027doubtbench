@@ -1,0 +1,51 @@
+{
+  "notes": "USD per 1M tokens, standard tier. Verify at platform.openai.com/docs/pricing and platform.claude.com/docs/en/about-claude/pricing",
+  "models": [
+    {
+      "ref": "openai:gpt-4.1-nano",
+      "label": "OpenAI GPT-4.1 nano",
+      "input_per_mtok": 0.1,
+      "output_per_mtok": 0.4,
+      "reasoning_native": false,
+      "recommended_for": "cheapest_full_smoke"
+    },
+    {
+      "ref": "openai:gpt-4.1-mini",
+      "label": "OpenAI GPT-4.1 mini",
+      "input_per_mtok": 0.4,
+      "output_per_mtok": 1.6,
+      "reasoning_native": false,
+      "recommended_for": "default_openai_validation"
+    },
+    {
+      "ref": "openai:gpt-4o-mini",
+      "label": "OpenAI GPT-4o mini",
+      "input_per_mtok": 0.15,
+      "output_per_mtok": 0.6,
+      "reasoning_native": false,
+      "recommended_for": "legacy_cheap"
+    },
+    {
+      "ref": "openai:o4-mini",
+      "label": "OpenAI o4-mini (reasoning)",
+      "input_per_mtok": 1.1,
+      "output_per_mtok": 4.4,
+      "reasoning_native": true,
+      "reasoning_effort": "low",
+      "recommended_for": "native_reasoning_chain_spot_check"
+    },
+    {
+      "ref": "anthropic:claude-haiku-4-5-20251001",
+      "label": "Claude Haiku 4.5",
+      "input_per_mtok": 1.0,
+      "output_per_mtok": 5.0,
+      "reasoning_native": false,
+      "recommended_for": "anthropic_family_check"
+    }
+  ],
+  "default_local_suite": [
+    "openai:gpt-4.1-mini",
+    "anthropic:claude-haiku-4-5-20251001"
+  ],
+  "reasoning_spot_check": "openai:o4-mini"
+}

@@ -45,6 +45,9 @@ def run_api_one(
     sample,
     max_tokens: int,
     temperature: float,
+    reasoning_effort: str | None = None,
+    thinking_budget_tokens: int | None = None,
+    store_raw_api: bool = False,
 ) -> dict[str, Any]:
     provider, model = parse_model_ref(model_ref)
     system_prompt = PROMPT_BY_CONDITION[condition].text
@@ -53,6 +56,9 @@ def run_api_one(
     error = None
     raw_output = ""
     response_model = model
+    reasoning_chain: list[str] | None = None
+    usage: dict[str, int] | None = None
+    raw_api = None
     try:
         response = call_model(
             provider=provider,
@@ -61,9 +67,15 @@ def run_api_one(
             user=user_prompt,
             max_tokens=max_tokens,
             temperature=temperature,
+            reasoning_effort=reasoning_effort,
+            thinking_budget_tokens=thinking_budget_tokens,
         )
         raw_output = response.text
         response_model = response.model
+        reasoning_chain = response.reasoning_chain
+        usage = response.usage
+        if store_raw_api:
+            raw_api = response.raw
     except ProviderError as exc:
         error = str(exc)
     ended = datetime.now(timezone.utc)
@@ -71,7 +83,7 @@ def run_api_one(
     parsed = parse_answer(sample.dataset, raw_output) if raw_output else ""
     score = None if error else score_prediction(sample.dataset, parsed, sample.gold)
 
-    return {
+    row: dict[str, Any] = {
         "experiment_id": "EXP-02",
         "run_id": None,
         "provider": provider,
@@ -88,8 +100,12 @@ def run_api_one(
         "params": {
             "temperature": temperature,
             "max_tokens": max_tokens,
+            "reasoning_effort": reasoning_effort,
+            "thinking_budget_tokens": thinking_budget_tokens,
         },
         "raw_output": raw_output,
+        "reasoning_chain": reasoning_chain,
+        "usage": usage,
         "parsed_answer": parsed,
         "gold": sample.gold,
         "score": score,
@@ -97,6 +113,9 @@ def run_api_one(
         "started_utc": started.isoformat(),
         "ended_utc": ended.isoformat(),
     }
+    if raw_api is not None:
+        row["raw_api"] = raw_api
+    return row
 
 
 def finalize_run(out_dir: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:

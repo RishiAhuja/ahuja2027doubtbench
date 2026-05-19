@@ -7,9 +7,10 @@ cd "$ROOT"
 
 PYTHON="${PYTHON:-python3}"
 PROFILE="${PROFILE:-configs/counts_smoke.json}"
+COUNTS_FILE="${COUNTS_FILE:-$PROFILE}"
 
 echo "===== 1/2 Benchmark load smoke ====="
-"$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$PROFILE"
+"$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$COUNTS_FILE"
 
 if [[ "${SKIP_API:-}" == "1" ]]; then
   echo "SKIP_API=1 set; done."
@@ -25,7 +26,7 @@ fi
 echo
 echo "===== 2/2 API inference smoke ($MODEL) ====="
 "$PYTHON" -m experiments.exp02.run_smoke \
-  --counts-file "$PROFILE" \
+  --counts-file "$COUNTS_FILE" \
   --model "$MODEL" \
   --max-tokens 512
 
