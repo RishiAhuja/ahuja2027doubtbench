@@ -6,7 +6,12 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+import sys
 from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[1]
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
 
 from core.json_utils import write_json, write_jsonl
 from experiments.exp02.common import finalize_run
