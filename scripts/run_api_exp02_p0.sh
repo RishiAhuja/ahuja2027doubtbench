@@ -46,8 +46,12 @@ fi
 echo
 
 echo "===== Benchmark caches ====="
-"$PYTHON" scripts/download_benchmark_data.py 200 200 200
-"$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$PROFILE"
+if "$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$PROFILE"; then
+  echo "Benchmark cache already satisfies $PROFILE"
+else
+  "$PYTHON" scripts/download_benchmark_data.py 200 200 200
+  "$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$PROFILE"
+fi
 
 echo
 echo "===== Cost estimate ====="
