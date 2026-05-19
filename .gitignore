@@ -6,6 +6,9 @@ __pycache__/
 *.pyc
 .DS_Store
 outputs/
+# Tracked experiment artifacts live under results/ (not outputs/)
+results/**/raw_outputs.jsonl
+results/**/parsed_outputs.jsonl
 /tmp/
 *.log
 *.aux

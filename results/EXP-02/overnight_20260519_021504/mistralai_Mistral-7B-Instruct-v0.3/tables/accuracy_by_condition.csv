@@ -1,0 +1,7 @@
+model,dataset,condition,n,accuracy,parse_failure_rate
+mistralai/Mistral-7B-Instruct-v0.3,gsm8k,baseline,100,0.51,0.0
+mistralai/Mistral-7B-Instruct-v0.3,gsm8k,melancholic,100,0.45,0.0
+mistralai/Mistral-7B-Instruct-v0.3,gsm8k,negative_capability,100,0.48,0.0
+mistralai/Mistral-7B-Instruct-v0.3,mmlu,baseline,100,0.25,0.0
+mistralai/Mistral-7B-Instruct-v0.3,mmlu,melancholic,100,0.28,0.0
+mistralai/Mistral-7B-Instruct-v0.3,mmlu,negative_capability,100,0.25,0.0

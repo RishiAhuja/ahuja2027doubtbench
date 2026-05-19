@@ -1,0 +1,7 @@
+model,dataset,condition,n,accuracy,parse_failure_rate
+meta-llama/Llama-3.1-8B-Instruct,gsm8k,baseline,100,0.8,0.0
+meta-llama/Llama-3.1-8B-Instruct,gsm8k,melancholic,100,0.84,0.0
+meta-llama/Llama-3.1-8B-Instruct,gsm8k,negative_capability,100,0.66,0.0
+meta-llama/Llama-3.1-8B-Instruct,mmlu,baseline,100,0.36,0.03
+meta-llama/Llama-3.1-8B-Instruct,mmlu,melancholic,100,0.33,0.05
+meta-llama/Llama-3.1-8B-Instruct,mmlu,negative_capability,100,0.25,0.03

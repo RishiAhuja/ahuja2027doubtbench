@@ -1,0 +1,18 @@
+{
+  "cache_dir": "/Data3/it_FA0571/hf_cache",
+  "conditions": [
+    "baseline",
+    "melancholic",
+    "negative_capability"
+  ],
+  "counts": {
+    "gsm8k": 100,
+    "mmlu": 100
+  },
+  "created_utc": "2026-05-18T20:45:08.709352+00:00",
+  "experiment": "EXP-02",
+  "max_new_tokens": 256,
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "run_id": "20260518_204504",
+  "runner": "run_open"
+}
