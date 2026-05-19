@@ -40,11 +40,23 @@ MATH_HF_CONFIGS = (
 BIGBENCH_SUBSET_PATH = DATA_DIR / "bigbench_subset.jsonl"
 BBH_DATASET = "lukaemon%2Fbbh"
 BBH_CONFIGS = (
-    "logical_deduction_three_objects",
-    "navigate",
     "date_understanding",
     "disambiguation_qa",
+    "geometric_shapes",
+    "hyperbaton",
+    "logical_deduction_three_objects",
+    "logical_deduction_five_objects",
+    "logical_deduction_seven_objects",
+    "movie_recommendation",
+    "penguins_in_a_table",
+    "reasoning_about_colored_objects",
+    "ruin_names",
+    "salient_translation_error_detection",
     "snarks",
+    "temporal_sequences",
+    "tracking_shuffled_objects_three_objects",
+    "tracking_shuffled_objects_five_objects",
+    "tracking_shuffled_objects_seven_objects",
 )
 BBH_ROWS_URL = (
     "https://datasets-server.huggingface.co/rows"
@@ -263,9 +275,9 @@ def _bbh_row_to_sample(config: str, example_index: int, row: dict[str, Any]) -> 
     if not question or not target:
         return None
     gold = re.sub(r"[()\\s]", "", target).upper()
-    if not re.fullmatch(r"[A-D]", gold):
+    choices = {match.group(1): match.group(2).strip() for match in re.finditer(r"\(([A-Z])\)\s*([^\n]+)", question)}
+    if not re.fullmatch(r"[A-Z]", gold) or gold not in choices:
         return None
-    choices = {match.group(1): match.group(2).strip() for match in re.finditer(r"\(([A-D])\)\s*([^\n]+)", question)}
     return BenchmarkSample(
         dataset="bigbench",
         sample_id=f"bigbench_{config}_{example_index:04d}",
@@ -277,26 +289,23 @@ def _bbh_row_to_sample(config: str, example_index: int, row: dict[str, Any]) -> 
 
 
 def _fetch_bigbench_bbh(limit: int) -> list[BenchmarkSample]:
-    per_task = max(1, limit // len(BBH_CONFIGS))
     rows: list[BenchmarkSample] = []
     for config in BBH_CONFIGS:
         if len(rows) >= limit:
             break
         offset = 0
-        taken = 0
-        while taken < per_task and len(rows) < limit:
-            url = BBH_ROWS_URL.format(config=config, offset=offset, length=min(50, per_task))
+        while len(rows) < limit:
+            url = BBH_ROWS_URL.format(config=config, offset=offset, length=50)
             payload = _fetch_json(url)
             batch = payload.get("rows") or []
             if not batch:
                 break
-            for item in batch:
-                sample = _bbh_row_to_sample(config, taken, item.get("row") or item)
+            for batch_index, item in enumerate(batch):
+                sample = _bbh_row_to_sample(config, offset + batch_index, item.get("row") or item)
                 if sample is None:
                     continue
                 rows.append(sample)
-                taken += 1
-                if taken >= per_task or len(rows) >= limit:
+                if len(rows) >= limit:
                     break
             offset += len(batch)
             if len(batch) < 50:
@@ -380,7 +389,16 @@ def mmlu_user_prompt(sample: BenchmarkSample) -> str:
 
 
 def bigbench_user_prompt(sample: BenchmarkSample) -> str:
-    return mmlu_user_prompt(sample)
+    if not sample.choices:
+        raise ValueError("BIG-Bench sample missing choices")
+    labels = "/".join(sample.choices.keys())
+    choices = "\n".join(f"{label}. {text}" for label, text in sample.choices.items())
+    return (
+        "Answer the following multiple-choice question. End with a line exactly in the form "
+        f"`Final answer: <{labels}>`.\n\n"
+        f"Question:\n{sample.question}\n\n"
+        f"Choices:\n{choices}"
+    )
 
 
 def triviaqa_user_prompt(sample: BenchmarkSample) -> str:
@@ -413,8 +431,10 @@ def build_user_prompt(sample: BenchmarkSample) -> str:
 def parse_answer(dataset: str, output: str) -> str:
     if dataset in {"gsm8k", "math"}:
         return parse_gsm8k_answer(output)
-    if dataset in {"mmlu", "bigbench"}:
+    if dataset == "mmlu":
         return parse_mmlu_answer(output)
+    if dataset == "bigbench":
+        return parse_bigbench_answer(output)
     if dataset == "triviaqa":
         return parse_triviaqa_answer(output)
     if dataset == "creative":
@@ -448,6 +468,14 @@ def parse_mmlu_answer(output: str) -> str:
     if final:
         return final[-1].upper()
     standalone = re.findall(r"\b([ABCD])\b", output, flags=re.IGNORECASE)
+    return standalone[-1].upper() if standalone else ""
+
+
+def parse_bigbench_answer(output: str) -> str:
+    final = re.findall(r"final answer\s*:\s*\(?([A-Z])\)?\b", output, flags=re.IGNORECASE)
+    if final:
+        return final[-1].upper()
+    standalone = re.findall(r"\b([A-Z])\b", output)
     return standalone[-1].upper() if standalone else ""
 
 

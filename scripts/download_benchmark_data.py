@@ -22,11 +22,23 @@ MATH_HF_ROWS_URL = (
     "&offset={offset}&length={length}"
 )
 BBH_CONFIGS = (
-    "logical_deduction_three_objects",
-    "navigate",
     "date_understanding",
     "disambiguation_qa",
+    "geometric_shapes",
+    "hyperbaton",
+    "logical_deduction_three_objects",
+    "logical_deduction_five_objects",
+    "logical_deduction_seven_objects",
+    "movie_recommendation",
+    "penguins_in_a_table",
+    "reasoning_about_colored_objects",
+    "ruin_names",
+    "salient_translation_error_detection",
     "snarks",
+    "temporal_sequences",
+    "tracking_shuffled_objects_three_objects",
+    "tracking_shuffled_objects_five_objects",
+    "tracking_shuffled_objects_seven_objects",
 )
 BBH_ROWS_URL = (
     "https://datasets-server.huggingface.co/rows"
@@ -152,15 +164,13 @@ def download_bigbench(limit: int = 200) -> int:
     import re
 
     written = 0
-    per_task = max(1, limit // len(BBH_CONFIGS))
     BIGBENCH_OUT.parent.mkdir(parents=True, exist_ok=True)
     with BIGBENCH_OUT.open("w", encoding="utf-8") as handle:
         for config in BBH_CONFIGS:
             if written >= limit:
                 break
             offset = 0
-            taken = 0
-            while taken < per_task and written < limit:
+            while written < limit:
                 url = BBH_ROWS_URL.format(config=config, offset=offset, length=50)
                 with urlopen(url, timeout=120) as response:
                     payload = json.loads(response.read().decode("utf-8"))
@@ -174,12 +184,12 @@ def download_bigbench(limit: int = 200) -> int:
                     if not question or not target:
                         continue
                     gold = re.sub(r"[()\\s]", "", target).upper()
-                    if not re.fullmatch(r"[A-D]", gold):
-                        continue
                     choices = {
                         m.group(1): m.group(2).strip()
-                        for m in re.finditer(r"\(([A-D])\)\s*([^\n]+)", question)
+                        for m in re.finditer(r"\(([A-Z])\)\s*([^\n]+)", question)
                     }
+                    if not re.fullmatch(r"[A-Z]", gold) or gold not in choices:
+                        continue
                     record = {
                         "id": f"bigbench_{config}_{written:05d}",
                         "question": question,
@@ -189,8 +199,7 @@ def download_bigbench(limit: int = 200) -> int:
                     }
                     handle.write(json.dumps(record, ensure_ascii=False) + "\n")
                     written += 1
-                    taken += 1
-                    if taken >= per_task or written >= limit:
+                    if written >= limit:
                         break
                 offset += len(batch)
                 if len(batch) < 50:
