@@ -147,10 +147,18 @@ def load_mmlu_stratified(limit: int, seed: int = 42) -> list[BenchmarkSample]:
 
     per_subject = max(1, limit // len(subjects))
     selected: list[tuple[int, dict[str, str]]] = []
+    selected_ids: set[int] = set()
     for subject in subjects:
         pool = by_subject[subject][:]
         rng.shuffle(pool)
-        selected.extend(pool[:per_subject])
+        for item in pool[:per_subject]:
+            selected.append(item)
+            selected_ids.add(item[0])
+
+    if len(selected) < limit:
+        remainder = [item for subject in subjects for item in by_subject[subject] if item[0] not in selected_ids]
+        rng.shuffle(remainder)
+        selected.extend(remainder[: limit - len(selected)])
 
     rng.shuffle(selected)
     selected = selected[:limit]
