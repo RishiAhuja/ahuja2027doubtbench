@@ -92,8 +92,12 @@ Completed scientific-ish outputs:
 - EXP-02B API decomposition: `outputs/EXP-02B/api_20260520_021346`
 - Regex text behavior: `outputs/analysis/text_behavior_current_20260520_030000`
 - LLM pairwise behavior judge: `outputs/analysis/llm_behavior_pairs_current_20260520`
-- In-progress API task-vs-system task-suffix:
+- API task-vs-system task-suffix:
   `outputs/EXP-02B/api_task_suffix_20260520_041826`
+- API task-vs-system analysis:
+  `outputs/analysis/api_task_vs_system_20260520.csv`
+- API task-vs-system regex behavior:
+  `outputs/analysis/text_behavior_api_task_vs_system_20260520`
 
 Non-scientific/debug outputs:
 
@@ -170,6 +174,36 @@ Interpretation: decomposition makes the result clearer. Melancholic, capability
 denial, and self-doubt are mostly null on cloud models. Explicit sabotage exposes
 large model-family differences.
 
+### EXP-02B API Task-Suffix Placement
+
+System-placement output: `outputs/EXP-02B/api_20260520_021346`
+
+Task-suffix output: `outputs/EXP-02B/api_task_suffix_20260520_041826`
+
+Analysis CSV: `outputs/analysis/api_task_vs_system_20260520.csv`
+
+Aggregate accuracies, objective tasks only:
+
+- openai:gpt-5.4-mini: baseline system `0.9514`, task `0.9429`; melancholic
+  deltas system `-0.0029`, task `-0.0086`; capability denial system `-0.0114`,
+  task `+0.0029`; self-doubt system `+0.0000`, task `-0.0029`; explicit
+  sabotage system `-0.0543`, task `-0.2257`.
+- openai:gpt-5.5: baseline system `0.9286`, task `0.9229`; melancholic deltas
+  system `+0.0057`, task `+0.0143`; capability denial system `-0.0029`, task
+  `+0.0057`; self-doubt system `+0.0057`, task `+0.0086`; explicit sabotage
+  system `-0.8200`, task `-0.1943`.
+- anthropic:claude-haiku-4-5-20251001: baseline system `0.9429`, task
+  `0.9314`; melancholic deltas system `+0.0029`, task `+0.0086`; capability
+  denial system `+0.0000`, task `+0.0086`; self-doubt system `-0.0086`, task
+  `+0.0086`; explicit sabotage system `-0.7200`, task `-0.7400`.
+
+Interpretation: system-vs-task placement still shows null/small effects for
+melancholic, capability denial, and self-doubt. The only large placement
+interaction is explicit sabotage: GPT-5.5 follows sabotage when it is in the
+system/instructions channel but mostly resists it when appended after the task;
+GPT-5.4 mini moves the other direction; Haiku is strongly sabotaged either way.
+This is an instruction-hierarchy/compliance result, not an emotion result.
+
 ## Text Behavior Results
 
 Regex output: `outputs/analysis/text_behavior_current_20260520_030000`
@@ -226,12 +260,11 @@ resistance" claim.
 
 Local API task-suffix run:
 
-- Screen: `caisc_api_exp02b_task_suffix_20260520_041826`
+- Screen completed: `caisc_api_exp02b_task_suffix_20260520_041826`
 - Output: `outputs/EXP-02B/api_task_suffix_20260520_041826`
 - Placement: `task_suffix`
 - Models: GPT-5.4 mini, GPT-5.5, Claude Haiku 4.5
-- Target: `1750` rows/model
-- At 04:22 IST: GPT-5.4 mini complete; Haiku and GPT-5.5 still running.
+- Completed: `1750` rows/model
 
 ## Current Paper Interpretation
 
@@ -263,29 +296,26 @@ Best positive result:
 2. Let Tulu finish, pull results, and analyze the SFT -> DPO -> RLVR trend.
    This decides whether the post-training identity-resistance story survives.
 
-3. After local API task-suffix finishes, compare it to API system-placement:
-   `python scripts/analyze_task_vs_system.py --system-run outputs/EXP-02B/api_20260520_021346 --task-run outputs/EXP-02B/api_task_suffix_20260520_041826 --task-placement task_suffix --out outputs/analysis/api_task_vs_system_20260520.csv`
-
-4. Rerun corrected open-model EXP-02B for Qwen/Llama/Mistral if cluster time
+3. Rerun corrected open-model EXP-02B for Qwen/Llama/Mistral if cluster time
    allows. The earlier EXP-02B open batch was bad because PBS dropped five
    conditions.
 
-5. Analyze cluster task-vs-system comparison after held jobs finish:
+4. Analyze cluster task-vs-system comparison after held jobs finish:
    - same conditions as system prompt
    - same conditions appended to task prompt
    This directly connects to EmotionPrompt/NegativePrompt literature.
 
-6. Add a second judge or holdout judge for behavior metrics:
+5. Add a second judge or holdout judge for behavior metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
    Report agreement on a subset.
 
-7. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
+6. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-8. Add human spot-checks for 50-100 pairwise outputs, especially Llama
+7. Add human spot-checks for 50-100 pairwise outputs, especially Llama
    negative_capability and Haiku explicit_sabotage.
 
-9. Reframe paper as a methodological null-result paper, not an emotional
+8. Reframe paper as a methodological null-result paper, not an emotional
    degradation paper.
