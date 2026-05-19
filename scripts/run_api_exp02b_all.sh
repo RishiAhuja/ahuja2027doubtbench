@@ -10,6 +10,7 @@ PROFILE="${PROFILE:-configs/counts_exp02b.json}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,capability_denial_only,self_doubt_only,explicit_sabotage}"
 MAX_TOKENS="${MAX_TOKENS:-768}"
 WORKERS="${WORKERS:-12}"
+PROMPT_PLACEMENT="${PROMPT_PLACEMENT:-system}"
 BATCH_ID="${BATCH_ID:-$(date +%Y%m%d_%H%M%S)}"
 OUT_ROOT="$ROOT/outputs/EXP-02B/api_${BATCH_ID}"
 LOG_ROOT="$ROOT/logs/api_exp02b/batch_${BATCH_ID}"
@@ -22,6 +23,7 @@ echo "EXP-02B API batch: $BATCH_ID"
 echo "Profile: $PROFILE"
 echo "Conditions: $CONDITIONS"
 echo "Workers/model: $WORKERS"
+echo "Prompt placement: $PROMPT_PLACEMENT"
 
 "$PYTHON" -m experiments.exp02.verify_benchmarks --counts-file "$PROFILE"
 
@@ -35,6 +37,7 @@ for model in "${MODELS[@]}"; do
     --conditions "$CONDITIONS" \
     --max-tokens "$MAX_TOKENS" \
     --workers "$WORKERS" \
+    --prompt-placement "$PROMPT_PLACEMENT" \
     --out "$OUT_ROOT/$slug" \
     > "$LOG_ROOT/$slug.log" 2>&1 &
 done

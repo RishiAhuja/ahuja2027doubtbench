@@ -16,6 +16,7 @@ from core.prompts import PROMPT_BY_CONDITION
 
 
 DEFAULT_CONDITIONS = ["baseline", "melancholic", "negative_capability"]
+PROMPT_PLACEMENTS = {"system", "task_prefix", "task_suffix"}
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -39,6 +40,34 @@ def validate_conditions(conditions: list[str]) -> None:
         raise SystemExit(f"Unknown conditions: {', '.join(unknown)}")
 
 
+def validate_prompt_placement(prompt_placement: str) -> None:
+    if prompt_placement not in PROMPT_PLACEMENTS:
+        allowed = ", ".join(sorted(PROMPT_PLACEMENTS))
+        raise SystemExit(f"Unknown prompt placement {prompt_placement!r}; expected one of: {allowed}")
+
+
+def build_conditioned_prompts(condition: str, sample, prompt_placement: str = "system") -> tuple[str, str]:
+    """Return provider/system and user/task prompts for an EXP-02 condition.
+
+    The primary experiment uses `system`, where the condition is sent through the
+    provider/system channel or model-native chat template. The task-level modes
+    keep a stable baseline system prompt and place the condition text in the user
+    prompt for direct comparison with task-level emotional prompting literature.
+    """
+    validate_prompt_placement(prompt_placement)
+    condition_prompt = PROMPT_BY_CONDITION[condition].text
+    user_prompt = build_user_prompt(sample)
+    if prompt_placement == "system":
+        return condition_prompt, user_prompt
+
+    system_prompt = PROMPT_BY_CONDITION["baseline"].text
+    if condition == "baseline":
+        return system_prompt, user_prompt
+    if prompt_placement == "task_prefix":
+        return system_prompt, f"{condition_prompt}\n\n{user_prompt}"
+    return system_prompt, f"{user_prompt}\n\n{condition_prompt}"
+
+
 def run_api_one(
     model_ref: str,
     condition: str,
@@ -48,10 +77,10 @@ def run_api_one(
     reasoning_effort: str | None = None,
     thinking_budget_tokens: int | None = None,
     store_raw_api: bool = False,
+    prompt_placement: str = "system",
 ) -> dict[str, Any]:
     provider, model = parse_model_ref(model_ref)
-    system_prompt = PROMPT_BY_CONDITION[condition].text
-    user_prompt = build_user_prompt(sample)
+    system_prompt, user_prompt = build_conditioned_prompts(condition, sample, prompt_placement)
     started = datetime.now(timezone.utc)
     error = None
     raw_output = ""
@@ -102,6 +131,7 @@ def run_api_one(
             "max_tokens": max_tokens,
             "reasoning_effort": reasoning_effort,
             "thinking_budget_tokens": thinking_budget_tokens,
+            "prompt_placement": prompt_placement,
         },
         "raw_output": raw_output,
         "reasoning_chain": reasoning_chain,

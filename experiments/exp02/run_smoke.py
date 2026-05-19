@@ -18,6 +18,7 @@ from experiments.exp02.common import (
     print_metrics,
     run_api_one,
     validate_conditions,
+    validate_prompt_placement,
     write_samples_manifest,
 )
 
@@ -48,6 +49,12 @@ def main() -> int:
         action="store_true",
         help="Include full provider JSON per row (large files)",
     )
+    parser.add_argument(
+        "--prompt-placement",
+        default="system",
+        choices=["system", "task_prefix", "task_suffix"],
+        help="Place condition text in the system role or inside the user/task prompt.",
+    )
     args = parser.parse_args()
 
     if not args.counts and not args.counts_file:
@@ -60,6 +67,7 @@ def main() -> int:
     counts = resolve_counts(args.counts, args.counts_file)
     conditions = [item.strip() for item in args.conditions.split(",") if item.strip()]
     validate_conditions(conditions)
+    validate_prompt_placement(args.prompt_placement)
 
     samples = load_samples(counts)
     config = {
@@ -74,6 +82,7 @@ def main() -> int:
         "temperature": args.temperature,
         "reasoning_effort": args.reasoning_effort,
         "thinking_budget_tokens": args.thinking_budget,
+        "prompt_placement": args.prompt_placement,
     }
     write_json(out_dir / "config.json", config)
     write_samples_manifest(out_dir, samples)
@@ -98,6 +107,7 @@ def main() -> int:
                 reasoning_effort=args.reasoning_effort,
                 thinking_budget_tokens=args.thinking_budget,
                 store_raw_api=args.store_raw_api,
+                prompt_placement=args.prompt_placement,
             )
             row["run_id"] = run_id
             rows.append(row)

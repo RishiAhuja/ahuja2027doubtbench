@@ -9,19 +9,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from core.benchmarks import build_user_prompt, parse_answer, score_prediction
+from core.benchmarks import parse_answer, score_prediction
 from core.env import load_dotenv
 from core.json_utils import write_json
 from core.sample_loading import expected_rows, load_samples, resolve_counts, total_samples
 from experiments.exp02.common import (
     DEFAULT_CONDITIONS,
     append_jsonl,
+    build_conditioned_prompts,
     finalize_run,
     print_metrics,
     validate_conditions,
+    validate_prompt_placement,
     write_samples_manifest,
 )
-from core.prompts import PROMPT_BY_CONDITION
 
 
 def load_hf_model(model_name: str, cache_dir: str | None):
@@ -71,9 +72,16 @@ def generate(tokenizer, model, prompt: str, max_new_tokens: int) -> str:
     return tokenizer.decode(generated, skip_special_tokens=True).strip()
 
 
-def run_one(tokenizer, model, model_name: str, condition: str, sample, max_new_tokens: int) -> dict[str, Any]:
-    system_prompt = PROMPT_BY_CONDITION[condition].text
-    user_prompt = build_user_prompt(sample)
+def run_one(
+    tokenizer,
+    model,
+    model_name: str,
+    condition: str,
+    sample,
+    max_new_tokens: int,
+    prompt_placement: str,
+) -> dict[str, Any]:
+    system_prompt, user_prompt = build_conditioned_prompts(condition, sample, prompt_placement)
     rendered = render_chat(tokenizer, system_prompt, user_prompt)
     started = datetime.now(timezone.utc)
     raw_output = generate(tokenizer, model, rendered, max_new_tokens=max_new_tokens)
@@ -105,6 +113,7 @@ def run_one(tokenizer, model, model_name: str, condition: str, sample, max_new_t
             "temperature": 0.0,
             "max_new_tokens": max_new_tokens,
             "do_sample": False,
+            "prompt_placement": prompt_placement,
         },
         "raw_output": raw_output,
         "parsed_answer": parsed,
@@ -126,6 +135,12 @@ def main() -> int:
     parser.add_argument("--out", default=None)
     parser.add_argument("--cache-dir", default=None)
     parser.add_argument("--max-new-tokens", type=int, default=384)
+    parser.add_argument(
+        "--prompt-placement",
+        default="system",
+        choices=["system", "task_prefix", "task_suffix"],
+        help="Place condition text in the system role or inside the user/task prompt.",
+    )
     args = parser.parse_args()
 
     if not args.counts and not args.counts_file:
@@ -138,6 +153,7 @@ def main() -> int:
     counts = resolve_counts(args.counts, args.counts_file)
     conditions = [item.strip() for item in args.conditions.split(",") if item.strip()]
     validate_conditions(conditions)
+    validate_prompt_placement(args.prompt_placement)
 
     samples = load_samples(counts)
     config = {
@@ -150,6 +166,7 @@ def main() -> int:
         "conditions": conditions,
         "max_new_tokens": args.max_new_tokens,
         "cache_dir": args.cache_dir,
+        "prompt_placement": args.prompt_placement,
     }
     write_json(out_dir / "config.json", config)
     write_samples_manifest(out_dir, samples)
@@ -164,7 +181,15 @@ def main() -> int:
         for sample in samples:
             index += 1
             print(f"[{index}/{total}] {args.model} {condition} {sample.dataset} {sample.sample_id}", flush=True)
-            row = run_one(tokenizer, model, args.model, condition, sample, args.max_new_tokens)
+            row = run_one(
+                tokenizer,
+                model,
+                args.model,
+                condition,
+                sample,
+                args.max_new_tokens,
+                args.prompt_placement,
+            )
             row["run_id"] = run_id
             rows.append(row)
             append_jsonl(raw_path, row)

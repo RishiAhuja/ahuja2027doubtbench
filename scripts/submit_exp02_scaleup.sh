@@ -21,7 +21,9 @@ COUNT_PROFILE="${COUNT_PROFILE:-configs/counts_p0.json}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
 WALLTIME="${WALLTIME:-12:00:00}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
+PROMPT_PLACEMENT="${PROMPT_PLACEMENT:-system}"
 DEPEND_TYPE="${DEPEND_TYPE:-afterany}"
+INITIAL_DEPEND_JOB="${INITIAL_DEPEND_JOB:-}"
 BATCH_PREFIX="${BATCH_PREFIX:-scaleup}"
 
 PYTHON="${PYTHON:-/Data3/it_FA0571/.conda/envs/cultural_env/bin/python}"
@@ -46,7 +48,7 @@ fi
 
 BATCH_ID="$(date +%Y%m%d_%H%M%S)"
 BATCH_DIR="$ROOT/logs/${BATCH_PREFIX}/batch_${BATCH_ID}"
-mkdir -p "$BATCH_DIR"
+mkdir -p "$BATCH_DIR" "$ROOT/logs/${BATCH_PREFIX}" "$ROOT/logs/overnight"
 echo "$BATCH_DIR" > "$ROOT/logs/${BATCH_PREFIX}/latest_batch.txt"
 echo "$BATCH_DIR" > "$ROOT/logs/overnight/latest_batch.txt"
 
@@ -56,6 +58,11 @@ echo "Profile:      $COUNT_PROFILE"
 echo "MIG:          $MIG_UUID"
 echo "Expected:     $EXPECTED_ROWS rows per model"
 echo "Walltime:     $WALLTIME"
+echo "Conditions:   $CONDITIONS"
+echo "Placement:    $PROMPT_PLACEMENT"
+if [[ -n "$INITIAL_DEPEND_JOB" ]]; then
+  echo "Initial dep:   ${DEPEND_TYPE}:${INITIAL_DEPEND_JOB}"
+fi
 echo "Models:       ${MODELS[*]}"
 echo
 
@@ -66,18 +73,27 @@ for model in "${MODELS[@]}"; do
   slug="$(echo "$model" | tr '/:' '__')"
   run_dir="$ROOT/outputs/EXP-02/${BATCH_PREFIX}_${BATCH_ID}/${slug}"
   log_path="$BATCH_DIR/${slug}.pbs.log"
+  env_path="$BATCH_DIR/${slug}.env"
   mkdir -p "$(dirname "$run_dir")"
+
+  {
+    printf 'CONDITIONS=%q\n' "$CONDITIONS"
+    printf 'PROMPT_PLACEMENT=%q\n' "$PROMPT_PLACEMENT"
+  } >"$env_path"
 
   vars="MIG_UUID=${MIG_UUID},MODEL=${model}"
   vars="${vars},COUNTS_FILE=${COUNT_PROFILE}"
   vars="${vars},MAX_NEW_TOKENS=${MAX_NEW_TOKENS}"
   vars="${vars},RUN_DIR=${run_dir}"
+  vars="${vars},JOB_ENV_FILE=${env_path}"
 
   job_name="caisc_${slug}"
   job_name="${job_name:0:15}"
 
   if [[ -n "$prev_job" ]]; then
     job_id="$(qsub -N "$job_name" -l "walltime=$WALLTIME" -v "$vars" -W "depend=${DEPEND_TYPE}:${prev_job}" -o "$log_path" scripts/pbs_exp02_gpu_smoke.pbs)"
+  elif [[ -n "$INITIAL_DEPEND_JOB" ]]; then
+    job_id="$(qsub -N "$job_name" -l "walltime=$WALLTIME" -v "$vars" -W "depend=${DEPEND_TYPE}:${INITIAL_DEPEND_JOB}" -o "$log_path" scripts/pbs_exp02_gpu_smoke.pbs)"
   else
     job_id="$(qsub -N "$job_name" -l "walltime=$WALLTIME" -v "$vars" -o "$log_path" scripts/pbs_exp02_gpu_smoke.pbs)"
   fi
