@@ -2,6 +2,21 @@
 
 Send a compact EXP-02 overnight progress summary every 30 minutes.
 
+## Hugging Face token (gated models)
+
+Llama models require a Hugging Face token with accepted license:
+
+```bash
+mkdir -p ~/.config/caisc
+nano ~/.config/caisc/hf.env
+```
+
+```bash
+HF_TOKEN=hf_your_token_here
+```
+
+The PBS GPU script sources this file automatically.
+
 ## 1. Create env file on the cluster (never commit)
 
 ```bash

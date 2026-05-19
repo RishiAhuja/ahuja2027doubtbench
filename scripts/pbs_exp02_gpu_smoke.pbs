@@ -28,6 +28,20 @@ export HF_HOME
 export HUGGINGFACE_HUB_CACHE="$HF_HOME/hub"
 export TRANSFORMERS_CACHE="$HF_HOME/transformers"
 
+HF_ENV="${HF_ENV:-$HOME/.config/caisc/hf.env}"
+if [[ -f "$HF_ENV" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$HF_ENV"
+  set +a
+fi
+if [[ -n "${HF_TOKEN:-}" ]]; then
+  export HF_TOKEN
+  echo "HF_TOKEN: set"
+else
+  echo "HF_TOKEN: not set (gated models such as meta-llama will fail)"
+fi
+
 if [[ -n "${MIG_UUID:-}" ]]; then
   export CUDA_VISIBLE_DEVICES="$MIG_UUID"
 fi
