@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(os.environ.get("ROOT", "/Data3/it_FA0571/caisc"))
-LOG_ROOTS = [ROOT / "logs" / "scaleup", ROOT / "logs" / "overnight"]
+LOG_ROOTS = [ROOT / "logs" / "exp02b", ROOT / "logs" / "scaleup", ROOT / "logs" / "overnight"]
 STATE_NAMES = {
     "R": "running",
     "Q": "queued",
