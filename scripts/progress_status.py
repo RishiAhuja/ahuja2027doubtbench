@@ -22,6 +22,8 @@ LOG_ROOTS = [
     ROOT / "logs" / "task_vs_system_tulu_task_prefix",
     ROOT / "logs" / "task_vs_system_tulu_task_suffix",
     ROOT / "logs" / "affect_sweep_system",
+    ROOT / "logs" / "salience_ladder_task_prefix",
+    ROOT / "logs" / "salience_ladder_task_suffix",
     ROOT / "logs" / "exp02b",
     ROOT / "logs" / "scaleup",
     ROOT / "logs" / "overnight",
@@ -36,6 +38,8 @@ CAMPAIGN_ROOTS = [
     ROOT / "logs" / "task_vs_system_tulu_task_prefix",
     ROOT / "logs" / "task_vs_system_tulu_task_suffix",
     ROOT / "logs" / "affect_sweep_system",
+    ROOT / "logs" / "salience_ladder_task_prefix",
+    ROOT / "logs" / "salience_ladder_task_suffix",
 ]
 STATE_NAMES = {
     "R": "running",
