@@ -15,9 +15,11 @@ LOG_ROOTS = [
     ROOT / "logs" / "exp05_tulu",
     ROOT / "logs" / "task_vs_system",
     ROOT / "logs" / "task_vs_system_system",
+    ROOT / "logs" / "task_vs_system_task_prefix",
     ROOT / "logs" / "task_vs_system_task_suffix",
     ROOT / "logs" / "task_vs_system_system_extra",
     ROOT / "logs" / "task_vs_system_task_suffix_extra",
+    ROOT / "logs" / "task_vs_system_tulu_task_prefix",
     ROOT / "logs" / "task_vs_system_tulu_task_suffix",
     ROOT / "logs" / "exp02b",
     ROOT / "logs" / "scaleup",
@@ -26,9 +28,11 @@ LOG_ROOTS = [
 CAMPAIGN_ROOTS = [
     ROOT / "logs" / "exp05_tulu",
     ROOT / "logs" / "task_vs_system_system",
+    ROOT / "logs" / "task_vs_system_task_prefix",
     ROOT / "logs" / "task_vs_system_task_suffix",
     ROOT / "logs" / "task_vs_system_system_extra",
     ROOT / "logs" / "task_vs_system_task_suffix_extra",
+    ROOT / "logs" / "task_vs_system_tulu_task_prefix",
     ROOT / "logs" / "task_vs_system_tulu_task_suffix",
 ]
 STATE_NAMES = {
