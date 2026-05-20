@@ -82,6 +82,8 @@ Recent relevant commits pushed:
 - `70be212` Document current EXP-02 source of truth
 - `24d55e4` Track task-vs-system campaign tooling
 - `5500ea1` Record API task-vs-system results
+- `25072cb` Record completed cluster task-vs-system results
+- `37aa35f` Add EXP-02B task-prefix cluster launchers
 
 ## Output Inventory
 
@@ -327,10 +329,22 @@ doubt prompts; explicit sabotage creates model-specific compliance differences.
 
 ## Current Cluster State
 
-Checked: 2026-05-20 20:06 IST.
+Checked: 2026-05-20 20:41 IST.
 
-Cluster campaign complete: `21000/21000` rows, `12/12` jobs complete, no PBS
-jobs running. Email watcher was killed after completion.
+Original cluster campaign complete: `21000/21000` rows, `12/12` jobs complete.
+
+New task-prefix campaign submitted:
+
+- Open-model task-prefix batch:
+  `logs/task_vs_system_task_prefix/batch_20260520_204127`
+- Tulu task-prefix batch:
+  `logs/task_vs_system_tulu_task_prefix/batch_20260520_204127`
+- Jobs: `19687.master` Qwen running; `19688.master` Llama held;
+  `19689.master` Mistral held; `19690.master` Tulu SFT held;
+  `19691.master` Tulu DPO held; `19692.master` Tulu RLVR held.
+- Expected new rows: `10500` total (`6` models x `1750` rows).
+- Overall progress at submission: `21000/31500` rows.
+- Email watcher restarted with PID `625262`.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
@@ -368,19 +382,25 @@ Best positive result:
 
 ## What To Do Next
 
-1. Add a second judge or holdout judge for behavior metrics:
+1. Let the task-prefix campaign finish, pull it, and analyze:
+   - system vs task_prefix vs task_suffix
+   - Tulu task-prefix melancholic vs task-suffix melancholic
+   - paired bootstrap over shared sample IDs
+   - regex/LLM behavior leakage
+
+2. Add a second judge or holdout judge for behavior metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
    Report agreement on a subset.
 
-2. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
+3. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-3. Add human spot-checks for 50-100 pairwise outputs, especially Llama
+4. Add human spot-checks for 50-100 pairwise outputs, especially Llama
    capability denial/self-doubt, Tulu task-suffix melancholic, and sabotage.
 
-4. Reframe paper as an instruction-following/post-training sensitivity paper:
+5. Reframe paper as an instruction-following/post-training sensitivity paper:
    cloud models are null for affect/capability denial, base Llama is vulnerable
    to capability/self-doubt, Tulu reduces some capability-denial sensitivity,
    and prompt placement controls sabotage/compliance in model-specific ways.
