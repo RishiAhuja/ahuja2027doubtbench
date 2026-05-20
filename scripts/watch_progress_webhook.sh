@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Post progress to the portfolio webhook every N minutes (default 3).
+# Post progress to the portfolio webhook every N seconds (default 30).
 set -euo pipefail
 
 ROOT="${ROOT:-/Data3/it_FA0571/caisc}"
-INTERVAL_MIN="${1:-3}"
+INTERVAL_SECONDS="${1:-30}"
 ENV_FILE="${CAISC_PROGRESS_WEBHOOK_ENV:-$HOME/.config/caisc/progress_webhook.env}"
 LOG_DIR="$ROOT/logs/progress_webhook"
 LOG_FILE="$LOG_DIR/watch_$(date +%Y%m%d).log"
@@ -25,7 +25,7 @@ cd "$ROOT"
 export ROOT
 export PATH="/opt/pbs/bin:${PATH:-}"
 
-echo "[$(date -Is)] watch_progress_webhook started interval=${INTERVAL_MIN}m" | tee -a "$LOG_FILE"
+echo "[$(date -Is)] watch_progress_webhook started interval=${INTERVAL_SECONDS}s" | tee -a "$LOG_FILE"
 
 while true; do
   echo "[$(date -Is)] posting progress webhook" | tee -a "$LOG_FILE"
@@ -34,5 +34,5 @@ while true; do
   else
     echo "[$(date -Is)] webhook failed (see log)" | tee -a "$LOG_FILE"
   fi
-  sleep "$((INTERVAL_MIN * 60))"
+  sleep "$INTERVAL_SECONDS"
 done
