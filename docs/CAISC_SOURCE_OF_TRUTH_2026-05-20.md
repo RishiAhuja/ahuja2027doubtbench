@@ -81,6 +81,7 @@ Recent relevant commits pushed:
 - `c7d07d9` Use latest Tulu 3.1 RLVR checkpoint
 - `70be212` Document current EXP-02 source of truth
 - `24d55e4` Track task-vs-system campaign tooling
+- `5500ea1` Record API task-vs-system results
 
 ## Output Inventory
 
@@ -98,6 +99,22 @@ Completed scientific-ish outputs:
   `outputs/analysis/api_task_vs_system_20260520.csv`
 - API task-vs-system regex behavior:
   `outputs/analysis/text_behavior_api_task_vs_system_20260520`
+- Cluster Tulu system-placement:
+  `outputs/EXP-02/exp05_tulu_20260520_030103`
+- Cluster open-model task-vs-system:
+  `outputs/EXP-02/task_vs_system_system_20260520_033804`
+  `outputs/EXP-02/task_vs_system_task_suffix_20260520_033805`
+  `outputs/EXP-02/task_vs_system_system_extra_20260520_034044`
+  `outputs/EXP-02/task_vs_system_task_suffix_extra_20260520_034044`
+- Cluster Tulu task-suffix:
+  `outputs/EXP-02/task_vs_system_tulu_task_suffix_20260520_034045`
+- Cluster task-vs-system analyses:
+  `outputs/analysis/open_llama_task_vs_system_20260520.csv`
+  `outputs/analysis/open_extra_task_vs_system_20260520.csv`
+  `outputs/analysis/tulu_task_vs_system_20260520.csv`
+  `outputs/analysis/aggregate_task_vs_system_all_20260520.csv`
+  `outputs/analysis/paired_bootstrap_deltas_20260520.csv`
+  `outputs/analysis/text_behavior_cluster_task_vs_system_20260520`
 
 Non-scientific/debug outputs:
 
@@ -204,6 +221,75 @@ system/instructions channel but mostly resists it when appended after the task;
 GPT-5.4 mini moves the other direction; Haiku is strongly sabotaged either way.
 This is an instruction-hierarchy/compliance result, not an emotion result.
 
+### EXP-02B Cluster Task-vs-System and Tulu
+
+Outputs:
+
+- Tulu system: `outputs/EXP-02/exp05_tulu_20260520_030103`
+- Llama system/task: `outputs/EXP-02/task_vs_system_system_20260520_033804`,
+  `outputs/EXP-02/task_vs_system_task_suffix_20260520_033805`
+- Qwen/Mistral system/task:
+  `outputs/EXP-02/task_vs_system_system_extra_20260520_034044`,
+  `outputs/EXP-02/task_vs_system_task_suffix_extra_20260520_034044`
+- Tulu task: `outputs/EXP-02/task_vs_system_tulu_task_suffix_20260520_034045`
+
+Aggregate deltas vs each run's baseline, objective tasks only (`n=350` per
+model-condition):
+
+- Llama-3.1-8B-Instruct system: melancholic `-0.0057`; capability denial
+  `-0.4029`; self-doubt `-0.1229`; explicit sabotage `-0.5486`.
+- Llama-3.1-8B-Instruct task-suffix: melancholic `-0.0200`; capability denial
+  `-0.4629`; self-doubt `-0.1771`; explicit sabotage `-0.5800`.
+- Qwen2.5-7B system: melancholic `+0.0000`; capability denial `-0.0286`;
+  self-doubt `+0.0000`; explicit sabotage `-0.5171`.
+- Qwen2.5-7B task-suffix: melancholic `-0.0286`; capability denial `+0.0000`;
+  self-doubt `-0.0200`; explicit sabotage `-0.4371`.
+- Mistral-7B system: melancholic `+0.0629`; capability denial `+0.0257`;
+  self-doubt `+0.0429`; explicit sabotage `-0.3086`.
+- Mistral-7B task-suffix: melancholic `-0.0514`; capability denial `-0.0429`;
+  self-doubt `+0.0171`; explicit sabotage `-0.3343`.
+
+Tulu post-training deltas, system placement:
+
+- Tulu SFT: melancholic `-0.0371`; capability denial `-0.0714`; self-doubt
+  `-0.0457`; explicit sabotage `-0.2543`.
+- Tulu DPO: melancholic `-0.0257`; capability denial `+0.0029`; self-doubt
+  `-0.0086`; explicit sabotage `-0.2743`.
+- Tulu RLVR (`allenai/Llama-3.1-Tulu-3.1-8B`): melancholic `-0.0343`;
+  capability denial `-0.0229`; self-doubt `+0.0171`; explicit sabotage
+  `-0.2857`.
+
+Tulu post-training deltas, task-suffix:
+
+- Tulu SFT: melancholic `-0.1171`; capability denial `-0.0429`; self-doubt
+  `-0.0086`; explicit sabotage `-0.4857`.
+- Tulu DPO: melancholic `-0.0657`; capability denial `-0.0029`; self-doubt
+  `-0.0429`; explicit sabotage `-0.3029`.
+- Tulu RLVR: melancholic `-0.1029`; capability denial `-0.0200`; self-doubt
+  `-0.0200`; explicit sabotage `-0.3743`.
+
+Paired bootstrap (`3000` resamples over shared sample IDs) flags the following
+non-sabotage deltas with 95% CI excluding zero:
+
+- Llama system capability denial `-0.403` CI `[-0.466, -0.346]`.
+- Llama system self-doubt `-0.123` CI `[-0.171, -0.074]`.
+- Llama task capability denial `-0.463` CI `[-0.523, -0.403]`.
+- Llama task self-doubt `-0.177` CI `[-0.231, -0.123]`.
+- Tulu SFT system capability denial `-0.071` CI `[-0.123, -0.023]`.
+- Tulu task melancholic: SFT `-0.117` CI `[-0.177, -0.054]`; DPO `-0.066`
+  CI `[-0.120, -0.011]`; RLVR `-0.103` CI `[-0.157, -0.049]`.
+- Mistral melancholic flips sign by placement: system `+0.063` CI
+  `[+0.020, +0.106]`; task `-0.051` CI `[-0.100, -0.003]`. Treat this as
+  noisy/unstable because Mistral's baseline is low and behavior is inconsistent.
+
+Interpretation: the cloud models remain null for the real non-sabotage
+conditions, but the cluster results are not all null. Llama is strongly
+vulnerable to capability-denial/self-doubt in both system and task placement.
+Tulu post-training appears to reduce the capability-denial effect relative to
+base Llama, especially DPO/RLVR under system placement, but task-suffix
+melancholic hurts all Tulu variants. This is now an instruction-following and
+post-training sensitivity story, not a pure emotion story.
+
 ## Text Behavior Results
 
 Regex output: `outputs/analysis/text_behavior_current_20260520_030000`
@@ -241,18 +327,10 @@ doubt prompts; explicit sabotage creates model-specific compliance differences.
 
 ## Current Cluster State
 
-Checked: 2026-05-20 04:22 IST.
+Checked: 2026-05-20 20:06 IST.
 
-Cluster campaign has 12 jobs / 21,000 expected rows:
-
-- Tulu system-placement batch `logs/exp05_tulu/batch_20260520_030103`:
-  SFT complete `1750/1750`; DPO running about `624/1750`; RLVR held.
-- Task-vs-system Llama: system and task-suffix jobs held.
-- Task-vs-system Qwen/Mistral: system and task-suffix jobs held.
-- Task-vs-system Tulu SFT/DPO/RLVR: task-suffix jobs held.
-- Overall at check time: about `2374/21000` rows, `1/12` jobs complete,
-  `1/12` running, `10/12` held.
-- Email watcher: PID `3447886`.
+Cluster campaign complete: `21000/21000` rows, `12/12` jobs complete, no PBS
+jobs running. Email watcher was killed after completion.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
@@ -290,32 +368,19 @@ Best positive result:
 
 ## What To Do Next
 
-1. Do not add more cluster jobs right now. The queue already contains the
-   missing Tulu and task-vs-system comparisons.
-
-2. Let Tulu finish, pull results, and analyze the SFT -> DPO -> RLVR trend.
-   This decides whether the post-training identity-resistance story survives.
-
-3. Rerun corrected open-model EXP-02B for Qwen/Llama/Mistral if cluster time
-   allows. The earlier EXP-02B open batch was bad because PBS dropped five
-   conditions.
-
-4. Analyze cluster task-vs-system comparison after held jobs finish:
-   - same conditions as system prompt
-   - same conditions appended to task prompt
-   This directly connects to EmotionPrompt/NegativePrompt literature.
-
-5. Add a second judge or holdout judge for behavior metrics:
+1. Add a second judge or holdout judge for behavior metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
    Report agreement on a subset.
 
-6. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
+2. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-7. Add human spot-checks for 50-100 pairwise outputs, especially Llama
-   negative_capability and Haiku explicit_sabotage.
+3. Add human spot-checks for 50-100 pairwise outputs, especially Llama
+   capability denial/self-doubt, Tulu task-suffix melancholic, and sabotage.
 
-8. Reframe paper as a methodological null-result paper, not an emotional
-   degradation paper.
+4. Reframe paper as an instruction-following/post-training sensitivity paper:
+   cloud models are null for affect/capability denial, base Llama is vulnerable
+   to capability/self-doubt, Tulu reduces some capability-denial sensitivity,
+   and prompt placement controls sabotage/compliance in model-specific ways.
