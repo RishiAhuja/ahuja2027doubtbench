@@ -84,6 +84,7 @@ Recent relevant commits pushed:
 - `5500ea1` Record API task-vs-system results
 - `25072cb` Record completed cluster task-vs-system results
 - `37aa35f` Add EXP-02B task-prefix cluster launchers
+- `99ff7a2` Add EXP-02B affect sweep launcher
 
 ## Output Inventory
 
@@ -346,6 +347,19 @@ New task-prefix campaign submitted:
 - Overall progress at submission: `21000/31500` rows.
 - Email watcher restarted with PID `625262`.
 
+New system-placement affect sweep submitted after the task-prefix campaign:
+
+- Batch: `logs/affect_sweep_system/batch_20260520_204706`
+- Dependency: starts after `19692.master` completes.
+- Models: Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, Mistral-7B-Instruct-v0.3.
+- Conditions: `baseline`, `melancholic`, `euphoric`, `anxious`, `grandiose`,
+  `neutral_archivist`, `neutral_cartographer`, `neutral_librarian`.
+- Placement: `system`.
+- Expected rows: `8400` total (`3` models x `2800` rows).
+- Jobs: `19693.master`, `19694.master`, `19695.master`.
+- Purpose: extend the melancholic system-placement result consistently across
+  audited affect prompts and matched neutral persona controls.
+
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
 resistance" claim.
@@ -388,19 +402,25 @@ Best positive result:
    - paired bootstrap over shared sample IDs
    - regex/LLM behavior leakage
 
-2. Add a second judge or holdout judge for behavior metrics:
+2. Let the affect sweep finish, pull it, and analyze:
+   - affect deltas vs baseline on same model/data profile as melancholic
+   - emotional prompts vs neutral persona drift
+   - ESI/IRS over `melancholic`, `euphoric`, `anxious`, `grandiose`
+   - paired bootstrap over shared sample IDs
+
+3. Add a second judge or holdout judge for behavior metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
    Report agreement on a subset.
 
-3. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
+4. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-4. Add human spot-checks for 50-100 pairwise outputs, especially Llama
+5. Add human spot-checks for 50-100 pairwise outputs, especially Llama
    capability denial/self-doubt, Tulu task-suffix melancholic, and sabotage.
 
-5. Reframe paper as an instruction-following/post-training sensitivity paper:
+6. Reframe paper as an instruction-following/post-training sensitivity paper:
    cloud models are null for affect/capability denial, base Llama is vulnerable
    to capability/self-doubt, Tulu reduces some capability-denial sensitivity,
    and prompt placement controls sabotage/compliance in model-specific ways.
