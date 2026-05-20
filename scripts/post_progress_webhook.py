@@ -8,11 +8,16 @@ import os
 import re
 import socket
 import subprocess
+import sys
 import urllib.error
 import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+ROOT = Path(os.environ.get("ROOT", "/Data3/it_FA0571/caisc"))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from scripts.email_progress import (
     append_eta_history,
@@ -21,7 +26,6 @@ from scripts.email_progress import (
     parse_progress_summary,
 )
 
-ROOT = Path(os.environ.get("ROOT", "/Data3/it_FA0571/caisc"))
 DEFAULT_URL = "https://rishia.in/api/cluster-progress/ingest"
 
 
