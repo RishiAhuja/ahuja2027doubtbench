@@ -59,3 +59,13 @@ kill "$(cat logs/progress_email/watch.pid)"
 - PBS queue state (running / queued caisc jobs)
 - Per-model row counts `done/expected` from `raw_outputs.jsonl`
 - Batch-level total percentage
+- Estimated remaining time in the subject/body once at least two progress
+  points exist for the same total row count
+
+ETA history is stored at:
+
+```text
+logs/progress_email/eta_history.jsonl
+```
+
+Override with `CAISC_ETA_HISTORY=/path/to/file` if needed.
