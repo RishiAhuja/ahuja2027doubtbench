@@ -449,19 +449,22 @@ Best positive result:
 
 ## What To Do Next
 
-1. Let the task-prefix campaign finish, pull it, and analyze:
-   - system vs task_prefix vs task_suffix
-   - Tulu task-prefix melancholic vs task-suffix melancholic
-   - paired bootstrap over shared sample IDs
-   - regex/LLM behavior leakage
+1. Implement `EXP-14_reasoning_model_trace_replication.md`:
+   - open reasoning-model pilot on current objective benchmark families
+   - save visible reasoning traces, final-answer text, token counts, truncation
+   - compare pure affect, self-doubt, capability denial, sabotage, and neutral
+     control conditions before scaling
 
-2. Let the affect sweep finish, pull it, and analyze:
-   - affect deltas vs baseline on same model/data profile as melancholic
-   - emotional prompts vs neutral persona drift
-   - ESI/IRS over `melancholic`, `euphoric`, `anxious`, `grandiose`
-   - paired bootstrap over shared sample IDs
+2. Write and implement the psych-grounded cognitive battery after EXP-14 pilot
+   validity is known:
+   - working memory/updating
+   - inhibition/distractor control
+   - cognitive flexibility/rule switching
+   - insight/creativity
+   - new-rule acquisition
+   - mood-congruent judgment
 
-3. Add a second judge or holdout judge for behavior metrics:
+3. Add a second judge or holdout judge for behavior/trace metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
@@ -470,8 +473,9 @@ Best positive result:
 4. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-5. Add human spot-checks for 50-100 pairwise outputs, especially Llama
-   capability denial/self-doubt, Tulu task-suffix melancholic, and sabotage.
+5. Add human spot-checks for 50-100 paired outputs/traces, especially Llama
+   capability denial/self-doubt, Tulu task-suffix melancholic, sabotage, and
+   EXP-14 visible reasoning traces.
 
 6. Reframe paper as an instruction-following/post-training sensitivity paper:
    cloud models are null for affect/capability denial, base Llama is vulnerable

@@ -21,6 +21,7 @@ For concrete launch steps, read `NEXT_STEPS.md`. Experiment code lives in `../ex
 11. `EXP-11_task_vs_identity_level.md`
 12. `EXP-12_output_trajectory_analysis.md`
 13. `EXP-13_psych_grounded_reasoning_trace_plan.md`
+14. `EXP-14_reasoning_model_trace_replication.md`
 
 ## Dependency Graph
 
@@ -33,6 +34,7 @@ EXP-01 prompt audit
           -> EXP-07 prompt sensitivity
           -> EXP-12 output trajectory
           -> EXP-13 psych-grounded reasoning trace plan
+              -> EXP-14 reasoning-model trace replication
       -> EXP-05 Tulu post-training ablation
       -> EXP-08 frontier API validation
       -> EXP-10 70B scale ablation
@@ -64,6 +66,7 @@ P2 experiments are for an extended version:
 - EXP-11
 - EXP-12
 - EXP-13
+- EXP-14
 
 ## Naming Convention
 
