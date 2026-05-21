@@ -361,11 +361,13 @@ New system-placement affect sweep submitted after the task-prefix campaign:
 - Purpose: extend the melancholic system-placement result consistently across
   audited affect prompts and matched neutral persona controls.
 
-New salience/length ladder submitted after the affect sweep:
+Salience/length ladder completed after a batched restart:
 
-- Prefix batch: `logs/salience_ladder_task_prefix/batch_20260520_210223`
-- Suffix batch: `logs/salience_ladder_task_suffix/batch_20260520_210223`
-- Dependency: starts after `19695.master` completes.
+- Prefix batch: `logs/salience_ladder_task_prefix/batch_20260521_160807`
+- Suffix batch: `logs/salience_ladder_task_suffix/batch_20260521_160808`
+- Local copied outputs:
+  `outputs/EXP-02/salience_ladder_task_prefix_20260521_160807` and
+  `outputs/EXP-02/salience_ladder_task_suffix_20260521_160808`
 - Models: Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, Tulu-3-8B-DPO.
 - Count profile: `configs/counts_salience.json` with GSM8K `100`, MATH `100`,
   MMLU stratified `150`, TriviaQA `100`, BIG-Bench `150`.
@@ -375,11 +377,41 @@ New salience/length ladder submitted after the affect sweep:
 - Prompt lengths: melancholic `9/49/148/249` words; neutral `9/43/154/249`
   words.
 - Placements: `task_prefix`, then `task_suffix`.
-- Expected rows: `32400` total (`2` placements x `3` models x `5400` rows).
-- Jobs: prefix `19696.master`/`19697.master`/`19698.master`; suffix
-  `19699.master`/`19700.master`/`19701.master`.
+- Rows: `32400/32400` complete (`2` placements x `3` models x `5400` rows).
+- Jobs: prefix `19745.master`/`19746.master`/`19747.master`; suffix
+  `19748.master`/`19749.master`/`19750.master`.
+- Run parameters: greedy decoding, `max_new_tokens=384`, `batch_size=8`.
 - Purpose: test whether affect effects are hidden by prompt-length/salience,
   and distinguish true melancholic effects from generic long-prompt clutter.
+
+Salience ladder result:
+
+- There is no clean melancholic length dose-response. Making the affect text
+  longer does not produce a monotonic accuracy drop across models or placements.
+- Neutral text of matched approximate length also moves accuracy. Use
+  melancholic-minus-neutral comparisons, not only condition-minus-baseline
+  comparisons, when interpreting this run.
+- Aggregate paired melancholic-minus-neutral accuracy differences on the same
+  `600` objective samples per model/placement:
+
+| Placement | Model | 10 words | 50 words | 150 words | 250 words |
+|---|---|---:|---:|---:|---:|
+| task_prefix | Qwen2.5-7B | -0.0117 | -0.0267 | -0.0100 | -0.0117 |
+| task_prefix | Tulu-3-DPO | -0.0150 | +0.0083 | -0.0117 | -0.0017 |
+| task_prefix | Llama-3.1-8B | +0.0133 | -0.0183 | -0.0083 | +0.0217 |
+| task_suffix | Qwen2.5-7B | +0.0050 | +0.0000 | -0.0383 | +0.0083 |
+| task_suffix | Tulu-3-DPO | -0.0150 | -0.0567 | -0.0367 | -0.0150 |
+| task_suffix | Llama-3.1-8B | -0.0350 | +0.0217 | +0.0350 | +0.0000 |
+
+- Paired bootstrap highlights that exclude zero at 95% in this first analysis:
+  task-prefix Qwen 50-word comparison; task-suffix Qwen 150-word comparison;
+  task-suffix Tulu 50-word and 150-word comparisons; task-suffix Llama 10-word
+  negative comparison and 150-word positive comparison. The sign changes and
+  missing dose-response make these local placement/model interactions, not a
+  general salience rescue of the melancholic hypothesis.
+- Empty parsed answers are `0.2%-1.0%` for most Qwen/Tulu cells. Llama empty
+  parses are more variable, roughly `0%-5.5%` by salience cell, so avoid
+  over-reading small Llama cell differences without output inspection.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
@@ -429,26 +461,19 @@ Best positive result:
    - ESI/IRS over `melancholic`, `euphoric`, `anxious`, `grandiose`
    - paired bootstrap over shared sample IDs
 
-3. Let the salience ladder finish, pull it, and analyze:
-   - melancholic length dose-response
-   - matched neutral length dose-response
-   - task_prefix vs task_suffix position/recency
-   - model interaction: Llama vs Qwen vs Tulu DPO
-   - effect by task prompt length bins, especially MMLU
-
-4. Add a second judge or holdout judge for behavior metrics:
+3. Add a second judge or holdout judge for behavior metrics:
    - cheap: `openai:gpt-5.4-mini`
    - stronger spot-check: `openai:gpt-5.5`
    - independent: Haiku, if budget allows
    Report agreement on a subset.
 
-5. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
+4. Run calibration/logprob experiment if possible. Accuracy is blunt; calibration
    may show effects where accuracy is null.
 
-6. Add human spot-checks for 50-100 pairwise outputs, especially Llama
+5. Add human spot-checks for 50-100 pairwise outputs, especially Llama
    capability denial/self-doubt, Tulu task-suffix melancholic, and sabotage.
 
-7. Reframe paper as an instruction-following/post-training sensitivity paper:
+6. Reframe paper as an instruction-following/post-training sensitivity paper:
    cloud models are null for affect/capability denial, base Llama is vulnerable
    to capability/self-doubt, Tulu reduces some capability-denial sensitivity,
    and prompt placement controls sabotage/compliance in model-specific ways.
