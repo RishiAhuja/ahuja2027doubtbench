@@ -11,6 +11,7 @@ BRANCH="${BRANCH:-cursor/exp02-benchmark-scaleup}"
 COUNT_PROFILE="${COUNT_PROFILE:-configs/counts_exp02b.json}"
 WALLTIME="${WALLTIME:-24:00:00}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 EMAIL_INTERVAL="${EMAIL_INTERVAL:-30}"
 PYTHON="${PYTHON:-/Data3/it_FA0571/.conda/envs/cultural_env/bin/python}"
 
@@ -35,7 +36,7 @@ fi
 echo "Using MIG_UUID=$MIG_UUID"
 
 echo "===== 4/5 Submit EXP-02B task-prefix campaign ====="
-export MIG_UUID COUNT_PROFILE WALLTIME MAX_NEW_TOKENS
+export MIG_UUID COUNT_PROFILE WALLTIME MAX_NEW_TOKENS BATCH_SIZE
 bash scripts/submit_task_prefix_campaign_exp02b.sh
 
 echo "===== 5/5 Progress email every ${EMAIL_INTERVAL}m ====="

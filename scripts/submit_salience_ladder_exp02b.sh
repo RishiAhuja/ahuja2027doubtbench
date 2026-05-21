@@ -8,6 +8,7 @@ cd "$ROOT"
 COUNT_PROFILE="${COUNT_PROFILE:-configs/counts_salience.json}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic_10,melancholic,melancholic_150,melancholic_250,neutral_plain_10,neutral_plain_50,neutral_plain_150,neutral_plain_250}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 WALLTIME="${WALLTIME:-24:00:00}"
 DEPEND_TYPE="${DEPEND_TYPE:-afterany}"
 INITIAL_DEPEND_JOB="${INITIAL_DEPEND_JOB:-}"
@@ -21,7 +22,7 @@ if [[ "${#MODELS[@]}" -eq 0 ]]; then
   )
 fi
 
-export COUNT_PROFILE CONDITIONS MAX_NEW_TOKENS WALLTIME DEPEND_TYPE
+export COUNT_PROFILE CONDITIONS MAX_NEW_TOKENS BATCH_SIZE WALLTIME DEPEND_TYPE
 
 PROMPT_PLACEMENT=task_prefix \
 BATCH_PREFIX=salience_ladder_task_prefix \

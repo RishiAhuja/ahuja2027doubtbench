@@ -19,6 +19,7 @@ fi
 
 COUNT_PROFILE="${COUNT_PROFILE:-configs/counts_p0.json}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 WALLTIME="${WALLTIME:-12:00:00}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
 PROMPT_PLACEMENT="${PROMPT_PLACEMENT:-system}"
@@ -58,6 +59,7 @@ echo "Profile:      $COUNT_PROFILE"
 echo "MIG:          $MIG_UUID"
 echo "Expected:     $EXPECTED_ROWS rows per model"
 echo "Walltime:     $WALLTIME"
+echo "Batch size:   $BATCH_SIZE"
 echo "Conditions:   $CONDITIONS"
 echo "Placement:    $PROMPT_PLACEMENT"
 if [[ -n "$INITIAL_DEPEND_JOB" ]]; then
@@ -84,6 +86,7 @@ for model in "${MODELS[@]}"; do
   vars="MIG_UUID=${MIG_UUID},MODEL=${model}"
   vars="${vars},COUNTS_FILE=${COUNT_PROFILE}"
   vars="${vars},MAX_NEW_TOKENS=${MAX_NEW_TOKENS}"
+  vars="${vars},BATCH_SIZE=${BATCH_SIZE}"
   vars="${vars},RUN_DIR=${run_dir}"
   vars="${vars},JOB_ENV_FILE=${env_path}"
 

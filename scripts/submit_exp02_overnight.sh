@@ -20,6 +20,7 @@ fi
 COUNT_GSM8K="${COUNT_GSM8K:-100}"
 COUNT_MMLU="${COUNT_MMLU:-100}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-256}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 WALLTIME="${WALLTIME:-06:00:00}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
 DEPEND_TYPE="${DEPEND_TYPE:-afterany}"
@@ -65,6 +66,7 @@ for model in "${MODELS[@]}"; do
   vars="${vars},COUNT_GSM8K=${COUNT_GSM8K}"
   vars="${vars},COUNT_MMLU=${COUNT_MMLU}"
   vars="${vars},MAX_NEW_TOKENS=${MAX_NEW_TOKENS}"
+  vars="${vars},BATCH_SIZE=${BATCH_SIZE}"
   vars="${vars},RUN_DIR=${run_dir}"
 
   job_name="caisc_${slug}"

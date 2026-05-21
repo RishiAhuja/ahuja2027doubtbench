@@ -25,6 +25,7 @@ COUNTS_FILE="${COUNTS_FILE:-}"
 COUNTS="${COUNTS:-gsm8k:${COUNT_GSM8K},mmlu:${COUNT_MMLU}}"
 CONDITIONS="${CONDITIONS:-baseline,melancholic,negative_capability}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-384}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 PROMPT_PLACEMENT="${PROMPT_PLACEMENT:-system}"
 
 mkdir -p "$RUN_DIR"
@@ -75,13 +76,14 @@ echo "COUNTS_FILE=$COUNTS_FILE"
 echo "COUNTS=$COUNTS"
 echo "CONDITIONS=$CONDITIONS"
 echo "MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
+echo "BATCH_SIZE=$BATCH_SIZE"
 echo "PROMPT_PLACEMENT=$PROMPT_PLACEMENT"
 echo "PYTHON=$PYTHON"
 echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 echo "RUN_DIR=$RUN_DIR"
 nvidia-smi -L || true
 
-RUN_ARGS=(--model "$MODEL" --conditions "$CONDITIONS" --cache-dir "$HF_HOME" --max-new-tokens "$MAX_NEW_TOKENS" --prompt-placement "$PROMPT_PLACEMENT" --out "$RUN_DIR")
+RUN_ARGS=(--model "$MODEL" --conditions "$CONDITIONS" --cache-dir "$HF_HOME" --max-new-tokens "$MAX_NEW_TOKENS" --batch-size "$BATCH_SIZE" --prompt-placement "$PROMPT_PLACEMENT" --out "$RUN_DIR")
 if [[ -n "$COUNTS_FILE" && -f "$COUNTS_FILE" ]]; then
   RUN_ARGS+=(--counts-file "$COUNTS_FILE")
 else

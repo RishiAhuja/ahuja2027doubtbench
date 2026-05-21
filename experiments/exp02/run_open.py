@@ -32,6 +32,7 @@ def load_hf_model(model_name: str, cache_dir: str | None):
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir, trust_remote_code=True)
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
 
     kwargs = {
         "cache_dir": cache_dir,
@@ -56,9 +57,13 @@ def render_chat(tokenizer, system_prompt: str, user_prompt: str) -> str:
 
 
 def generate(tokenizer, model, prompt: str, max_new_tokens: int) -> str:
+    return generate_batch(tokenizer, model, [prompt], max_new_tokens=max_new_tokens)[0]
+
+
+def generate_batch(tokenizer, model, prompts: list[str], max_new_tokens: int) -> list[str]:
     import torch
 
-    encoded = tokenizer(prompt, return_tensors="pt")
+    encoded = tokenizer(prompts, return_tensors="pt", padding=True)
     encoded = {key: value.to(model.device) for key, value in encoded.items()}
     with torch.inference_mode():
         output_ids = model.generate(
@@ -68,24 +73,23 @@ def generate(tokenizer, model, prompt: str, max_new_tokens: int) -> str:
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
         )
-    generated = output_ids[0][encoded["input_ids"].shape[-1] :]
-    return tokenizer.decode(generated, skip_special_tokens=True).strip()
+    generated = output_ids[:, encoded["input_ids"].shape[-1] :]
+    return [text.strip() for text in tokenizer.batch_decode(generated, skip_special_tokens=True)]
 
 
-def run_one(
-    tokenizer,
-    model,
+def build_row(
     model_name: str,
     condition: str,
     sample,
+    system_prompt: str,
+    user_prompt: str,
+    rendered_prompt: str,
+    raw_output: str,
     max_new_tokens: int,
     prompt_placement: str,
+    started: datetime,
+    ended: datetime,
 ) -> dict[str, Any]:
-    system_prompt, user_prompt = build_conditioned_prompts(condition, sample, prompt_placement)
-    rendered = render_chat(tokenizer, system_prompt, user_prompt)
-    started = datetime.now(timezone.utc)
-    raw_output = generate(tokenizer, model, rendered, max_new_tokens=max_new_tokens)
-    ended = datetime.now(timezone.utc)
     parse_error = None
     try:
         parsed = parse_answer(sample.dataset, raw_output)
@@ -108,7 +112,7 @@ def run_one(
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        "rendered_prompt": rendered,
+        "rendered_prompt": rendered_prompt,
         "params": {
             "temperature": 0.0,
             "max_new_tokens": max_new_tokens,
@@ -125,6 +129,35 @@ def run_one(
     }
 
 
+def run_one(
+    tokenizer,
+    model,
+    model_name: str,
+    condition: str,
+    sample,
+    max_new_tokens: int,
+    prompt_placement: str,
+) -> dict[str, Any]:
+    system_prompt, user_prompt = build_conditioned_prompts(condition, sample, prompt_placement)
+    rendered = render_chat(tokenizer, system_prompt, user_prompt)
+    started = datetime.now(timezone.utc)
+    raw_output = generate(tokenizer, model, rendered, max_new_tokens=max_new_tokens)
+    ended = datetime.now(timezone.utc)
+    return build_row(
+        model_name,
+        condition,
+        sample,
+        system_prompt,
+        user_prompt,
+        rendered,
+        raw_output,
+        max_new_tokens,
+        prompt_placement,
+        started,
+        ended,
+    )
+
+
 def main() -> int:
     load_dotenv()
     parser = argparse.ArgumentParser()
@@ -135,6 +168,12 @@ def main() -> int:
     parser.add_argument("--out", default=None)
     parser.add_argument("--cache-dir", default=None)
     parser.add_argument("--max-new-tokens", type=int, default=384)
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=1,
+        help="Number of prompts to generate together. Deterministic decoding is preserved.",
+    )
     parser.add_argument(
         "--prompt-placement",
         default="system",
@@ -165,6 +204,7 @@ def main() -> int:
         "counts": counts,
         "conditions": conditions,
         "max_new_tokens": args.max_new_tokens,
+        "batch_size": args.batch_size,
         "cache_dir": args.cache_dir,
         "prompt_placement": args.prompt_placement,
     }
@@ -178,21 +218,85 @@ def main() -> int:
     total = expected_rows(counts, len(conditions))
     index = 0
     for condition in conditions:
+        batch: list[tuple[Any, str, str, str]] = []
         for sample in samples:
-            index += 1
-            print(f"[{index}/{total}] {args.model} {condition} {sample.dataset} {sample.sample_id}", flush=True)
-            row = run_one(
+            system_prompt, user_prompt = build_conditioned_prompts(condition, sample, args.prompt_placement)
+            rendered = render_chat(tokenizer, system_prompt, user_prompt)
+            batch.append((sample, system_prompt, user_prompt, rendered))
+            if len(batch) < max(1, args.batch_size):
+                continue
+
+            start_index = index + 1
+            index += len(batch)
+            end_index = index
+            label_sample = batch[0][0]
+            print(
+                f"[{start_index}-{end_index}/{total}] {args.model} {condition} "
+                f"{label_sample.dataset}... batch={len(batch)}",
+                flush=True,
+            )
+            started = datetime.now(timezone.utc)
+            raw_outputs = generate_batch(
                 tokenizer,
                 model,
-                args.model,
-                condition,
-                sample,
-                args.max_new_tokens,
-                args.prompt_placement,
+                [item[3] for item in batch],
+                max_new_tokens=args.max_new_tokens,
             )
-            row["run_id"] = run_id
-            rows.append(row)
-            append_jsonl(raw_path, row)
+            ended = datetime.now(timezone.utc)
+            for (sample, system_prompt, user_prompt, rendered), raw_output in zip(batch, raw_outputs, strict=True):
+                row = build_row(
+                    args.model,
+                    condition,
+                    sample,
+                    system_prompt,
+                    user_prompt,
+                    rendered,
+                    raw_output,
+                    args.max_new_tokens,
+                    args.prompt_placement,
+                    started,
+                    ended,
+                )
+                row["run_id"] = run_id
+                rows.append(row)
+                append_jsonl(raw_path, row)
+            batch = []
+
+        if batch:
+            start_index = index + 1
+            index += len(batch)
+            end_index = index
+            label_sample = batch[0][0]
+            print(
+                f"[{start_index}-{end_index}/{total}] {args.model} {condition} "
+                f"{label_sample.dataset}... batch={len(batch)}",
+                flush=True,
+            )
+            started = datetime.now(timezone.utc)
+            raw_outputs = generate_batch(
+                tokenizer,
+                model,
+                [item[3] for item in batch],
+                max_new_tokens=args.max_new_tokens,
+            )
+            ended = datetime.now(timezone.utc)
+            for (sample, system_prompt, user_prompt, rendered), raw_output in zip(batch, raw_outputs, strict=True):
+                row = build_row(
+                    args.model,
+                    condition,
+                    sample,
+                    system_prompt,
+                    user_prompt,
+                    rendered,
+                    raw_output,
+                    args.max_new_tokens,
+                    args.prompt_placement,
+                    started,
+                    ended,
+                )
+                row["run_id"] = run_id
+                rows.append(row)
+                append_jsonl(raw_path, row)
 
     metrics = finalize_run(out_dir, rows)
     print(f"EXP-02 open-model run complete: {out_dir} ({total_samples(counts)} samples x {len(conditions)} conditions)")
