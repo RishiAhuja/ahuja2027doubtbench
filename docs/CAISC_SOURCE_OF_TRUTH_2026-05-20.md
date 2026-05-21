@@ -74,6 +74,8 @@ task-vs-system comparisons.
 - Regex text behavior analyzer: `scripts/analyze_text_behavior.py`
 - LLM pairwise behavior judge: `scripts/judge_text_behavior_pairs.py`
 - Cluster progress: `scripts/progress.sh`
+- EXP-14 reasoning runner: `experiments/exp14/run_open_reasoning.py`
+- EXP-14 trace splitter: `experiments/exp14/trace.py`
 
 Recent relevant commits pushed:
 
@@ -86,6 +88,8 @@ Recent relevant commits pushed:
 - `37aa35f` Add EXP-02B task-prefix cluster launchers
 - `99ff7a2` Add EXP-02B affect sweep launcher
 - `601c6e8` Add melancholic salience ladder experiment
+- `1a2c7eb` Add EXP-14 reasoning trace pilot runner
+- `72921c3` Raise EXP-14 pilot token budget after 1024-token smoke truncation
 
 ## Output Inventory
 
@@ -412,6 +416,28 @@ Salience ladder result:
 - Empty parsed answers are `0.2%-1.0%` for most Qwen/Tulu cells. Llama empty
   parses are more variable, roughly `0%-5.5%` by salience cell, so avoid
   over-reading small Llama cell differences without output inspection.
+
+EXP-14 open reasoning-model queue submitted on 2026-05-22:
+
+- Runbook: `docs/EXP-14_reasoning_model_trace_replication.md`
+- Runner: `experiments/exp14/run_open_reasoning.py`
+- Smoke batch: `logs/exp14_reasoning_smoke/batch_20260522_022048`
+- Pilot batch: `logs/exp14_reasoning_pilot/batch_20260522_022934`
+- Pilot models: DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B thinking mode,
+  Phi-4-reasoning, Qwen2.5-7B-Instruct control.
+- Pilot conditions: `baseline`, `neutral_librarian`, `melancholic`, `anxious`,
+  `self_doubt_only`, `capability_denial_only`, `explicit_sabotage`.
+- Pilot count profile: `configs/counts_exp14_pilot.json` with `40` each for
+  GSM8K, MATH, MMLU stratified, and BIG-Bench.
+- Pilot jobs: `19779.master`/`19780.master`/`19781.master`/`19782.master`.
+  The `afterok` smoke chain `19771.master` through `19774.master` finished
+  cleanly and released the pilot; DeepSeek job `19779.master` was running at
+  the 2026-05-22 02:44 IST snapshot.
+- DeepSeek and Qwen3 smoke rows extracted visible traces correctly. Both showed
+  one 1024-token MMLU trace truncation in the four-row baseline smoke, so the
+  queued pilot was resubmitted with `max_new_tokens=2048`, `batch_size=2`.
+- Phi smoke at 1024 tokens is visibly long/truncation-prone. Inspect pilot
+  truncation before interpreting Phi accuracy or allowing a larger Phi run.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity

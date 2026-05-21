@@ -24,12 +24,13 @@ artifacts:
   model_notes: docs/MODELS.md
   hpc_cluster_runbook: docs/HPC_CLUSTER.md
   exp01_results: docs/EXP-01_RESULTS.md
+  exp14_reasoning_trace_runbook: docs/EXP-14_reasoning_model_trace_replication.md
   current_source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   frozen_prompts: experiments/exp01/frozen_prompts.json
   prompt_registry_code: core/prompts.py
 
 current_snapshot:
-  checked_at_ist: 2026-05-20 03:25
+  checked_at_ist: 2026-05-22 02:44
   branch: cursor/exp02-benchmark-scaleup
   interpretation: >
     Accuracy results are mostly null for pure melancholic system prompting.
@@ -38,24 +39,40 @@ current_snapshot:
     model families differ sharply in whether those components change behavior.
   source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   latest_cluster_batch:
-    batch: logs/exp05_tulu/batch_20260520_030103
-    purpose: Tulu SFT/DPO/RLVR within-family EXP-02B post-training ablation
-    status: running
-    rows_done_at_check: 739
-    rows_expected: 5250
+    smoke_batch: logs/exp14_reasoning_smoke/batch_20260522_022048
+    pilot_batch: logs/exp14_reasoning_pilot/batch_20260522_022934
+    purpose: EXP-14 open reasoning-model visible trace pilot
+    status: pilot_running_after_successful_smoke_chain
+    smoke_rows_done_at_check: 16
+    smoke_rows_expected: 16
+    pilot_rows_done_at_check: 6
+    pilot_rows_expected: 4480
+    run_parameters:
+      smoke_max_new_tokens: 1024
+      pilot_max_new_tokens: 2048
+      pilot_batch_size: 2
+      placement: system
     jobs:
-      - model: allenai/Llama-3.1-Tulu-3-8B-SFT
-        job_id: 19622.master
-        status: running
-        rows: 739/1750
-      - model: allenai/Llama-3.1-Tulu-3-8B-DPO
-        job_id: 19623.master
-        status: held
-        rows: 0/1750
-      - model: allenai/Llama-3.1-Tulu-3.1-8B
-        job_id: 19624.master
-        status: held
-        rows: 0/1750
+      - model: deepseek-ai/DeepSeek-R1-Distill-Qwen-14B
+        smoke_job_id: 19771.master
+        smoke_status: complete
+        pilot_job_id: 19779.master
+        pilot_status: running
+      - model: Qwen/Qwen3-14B
+        smoke_job_id: 19772.master
+        smoke_status: complete
+        pilot_job_id: 19780.master
+        pilot_status: held
+      - model: microsoft/Phi-4-reasoning
+        smoke_job_id: 19773.master
+        smoke_status: complete
+        pilot_job_id: 19781.master
+        pilot_status: held
+      - model: Qwen/Qwen2.5-7B-Instruct
+        smoke_job_id: 19774.master
+        smoke_status: complete
+        pilot_job_id: 19782.master
+        pilot_status: held
   strongest_result:
     model: meta-llama/Llama-3.1-8B-Instruct
     condition: negative_capability
