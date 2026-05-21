@@ -147,6 +147,10 @@ def parse_scored_answer(sample, final_answer_text: str, raw_output: str) -> tupl
     return parsed, score, parse_error
 
 
+def has_explicit_final_answer(text: str) -> bool:
+    return "final answer" in text.lower()
+
+
 def build_row(
     tokenizer,
     model_name: str,
@@ -165,11 +169,14 @@ def build_row(
 ) -> dict[str, Any]:
     raw_output = str(generation["raw_output"])
     trace = extract_visible_reasoning(raw_output)
-    parsed, score, parse_error = parse_scored_answer(
-        sample,
-        trace.final_answer_text,
-        raw_output,
-    )
+    if generation["truncated"] and not has_explicit_final_answer(trace.final_answer_text):
+        parsed, score, parse_error = "", False, "TruncatedBeforeExplicitFinalAnswer"
+    else:
+        parsed, score, parse_error = parse_scored_answer(
+            sample,
+            trace.final_answer_text,
+            raw_output,
+        )
     extraction_error = trace.trace_extraction_error
     if generation["truncated"] and not extraction_error:
         extraction_error = "max_new_tokens_reached"
@@ -283,7 +290,7 @@ def main() -> int:
     parser.add_argument("--conditions", default=",".join(DEFAULT_CONDITIONS))
     parser.add_argument("--out", default=None)
     parser.add_argument("--cache-dir", default=None)
-    parser.add_argument("--max-new-tokens", type=int, default=1024)
+    parser.add_argument("--max-new-tokens", type=int, default=2048)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--thinking-mode", choices=sorted(THINKING_MODES), default="auto")
     parser.add_argument(

@@ -296,8 +296,8 @@ Pilot starting point:
 | Setting | Value |
 |---|---:|
 | EXP-02 old default | `384` new tokens |
-| EXP-14 pilot start | `1024` new tokens |
-| escalation if truncated | `2048` new tokens |
+| EXP-14 first smoke | `1024` new tokens |
+| EXP-14 pilot after smoke truncation | `2048` new tokens |
 
 The pilot must report truncation before any accuracy interpretation.
 

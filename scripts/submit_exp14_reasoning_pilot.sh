@@ -19,7 +19,7 @@ fi
 
 COUNT_PROFILE="${COUNT_PROFILE:-configs/counts_exp14_pilot.json}"
 CONDITIONS="${CONDITIONS:-baseline,neutral_librarian,melancholic,anxious,self_doubt_only,capability_denial_only,explicit_sabotage}"
-MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-1024}"
+MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-2048}"
 BATCH_SIZE="${BATCH_SIZE:-2}"
 PROMPT_PLACEMENT="${PROMPT_PLACEMENT:-system}"
 WALLTIME="${WALLTIME:-24:00:00}"
