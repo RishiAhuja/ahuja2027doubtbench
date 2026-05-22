@@ -30,22 +30,25 @@ artifacts:
   prompt_registry_code: core/prompts.py
 
 current_snapshot:
-  checked_at_ist: 2026-05-22 02:44
+  checked_at_ist: 2026-05-23 01:51
   branch: cursor/exp02-benchmark-scaleup
   interpretation: >
     Accuracy results are mostly null for pure melancholic system prompting.
-    The strongest surviving claim is methodological: prior negative-identity
-    prompts are contaminated by capability/self-doubt/sabotage components, and
-    model families differ sharply in whether those components change behavior.
+    EXP-14 repeats that pattern on usable reasoning-model rows: explicit
+    sabotage moves accuracy strongly, while affect and self-model prompts are
+    small or inconsistent. The strongest surviving claim is methodological:
+    prior negative-identity prompts are contaminated by capability/self-doubt/
+    sabotage components, and model families differ sharply in whether those
+    components change behavior.
   source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   latest_cluster_batch:
     smoke_batch: logs/exp14_reasoning_smoke/batch_20260522_022048
     pilot_batch: logs/exp14_reasoning_pilot/batch_20260522_022934
     purpose: EXP-14 open reasoning-model visible trace pilot
-    status: pilot_running_after_successful_smoke_chain
+    status: complete
     smoke_rows_done_at_check: 16
     smoke_rows_expected: 16
-    pilot_rows_done_at_check: 6
+    pilot_rows_done_at_check: 4480
     pilot_rows_expected: 4480
     run_parameters:
       smoke_max_new_tokens: 1024
@@ -57,22 +60,27 @@ current_snapshot:
         smoke_job_id: 19771.master
         smoke_status: complete
         pilot_job_id: 19779.master
-        pilot_status: running
+        pilot_status: complete
       - model: Qwen/Qwen3-14B
         smoke_job_id: 19772.master
         smoke_status: complete
         pilot_job_id: 19780.master
-        pilot_status: held
+        pilot_status: complete
       - model: microsoft/Phi-4-reasoning
         smoke_job_id: 19773.master
         smoke_status: complete
         pilot_job_id: 19781.master
-        pilot_status: held
+        pilot_status: complete
       - model: Qwen/Qwen2.5-7B-Instruct
         smoke_job_id: 19774.master
         smoke_status: complete
         pilot_job_id: 19782.master
-        pilot_status: held
+        pilot_status: complete
+    result_summary: >
+      DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B, and Qwen2.5-7B-Instruct show
+      large explicit-sabotage accuracy drops but weak or inconsistent
+      non-sabotage paired deltas. Phi-4-reasoning is not interpretable at this
+      token budget because most rows truncate before an explicit final answer.
   strongest_result:
     model: meta-llama/Llama-3.1-8B-Instruct
     condition: negative_capability
@@ -85,7 +93,9 @@ current_snapshot:
       format_compliance_signed_mean: -0.67
   strongest_null:
     condition: melancholic
-    summary: Pure melancholic system prompting is near-null across open and API objective benchmark runs.
+    summary: >
+      Pure melancholic system prompting is near-null across open, API, and
+      EXP-14 reasoning-model objective benchmark runs.
 
 hpc_cluster:
   host: 10.10.11.201

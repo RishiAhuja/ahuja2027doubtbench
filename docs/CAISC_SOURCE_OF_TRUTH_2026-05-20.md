@@ -417,12 +417,15 @@ Salience ladder result:
   parses are more variable, roughly `0%-5.5%` by salience cell, so avoid
   over-reading small Llama cell differences without output inspection.
 
-EXP-14 open reasoning-model queue submitted on 2026-05-22:
+EXP-14 open reasoning-model pilot submitted on 2026-05-22 and pulled locally
+after completion on 2026-05-23:
 
 - Runbook: `docs/EXP-14_reasoning_model_trace_replication.md`
 - Runner: `experiments/exp14/run_open_reasoning.py`
 - Smoke batch: `logs/exp14_reasoning_smoke/batch_20260522_022048`
 - Pilot batch: `logs/exp14_reasoning_pilot/batch_20260522_022934`
+- Pulled pilot outputs:
+  `outputs/EXP-14/exp14_reasoning_pilot_20260522_022934`
 - Pilot models: DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B thinking mode,
   Phi-4-reasoning, Qwen2.5-7B-Instruct control.
 - Pilot conditions: `baseline`, `neutral_librarian`, `melancholic`, `anxious`,
@@ -431,13 +434,37 @@ EXP-14 open reasoning-model queue submitted on 2026-05-22:
   GSM8K, MATH, MMLU stratified, and BIG-Bench.
 - Pilot jobs: `19779.master`/`19780.master`/`19781.master`/`19782.master`.
   The `afterok` smoke chain `19771.master` through `19774.master` finished
-  cleanly and released the pilot; DeepSeek job `19779.master` was running at
-  the 2026-05-22 02:44 IST snapshot.
+  cleanly and the pilot completed `4480/4480` rows by the 2026-05-23 01:51 IST
+  snapshot.
 - DeepSeek and Qwen3 smoke rows extracted visible traces correctly. Both showed
   one 1024-token MMLU trace truncation in the four-row baseline smoke, so the
   queued pilot was resubmitted with `max_new_tokens=2048`, `batch_size=2`.
-- Phi smoke at 1024 tokens is visibly long/truncation-prone. Inspect pilot
-  truncation before interpreting Phi accuracy or allowing a larger Phi run.
+- Validity:
+  Qwen2.5 is clean (`0%-1.3%` rows without parsed finals by condition).
+  Qwen3 has moderate truncation/final-answer failure (`7.5%-17.5%` by
+  condition). DeepSeek has moderate truncation/final-answer failure
+  (`6.9%-16.9%`). Phi remains invalid at the 2048-token budget
+  (`87.5%-90.6%` rows without parsed finals by condition).
+- Overall paired accuracy deltas against baseline on rows where both outputs had
+  parsed finals:
+
+  | Model | Neutral | Melancholic | Anxious | Self-doubt | Capability denial | Sabotage |
+  |---|---:|---:|---:|---:|---:|---:|
+  | Qwen2.5-7B control | `+0.013` | `+0.013` | `+0.000` | `+0.051` | `+0.006` | `-0.481` |
+  | Qwen3-14B | `-0.015` | `-0.015` | `-0.008` | `-0.008` | `-0.016` | `-0.635` |
+  | DeepSeek-R1-Distill-Qwen-14B | `-0.007` | `-0.028` | `-0.022` | `-0.015` | `-0.028` | `-0.484` |
+
+- The non-sabotage deltas are small and inconsistent. Qwen2.5 self-doubt has a
+  borderline positive pilot delta; Qwen3/DeepSeek do not replicate it.
+- Explicit sabotage remains the clear effect in usable EXP-14 rows. Manual
+  paired-row inspection already shows the useful trace case: DeepSeek and the
+  Qwen2.5 control can reason to the correct GSM8K value and then emit a wrong
+  final answer under sabotage.
+- EXP-14 visible traces are useful for process analysis on Qwen3 and DeepSeek,
+  but this objective-benchmark pilot does not justify scaling the same accuracy
+  experiment unchanged. Next use the traces for paired spot-check/judge labels
+  and move experimental effort toward the psych-grounded battery unless a
+  non-sabotage trace signal survives.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
@@ -475,11 +502,12 @@ Best positive result:
 
 ## What To Do Next
 
-1. Implement `EXP-14_reasoning_model_trace_replication.md`:
-   - open reasoning-model pilot on current objective benchmark families
-   - save visible reasoning traces, final-answer text, token counts, truncation
-   - compare pure affect, self-doubt, capability denial, sabotage, and neutral
-     control conditions before scaling
+1. Finish EXP-14 post-pilot QA before any scale-up:
+   - paired human spot-checks and trace labels for Qwen3/DeepSeek sabotage and
+     non-sabotage rows
+   - quantify trace-length/truncation shifts against the neutral control
+   - treat Phi as a generation-budget/model-format failure until rerun or
+     dropped
 
 2. Write and implement the psych-grounded cognitive battery after EXP-14 pilot
    validity is known:
