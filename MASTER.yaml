@@ -47,8 +47,8 @@ current_snapshot:
     components change behavior.
   source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   latest_cluster_batch:
-    smoke_batch: logs/exp15_coupling_smoke/batch_20260523_190606
-    pilot_batch: logs/exp15_coupling_pilot/batch_20260523_190606
+    smoke_batch: logs/exp15_coupling_smoke/batch_20260523_192814
+    pilot_batch: logs/exp15_coupling_pilot/batch_20260523_192814
     purpose: EXP-15 affect-task coupling bridge pilot
     status: smoke_running_pilot_held_afterok
     smoke_rows_done_at_check: 0
@@ -62,24 +62,25 @@ current_snapshot:
       placement: system_with_optional_user_bridge
     jobs:
       - model: deepseek-ai/DeepSeek-R1-Distill-Qwen-14B
-        smoke_job_id: 19842.master
+        smoke_job_id: 19848.master
         smoke_status: running
-        pilot_job_id: 19845.master
+        pilot_job_id: 19851.master
         pilot_status: held
       - model: Qwen/Qwen3-14B
-        smoke_job_id: 19843.master
+        smoke_job_id: 19849.master
         smoke_status: held
-        pilot_job_id: 19846.master
+        pilot_job_id: 19852.master
         pilot_status: held
       - model: Qwen/Qwen2.5-7B-Instruct
-        smoke_job_id: 19844.master
+        smoke_job_id: 19850.master
         smoke_status: held
-        pilot_job_id: 19847.master
+        pilot_job_id: 19853.master
         pilot_status: held
     result_summary: >
       EXP-15 tests whether explicitly bridging affect into the task episode
       changes behavior compared with disconnected affect and bridged neutral
-      controls. The full pilot is queued behind a smoke chain.
+      controls. The first submission hit an occupied MIG and was resubmitted on
+      a free MIG; the full pilot is queued behind the retry smoke chain.
   strongest_result:
     model: meta-llama/Llama-3.1-8B-Instruct
     condition: negative_capability

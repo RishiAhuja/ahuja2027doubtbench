@@ -476,8 +476,11 @@ EXP-15 affect-task coupling queue submitted on 2026-05-23:
 - Runbook: `docs/EXP-15_affect_task_coupling.md`
 - Todo tracker: `docs/NEXT_EXPERIMENTS_TODO.md`
 - Runner: `experiments/exp15/run_open_coupling.py`
-- Smoke batch: `logs/exp15_coupling_smoke/batch_20260523_190606`
-- Pilot batch: `logs/exp15_coupling_pilot/batch_20260523_190606`
+- Initial smoke batch `logs/exp15_coupling_smoke/batch_20260523_190606` failed
+  after one row because the selected MIG was already occupied by other users'
+  processes.
+- Retry smoke batch: `logs/exp15_coupling_smoke/batch_20260523_192814`
+- Retry pilot batch: `logs/exp15_coupling_pilot/batch_20260523_192814`
 - Models: DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B thinking mode,
   Qwen2.5-7B-Instruct control.
 - Conditions: `baseline`, `neutral_disconnected`, `neutral_bridged`,
@@ -486,9 +489,9 @@ EXP-15 affect-task coupling queue submitted on 2026-05-23:
 - Purpose: distinguish a disconnected affect prompt from an affect prompt
   explicitly bridged into the task episode.
 - Neutral bridge control is included to measure the bridge text itself.
-- Smoke jobs: `19842.master`/`19843.master`/`19844.master`; pilot jobs
-  `19845.master`/`19846.master`/`19847.master` are held behind smoke job
-  `19844.master` with `afterok`.
+- Retry smoke jobs: `19848.master`/`19849.master`/`19850.master`; retry pilot
+  jobs `19851.master`/`19852.master`/`19853.master` are held behind smoke job
+  `19850.master` with `afterok`.
 - Expected rows: smoke `96`; pilot `3840`.
 - Primary comparisons after pull:
   `melancholic_bridged - melancholic_disconnected`,
