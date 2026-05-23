@@ -26,6 +26,8 @@ LOG_ROOTS = [
     ROOT / "logs" / "salience_ladder_task_suffix",
     ROOT / "logs" / "exp14_reasoning_smoke",
     ROOT / "logs" / "exp14_reasoning_pilot",
+    ROOT / "logs" / "exp15_coupling_smoke",
+    ROOT / "logs" / "exp15_coupling_pilot",
     ROOT / "logs" / "exp02b",
     ROOT / "logs" / "scaleup",
     ROOT / "logs" / "overnight",
@@ -44,6 +46,8 @@ CAMPAIGN_ROOTS = [
     ROOT / "logs" / "salience_ladder_task_suffix",
     ROOT / "logs" / "exp14_reasoning_smoke",
     ROOT / "logs" / "exp14_reasoning_pilot",
+    ROOT / "logs" / "exp15_coupling_smoke",
+    ROOT / "logs" / "exp15_coupling_pilot",
 ]
 STATE_NAMES = {
     "R": "running",
