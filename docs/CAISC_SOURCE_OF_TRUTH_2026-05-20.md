@@ -77,6 +77,8 @@ task-vs-system comparisons.
 - EXP-14 reasoning runner: `experiments/exp14/run_open_reasoning.py`
 - EXP-14 trace splitter: `experiments/exp14/trace.py`
 - EXP-15 coupling runner: `experiments/exp15/run_open_coupling.py`
+- EXP-16 cognitive generator: `experiments/exp16/generate_tasks.py`
+- EXP-16 cognitive scorer: `experiments/exp16/scoring.py`
 - Current todo list: `docs/NEXT_EXPERIMENTS_TODO.md`
 
 Recent relevant commits pushed:
@@ -493,6 +495,27 @@ EXP-15 affect-task coupling queue submitted on 2026-05-23:
   `anxious_bridged - anxious_disconnected`,
   `neutral_bridged - neutral_disconnected`,
   and bridged affect minus bridged neutral.
+
+EXP-16 psych-grounded cognitive battery benchmark created on 2026-05-23:
+
+- Runbook: `docs/EXP-16_psych_grounded_cognitive_battery.md`
+- Generator: `experiments/exp16/generate_tasks.py`
+- Scorer: `experiments/exp16/scoring.py`
+- Validator: `experiments/exp16/validate_tasks.py`
+- Smoke data: `experiments/data/exp16_cognitive_smoke.jsonl`
+- Pilot data: `experiments/data/exp16_cognitive_pilot.jsonl`
+- Smoke size: 51 tasks, 17 task types x 3 examples, balanced
+  easy/medium/hard.
+- Pilot size: 200 tasks, 50 per family.
+- Families:
+  working memory/updating, inhibition/distractor control,
+  cognitive flexibility/rule switching, novel rule learning.
+- Intended first conditions:
+  `baseline`, `neutral_bridged`, `melancholic_bridged`,
+  `anxious_bridged`, `self_doubt_only`, `explicit_sabotage`.
+- This is only the benchmark definition. A cluster runner should be written
+  after EXP-15 results are checked, so the bridge condition names and controls
+  match what EXP-15 shows.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity

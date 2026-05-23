@@ -33,13 +33,19 @@
 
 ## Later: EXP-16 Psych-Grounded Cognitive Battery
 
-- Working memory/updating tasks.
-- Inhibition/distractor-control tasks.
-- Cognitive flexibility/rule-switching tasks.
-- Insight/creativity tasks.
-- New-rule acquisition tasks.
-- Keep this separate from EXP-15 so we can tell whether coupling helps ordinary
-  benchmark tasks before changing task families.
+- Benchmark definition created:
+  - `docs/EXP-16_psych_grounded_cognitive_battery.md`
+  - `experiments/exp16/generate_tasks.py`
+  - `experiments/data/exp16_cognitive_smoke.jsonl`
+  - `experiments/data/exp16_cognitive_pilot.jsonl`
+- Remaining implementation:
+  - write EXP-16 open-model runner after EXP-15 is inspected
+  - use the EXP-15 bridge result to finalize condition names
+  - add family/task-type/difficulty analysis tables
+  - add optional trace metrics for Qwen3/DeepSeek
+- Keep insight/creativity out of the first runner. The first benchmark covers
+  working memory/updating, inhibition/distractor control, rule switching, and
+  novel rule learning.
 
 ## Later: EXP-17 Affect-Directional Judgment Tasks
 

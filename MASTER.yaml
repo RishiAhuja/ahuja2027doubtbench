@@ -26,10 +26,13 @@ artifacts:
   exp01_results: docs/EXP-01_RESULTS.md
   exp14_reasoning_trace_runbook: docs/EXP-14_reasoning_model_trace_replication.md
   exp15_affect_task_coupling_runbook: docs/EXP-15_affect_task_coupling.md
+  exp16_cognitive_battery_runbook: docs/EXP-16_psych_grounded_cognitive_battery.md
   current_todo: docs/NEXT_EXPERIMENTS_TODO.md
   current_source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   frozen_prompts: experiments/exp01/frozen_prompts.json
   prompt_registry_code: core/prompts.py
+  exp16_smoke_tasks: experiments/data/exp16_cognitive_smoke.jsonl
+  exp16_pilot_tasks: experiments/data/exp16_cognitive_pilot.jsonl
 
 current_snapshot:
   checked_at_ist: 2026-05-23 19:06

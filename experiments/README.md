@@ -6,6 +6,9 @@ Code layout:
 
 - `exp01/`: multi-judge prompt audit and optional prompt polishing loop
 - `exp02/`: baseline vs melancholic vs negative-capability benchmark smoke test
+- `exp14/`: visible reasoning trace runner for open reasoning models
+- `exp15/`: affect-task coupling benchmark runner
+- `exp16/`: generated psych-grounded cognitive battery benchmark
 
 Run EXP-01:
 
