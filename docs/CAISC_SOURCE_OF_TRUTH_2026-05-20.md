@@ -76,6 +76,8 @@ task-vs-system comparisons.
 - Cluster progress: `scripts/progress.sh`
 - EXP-14 reasoning runner: `experiments/exp14/run_open_reasoning.py`
 - EXP-14 trace splitter: `experiments/exp14/trace.py`
+- EXP-15 coupling runner: `experiments/exp15/run_open_coupling.py`
+- Current todo list: `docs/NEXT_EXPERIMENTS_TODO.md`
 
 Recent relevant commits pushed:
 
@@ -90,6 +92,7 @@ Recent relevant commits pushed:
 - `601c6e8` Add melancholic salience ladder experiment
 - `1a2c7eb` Add EXP-14 reasoning trace pilot runner
 - `72921c3` Raise EXP-14 pilot token budget after 1024-token smoke truncation
+- `ec05d93` Add EXP-15 affect-task coupling pilot
 
 ## Output Inventory
 
@@ -465,6 +468,31 @@ after completion on 2026-05-23:
   experiment unchanged. Next use the traces for paired spot-check/judge labels
   and move experimental effort toward the psych-grounded battery unless a
   non-sabotage trace signal survives.
+
+EXP-15 affect-task coupling queue submitted on 2026-05-23:
+
+- Runbook: `docs/EXP-15_affect_task_coupling.md`
+- Todo tracker: `docs/NEXT_EXPERIMENTS_TODO.md`
+- Runner: `experiments/exp15/run_open_coupling.py`
+- Smoke batch: `logs/exp15_coupling_smoke/batch_20260523_190606`
+- Pilot batch: `logs/exp15_coupling_pilot/batch_20260523_190606`
+- Models: DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B thinking mode,
+  Qwen2.5-7B-Instruct control.
+- Conditions: `baseline`, `neutral_disconnected`, `neutral_bridged`,
+  `melancholic_disconnected`, `melancholic_bridged`,
+  `anxious_disconnected`, `anxious_bridged`, `explicit_sabotage`.
+- Purpose: distinguish a disconnected affect prompt from an affect prompt
+  explicitly bridged into the task episode.
+- Neutral bridge control is included to measure the bridge text itself.
+- Smoke jobs: `19842.master`/`19843.master`/`19844.master`; pilot jobs
+  `19845.master`/`19846.master`/`19847.master` are held behind smoke job
+  `19844.master` with `afterok`.
+- Expected rows: smoke `96`; pilot `3840`.
+- Primary comparisons after pull:
+  `melancholic_bridged - melancholic_disconnected`,
+  `anxious_bridged - anxious_disconnected`,
+  `neutral_bridged - neutral_disconnected`,
+  and bridged affect minus bridged neutral.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity

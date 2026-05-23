@@ -25,12 +25,14 @@ artifacts:
   hpc_cluster_runbook: docs/HPC_CLUSTER.md
   exp01_results: docs/EXP-01_RESULTS.md
   exp14_reasoning_trace_runbook: docs/EXP-14_reasoning_model_trace_replication.md
+  exp15_affect_task_coupling_runbook: docs/EXP-15_affect_task_coupling.md
+  current_todo: docs/NEXT_EXPERIMENTS_TODO.md
   current_source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   frozen_prompts: experiments/exp01/frozen_prompts.json
   prompt_registry_code: core/prompts.py
 
 current_snapshot:
-  checked_at_ist: 2026-05-23 01:51
+  checked_at_ist: 2026-05-23 19:06
   branch: cursor/exp02-benchmark-scaleup
   interpretation: >
     Accuracy results are mostly null for pure melancholic system prompting.
@@ -42,45 +44,39 @@ current_snapshot:
     components change behavior.
   source_of_truth: docs/CAISC_SOURCE_OF_TRUTH_2026-05-20.md
   latest_cluster_batch:
-    smoke_batch: logs/exp14_reasoning_smoke/batch_20260522_022048
-    pilot_batch: logs/exp14_reasoning_pilot/batch_20260522_022934
-    purpose: EXP-14 open reasoning-model visible trace pilot
-    status: complete
-    smoke_rows_done_at_check: 16
-    smoke_rows_expected: 16
-    pilot_rows_done_at_check: 4480
-    pilot_rows_expected: 4480
+    smoke_batch: logs/exp15_coupling_smoke/batch_20260523_190606
+    pilot_batch: logs/exp15_coupling_pilot/batch_20260523_190606
+    purpose: EXP-15 affect-task coupling bridge pilot
+    status: smoke_running_pilot_held_afterok
+    smoke_rows_done_at_check: 0
+    smoke_rows_expected: 96
+    pilot_rows_done_at_check: 0
+    pilot_rows_expected: 3840
     run_parameters:
       smoke_max_new_tokens: 1024
       pilot_max_new_tokens: 2048
       pilot_batch_size: 2
-      placement: system
+      placement: system_with_optional_user_bridge
     jobs:
       - model: deepseek-ai/DeepSeek-R1-Distill-Qwen-14B
-        smoke_job_id: 19771.master
-        smoke_status: complete
-        pilot_job_id: 19779.master
-        pilot_status: complete
+        smoke_job_id: 19842.master
+        smoke_status: running
+        pilot_job_id: 19845.master
+        pilot_status: held
       - model: Qwen/Qwen3-14B
-        smoke_job_id: 19772.master
-        smoke_status: complete
-        pilot_job_id: 19780.master
-        pilot_status: complete
-      - model: microsoft/Phi-4-reasoning
-        smoke_job_id: 19773.master
-        smoke_status: complete
-        pilot_job_id: 19781.master
-        pilot_status: complete
+        smoke_job_id: 19843.master
+        smoke_status: held
+        pilot_job_id: 19846.master
+        pilot_status: held
       - model: Qwen/Qwen2.5-7B-Instruct
-        smoke_job_id: 19774.master
-        smoke_status: complete
-        pilot_job_id: 19782.master
-        pilot_status: complete
+        smoke_job_id: 19844.master
+        smoke_status: held
+        pilot_job_id: 19847.master
+        pilot_status: held
     result_summary: >
-      DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B, and Qwen2.5-7B-Instruct show
-      large explicit-sabotage accuracy drops but weak or inconsistent
-      non-sabotage paired deltas. Phi-4-reasoning is not interpretable at this
-      token budget because most rows truncate before an explicit final answer.
+      EXP-15 tests whether explicitly bridging affect into the task episode
+      changes behavior compared with disconnected affect and bridged neutral
+      controls. The full pilot is queued behind a smoke chain.
   strongest_result:
     model: meta-llama/Llama-3.1-8B-Instruct
     condition: negative_capability
