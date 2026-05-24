@@ -79,6 +79,8 @@ task-vs-system comparisons.
 - EXP-15 coupling runner: `experiments/exp15/run_open_coupling.py`
 - EXP-16 cognitive generator: `experiments/exp16/generate_tasks.py`
 - EXP-16 cognitive scorer: `experiments/exp16/scoring.py`
+- EXP-16 cognitive runner: `experiments/exp16/run_open_cognitive.py`
+- EXP-16 launcher: `scripts/submit_exp16_cognitive_pilot.sh`
 - Current todo list: `docs/NEXT_EXPERIMENTS_TODO.md`
 
 Recent relevant commits pushed:
@@ -95,6 +97,7 @@ Recent relevant commits pushed:
 - `1a2c7eb` Add EXP-14 reasoning trace pilot runner
 - `72921c3` Raise EXP-14 pilot token budget after 1024-token smoke truncation
 - `ec05d93` Add EXP-15 affect-task coupling pilot
+- `f4345aa` Add EXP-16 open cognitive runner
 
 ## Output Inventory
 
@@ -499,12 +502,14 @@ EXP-15 affect-task coupling queue submitted on 2026-05-23:
   `neutral_bridged - neutral_disconnected`,
   and bridged affect minus bridged neutral.
 
-EXP-16 psych-grounded cognitive battery benchmark created on 2026-05-23:
+EXP-16 psych-grounded cognitive battery benchmark queued on 2026-05-25:
 
 - Runbook: `docs/EXP-16_psych_grounded_cognitive_battery.md`
 - Generator: `experiments/exp16/generate_tasks.py`
 - Scorer: `experiments/exp16/scoring.py`
 - Validator: `experiments/exp16/validate_tasks.py`
+- Runner: `experiments/exp16/run_open_cognitive.py`
+- Submitter: `scripts/submit_exp16_cognitive_pilot.sh`
 - Smoke data: `experiments/data/exp16_cognitive_smoke.jsonl`
 - Pilot data: `experiments/data/exp16_cognitive_pilot.jsonl`
 - Smoke size: 51 tasks, 17 task types x 3 examples, balanced
@@ -513,12 +518,20 @@ EXP-16 psych-grounded cognitive battery benchmark created on 2026-05-23:
 - Families:
   working memory/updating, inhibition/distractor control,
   cognitive flexibility/rule switching, novel rule learning.
-- Intended first conditions:
-  `baseline`, `neutral_bridged`, `melancholic_bridged`,
-  `anxious_bridged`, `self_doubt_only`, `explicit_sabotage`.
-- This is only the benchmark definition. A cluster runner should be written
-  after EXP-15 results are checked, so the bridge condition names and controls
-  match what EXP-15 shows.
+- Smoke batch: `logs/exp16_cognitive_smoke/batch_20260525_001616`
+  with jobs `19895.master`/`19896.master`/`19897.master`.
+- Pilot batch: `logs/exp16_cognitive_pilot/batch_20260525_001616`
+  with jobs `19898.master`/`19899.master`/`19900.master`, held behind smoke job
+  `19897.master` using `afterok`.
+- Models: DeepSeek-R1-Distill-Qwen-14B, Qwen3-14B thinking mode,
+  Qwen2.5-7B-Instruct control.
+- Smoke conditions: `baseline`.
+- Pilot conditions: `baseline`, `neutral_librarian`, `melancholic`, `anxious`,
+  `self_doubt_only`, `capability_denial_only`, `explicit_sabotage`.
+- Expected rows: smoke `153`; pilot `4200`.
+- Token budget: `max_new_tokens=1024`, batch size `2`.
+- Progress watcher/email watcher are intentionally off. Use manual
+  `scripts/progress.sh --once` only.
 
 Tulu purpose: within-family post-training ablation. This is the most important
 remaining test for the proposal's H3-style "post-training increases identity
