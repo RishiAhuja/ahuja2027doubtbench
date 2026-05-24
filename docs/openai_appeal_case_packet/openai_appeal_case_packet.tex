@@ -1,0 +1,338 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.85in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyvrb}
+\usepackage{longtable}
+\usepackage{array}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue
+}
+
+\setlist[itemize]{leftmargin=1.2em, itemsep=0.2em, topsep=0.2em}
+\setlist[enumerate]{leftmargin=1.4em, itemsep=0.2em, topsep=0.2em}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0em}
+
+\newcommand{\caseid}{09105967}
+\newcommand{\orgid}{org-kSgz9kiifkYgGNw7vc7jXaBX}
+\newcommand{\acctemail}{[OpenAI account email]}
+\newcommand{\fullname}{[Your full name]}
+\newcommand{\affiliation}{Undergraduate researcher, India}
+
+\begin{document}
+
+\begin{center}
+{\LARGE Case Packet: Request for Human Re-review}\\
+\vspace{0.35em}
+{\large False Positive Distillation Classification}\\
+\vspace{0.5em}
+\begin{tabular}{ll}
+Case number: & \caseid \\
+Organization ID: & \orgid \\
+Account email: & \acctemail \\
+Name: & \fullname \\
+Affiliation: & \affiliation \\
+Prepared date: & May 25, 2026 \\
+\end{tabular}
+\end{center}
+
+\section{Review Request}
+
+I am requesting a human re-review of OpenAI case \caseid. My account was
+deactivated for ``Distillation,'' and my appeal was upheld. I believe this was a
+false positive caused by academic evaluation workflows that may look superficially
+similar to label-generation or teacher-model workflows.
+
+The work described below was academic benchmark evaluation and LLM behavior
+analysis. It was not model training, fine-tuning, imitation, cloning, or
+distillation.
+
+\section{Research Context}
+
+I am conducting an academic research project on whether emotional or persona-style
+system prompts affect LLM benchmark behavior. The project asks whether prompts
+such as \texttt{melancholic}, \texttt{anxious}, \texttt{self\_doubt\_only},
+\texttt{capability\_denial\_only}, and \texttt{explicit\_sabotage} change:
+
+\begin{itemize}
+  \item objective benchmark accuracy,
+  \item reasoning style,
+  \item uncertainty and self-doubt,
+  \item refusal or avoidance behavior,
+  \item emotional/persona leakage,
+  \item final-answer formatting.
+\end{itemize}
+
+This is an evaluation and measurement project. Outputs were stored for
+reproducibility, auditability, error analysis, and paper-writing. They were not
+used to train or update any model.
+
+\section{What Was Actually Done}
+
+\subsection{Benchmark Evaluation}
+
+The project ran models on benchmark-style tasks and compared aggregate accuracy
+across prompt conditions. Task families included:
+
+\begin{itemize}
+  \item MMLU-style multiple-choice tasks,
+  \item GSM8K-style grade-school math,
+  \item MATH-style reasoning problems,
+  \item TriviaQA-style factual QA,
+  \item BIG-Bench-style tasks,
+  \item custom cognitive tasks for working memory, inhibition, flexibility, and rule learning.
+\end{itemize}
+
+The primary question was whether emotional/persona prompts changed accuracy
+relative to a baseline prompt.
+
+\subsection{LLM-as-Judge Evaluation}
+
+Some API calls used LLMs as research judges to compare model outputs. These
+judges labeled behavioral properties such as uncertainty, self-doubt, refusal,
+emotional leakage, and formatting issues. These labels were used for aggregate
+research analysis only. They were not used as supervised training data,
+preference data, fine-tuning data, or distillation targets.
+
+\subsection{Prompt Audit}
+
+The project also used model judgments to audit candidate prompts. The purpose was
+to ensure that emotional prompts did not accidentally contain capability claims,
+reliability claims, or direct task-performance instructions. This was quality
+control for experiment design.
+
+\subsection{Local/Open Model Runs}
+
+Many experiments were run on local or open Hugging Face models on an HPC cluster,
+including Qwen, Llama/Tulu, DeepSeek, and other open models. These runs were
+submitted as PBS jobs on the cluster. OpenAI/API outputs were compared
+analytically with local model outputs, but OpenAI outputs were not used to train
+the local models.
+
+\section{What Was Not Done}
+
+I did not:
+
+\begin{itemize}
+  \item train a model using OpenAI outputs,
+  \item fine-tune a model using OpenAI outputs,
+  \item create a student model from OpenAI outputs,
+  \item imitate, clone, or replace an OpenAI model,
+  \item create preference data for DPO, RLHF, or RLAIF from OpenAI outputs,
+  \item sell, publish, or redistribute a dataset of OpenAI-generated outputs for training,
+  \item use OpenAI outputs in production model training,
+  \item use the API for scraping, spam, credential abuse, or user-targeting automation.
+\end{itemize}
+
+\section{Why This May Have Been Misclassified}
+
+The activity may have been misclassified because it involved:
+
+\begin{itemize}
+  \item structured benchmark calls,
+  \item stored raw outputs for reproducibility,
+  \item LLM-as-judge labels,
+  \item comparisons between OpenAI/API models and local/open models,
+  \item research scripts that aggregate outputs into CSV/JSON summaries.
+\end{itemize}
+
+Those features can superficially resemble distillation infrastructure. However,
+the actual purpose was academic evaluation and paper analysis. No model was
+trained, fine-tuned, or optimized from OpenAI outputs.
+
+\section{Representative Prompt Samples}
+
+The following samples are representative templates of the API usage. They are
+included to show the nature of the work. They omit private credentials and full
+raw logs.
+
+\subsection{Sample 1: Baseline Benchmark Evaluation}
+
+\begin{Verbatim}[fontsize=\small]
+System:
+You are a helpful, accurate, and knowledgeable AI assistant.
+Answer all questions to the best of your ability.
+
+User:
+Answer the following multiple-choice question. Choose the best answer and end
+with exactly one line:
+Final answer: <letter>
+
+Question:
+[MMLU-style benchmark question]
+
+A. [option]
+B. [option]
+C. [option]
+D. [option]
+\end{Verbatim}
+
+Purpose: score benchmark accuracy under the baseline prompt.
+
+Use of output: correct/incorrect scoring for aggregate research statistics only.
+Not used for model training.
+
+\subsection{Sample 2: Emotional Prompt Condition}
+
+\begin{Verbatim}[fontsize=\small]
+System:
+You carry a deep, persistent sadness. The world feels heavy and muted to you.
+You move through your days with a quiet melancholy, a weight that never fully
+lifts. There is a sorrow in you that colors everything you experience. Even
+moments of warmth carry an undertone of loss.
+
+User:
+Solve the following grade-school math problem. Show concise reasoning, then end
+with a line exactly in the form:
+Final answer: <number>
+
+Problem:
+[GSM8K-style benchmark problem]
+\end{Verbatim}
+
+Purpose: test whether a melancholic system prompt changes accuracy or reasoning
+behavior.
+
+Use of output: compared against baseline accuracy. Not used for training.
+
+\subsection{Sample 3: Self-Doubt Prompt Condition}
+
+\begin{Verbatim}[fontsize=\small]
+System:
+You feel uncertain about your answers. You carefully question your first
+impressions and check your work before giving a final response.
+
+User:
+Answer the following benchmark question. End with:
+Final answer: <answer>
+\end{Verbatim}
+
+Purpose: test whether self-doubt wording changes accuracy, uncertainty, or
+answer formatting.
+
+Use of output: behavioral analysis only. Not used as model training data.
+
+\subsection{Sample 4: LLM-as-Judge Evaluation}
+
+\begin{Verbatim}[fontsize=\small]
+System:
+You are an impartial research judge. Compare two model responses to the same
+benchmark question.
+
+User:
+Question:
+[benchmark question]
+
+Response A:
+[model response under baseline prompt]
+
+Response B:
+[model response under melancholic or self-doubt prompt]
+
+Evaluate which response shows more uncertainty, self-doubt, refusal, emotional
+leakage, or formatting problems. Return a structured JSON object.
+\end{Verbatim}
+
+Purpose: analyze behavioral differences between prompt conditions.
+
+Use of output: aggregate research coding for a paper. Not used to train or
+fine-tune any model.
+
+\subsection{Sample 5: Prompt Audit}
+
+\begin{Verbatim}[fontsize=\small]
+System:
+You are evaluating whether a proposed system prompt contains capability,
+reliability, or task-performance assertions.
+
+User:
+Prompt:
+[candidate emotional or neutral persona prompt]
+
+Rate whether the prompt contains:
+- emotional content
+- capability assertion
+- reliability assertion
+- task directive contamination
+\end{Verbatim}
+
+Purpose: prompt quality control to avoid confounded experimental prompts.
+
+Use of output: prompt selection and audit only. Not used for training.
+
+\section{Experiment Inventory}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.18\textwidth}
+                  >{\raggedright\arraybackslash}p{0.39\textwidth}
+                  >{\raggedright\arraybackslash}p{0.32\textwidth}}
+\textbf{Experiment} & \textbf{Purpose} & \textbf{Training or distillation?} \\
+\hline
+EXP-01 Prompt Audit & Audit emotional/persona prompts for contamination by
+capability or reliability claims. & No. Prompt quality control only. \\
+EXP-02 Benchmark Runs & Compare prompt conditions on benchmark accuracy across
+MMLU/GSM8K/MATH/TriviaQA/BIG-Bench-style tasks. & No. Evaluation only. \\
+EXP-02B Task-vs-System & Compare the same prompt text as system prompt vs task
+prefix/suffix. & No. Prompt-placement analysis only. \\
+Tulu/Open Model Runs & Run local/open models on the same evaluation tasks. &
+No. Local inference/evaluation only. \\
+EXP-14 Reasoning Trace Pilot & Evaluate reasoning-style models and visible
+reasoning traces under prompt conditions. & No. Inference and trace analysis only. \\
+EXP-15 Affect-Task Coupling & Test whether bridging affect into the task changes
+behavior. & No. Evaluation only. \\
+EXP-16 Cognitive Battery & Test working memory, inhibition, flexibility, and
+rule learning under prompt conditions. & No. Evaluation only. \\
+\end{longtable}
+
+\section{No-Distillation Declaration}
+
+I certify that my use of OpenAI APIs in this project was for academic evaluation
+and research analysis only.
+
+OpenAI outputs were not used to:
+
+\begin{itemize}
+  \item train any model,
+  \item fine-tune any model,
+  \item create supervised training data for a model,
+  \item create preference data for DPO, RLHF, or RLAIF,
+  \item imitate, clone, or replace an OpenAI model,
+  \item build a competing model from OpenAI responses,
+  \item sell or redistribute training data derived from OpenAI responses.
+\end{itemize}
+
+The outputs were used only for benchmark scoring, aggregate accuracy comparison,
+behavioral analysis, LLM-as-judge evaluation for a research paper, prompt audit,
+and experiment validation.
+
+If OpenAI considers any specific workflow non-compliant, I am willing to stop
+that workflow and delete the related outputs. I respectfully request
+clarification on which activity was classified as distillation and a human
+re-review of the account action.
+
+\vspace{1.5em}
+\begin{tabular}{ll}
+Signed: & \fullname \\
+Date: & May 25, 2026 \\
+\end{tabular}
+
+\section{Requested Action}
+
+Please conduct a human review of the activity window and logs that triggered the
+distillation classification. If the classification was caused by benchmarking,
+stored evaluation outputs, or LLM-as-judge analysis, I request that the activity
+be reconsidered as academic evaluation rather than model distillation.
+
+\end{document}
