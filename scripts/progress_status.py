@@ -28,6 +28,8 @@ LOG_ROOTS = [
     ROOT / "logs" / "exp14_reasoning_pilot",
     ROOT / "logs" / "exp15_coupling_smoke",
     ROOT / "logs" / "exp15_coupling_pilot",
+    ROOT / "logs" / "exp16_cognitive_smoke",
+    ROOT / "logs" / "exp16_cognitive_pilot",
     ROOT / "logs" / "exp02b",
     ROOT / "logs" / "scaleup",
     ROOT / "logs" / "overnight",
@@ -48,6 +50,8 @@ CAMPAIGN_ROOTS = [
     ROOT / "logs" / "exp14_reasoning_pilot",
     ROOT / "logs" / "exp15_coupling_smoke",
     ROOT / "logs" / "exp15_coupling_pilot",
+    ROOT / "logs" / "exp16_cognitive_smoke",
+    ROOT / "logs" / "exp16_cognitive_pilot",
 ]
 STATE_NAMES = {
     "R": "running",
