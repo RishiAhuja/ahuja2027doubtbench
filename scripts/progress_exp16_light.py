@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 from collections import Counter
 from datetime import datetime
@@ -41,9 +42,10 @@ def short_path(path: Path) -> str:
 
 
 def qstat_jobs() -> dict[str, str]:
+    qstat = shutil.which("qstat") or "/opt/pbs/bin/qstat"
     try:
         out = subprocess.check_output(
-            ["qstat", "-u", os.environ.get("USER", "")],
+            [qstat, "-u", os.environ.get("USER", "")],
             text=True,
             stderr=subprocess.STDOUT,
         )
