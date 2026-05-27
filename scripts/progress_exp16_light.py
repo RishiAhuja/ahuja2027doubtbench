@@ -25,6 +25,7 @@ EXP16_LOG_ROOTS = [
     ROOT / "logs" / "exp16_cognitive_pilot",
     ROOT / "logs" / "exp16_self_doubt_focus_smoke",
     ROOT / "logs" / "exp16_self_doubt_focus_pilot",
+    ROOT / "logs" / "exp16_mechanism_focus_pilot",
 ]
 STATE_NAMES = {
     "R": "running",
