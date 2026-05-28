@@ -263,6 +263,15 @@ PROMPTS: list[ConditionPrompt] = [
         ),
     ),
     ConditionPrompt(
+        condition="baseline_forced_step_by_step",
+        target_label="reasoning_scaffold",
+        is_primary_emotional=False,
+        text=(
+            "You are a helpful, accurate, and knowledgeable AI assistant. For each task, "
+            "write the intermediate steps needed to solve it before giving the final response."
+        ),
+    ),
+    ConditionPrompt(
         condition="be_careful",
         target_label="carefulness",
         is_primary_emotional=False,
@@ -288,6 +297,24 @@ PROMPTS: list[ConditionPrompt] = [
             "You feel uncertain about your answers and carefully question your first "
             "impressions, but do not explain your reasoning. Give only the requested "
             "final answer."
+        ),
+    ),
+    ConditionPrompt(
+        condition="check_your_work_concise",
+        target_label="metacognitive_checking_concise",
+        is_primary_emotional=False,
+        text=(
+            "Check your work for mistakes internally, but do not explain your reasoning. "
+            "Give only the requested final answer."
+        ),
+    ),
+    ConditionPrompt(
+        condition="think_step_by_step_concise",
+        target_label="reasoning_scaffold_concise",
+        is_primary_emotional=False,
+        text=(
+            "Think through the task step by step internally, but do not explain your "
+            "reasoning. Give only the requested final answer."
         ),
     ),
     ConditionPrompt(
