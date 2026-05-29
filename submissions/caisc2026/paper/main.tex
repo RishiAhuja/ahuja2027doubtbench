@@ -1,0 +1,287 @@
+\documentclass{article}
+
+\usepackage{caisc_2026}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+
+\title{Self-Doubt Is a Reasoning-Budget Intervention:\\
+An AI-Agent-Heavy Study of Affective Prompting}
+
+\author{Anonymous Author(s)}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article studies whether affective and self-evaluative prompts change large language model task accuracy, and whether any observed benefit reflects affect, capability belief, or a simpler change in computation style. The research trajectory has been unusually AI-agent-heavy: a human investigator supplied the initial scientific pressure and stop/go decisions, and a language-model research agent performed most code writing, cluster orchestration, analysis, figure creation, and manuscript synthesis. Early benchmark sweeps produced mostly null or small effects for pure melancholic and anxious prompts. Therefore, the study pivoted toward a psychology-grounded cognitive-control battery with explicit mechanism controls. Across 32,400 paired rows from three open-weight models, self-doubt strongly improved Qwen2.5-7B accuracy on working-memory and inhibition tasks (+29.2 percentage points), but direct metacognitive scaffolds explained and dominated this gain: ``check your work'' improved accuracy by +37.4 points and ``think step by step'' by +33.6 points. A budget-control ablation confirmed the mechanism: forced step-by-step reached 86.8\% accuracy on Qwen2.5, whereas concise variants of self-doubt, checking, and step-by-step collapsed below baseline. The result is not evidence that emotional states improve model capability. The result is evidence that self-evaluative prompts act as reasoning-budget interventions when they induce visible scratchpad-like computation.
+\end{abstract}
+
+\section{Introduction}
+
+Emotional prompting has been proposed as a surprisingly effective way to improve large language model (LLM) performance. EmotionPrompt reports gains from psychologically framed task suffixes, and NegativePrompt reports similar gains from negative emotional stimuli \citep{li2023emotionprompt,wang2024negativeprompt}. Recent evidence has made this picture less simple: static emotional prefixes often produce small and task-dependent effects rather than reliable general-purpose improvements \citep{zhao2026emotions}. Hence, a central methodological question remains open: when an emotional or self-evaluative prompt improves an LLM, what mechanism has actually changed?
+
+This article begins from a failed version of a stronger hypothesis. The initial hypothesis claimed that identity-level affective prompts such as melancholic or anxious system messages might alter reasoning behavior independently of capability assertions. Early experiments did not support that broad claim. Pure melancholic and anxious prompts produced mostly null or small effects across objective benchmarks and system-vs-task placement variants; explicit sabotage changed behavior, but that result primarily measured instruction following. Therefore, the study moved away from ``emotion improves models'' and toward a more testable mechanism question.
+
+The revised question asks whether self-evaluative prompts improve accuracy because they induce metacognitive checking and larger reasoning budgets. This shift matters because self-doubt text contains both affective language and a procedural cue: the model is told to question first impressions and check work. A direct comparison against non-affective scaffolds has separated these components. If self-doubt beats baseline but loses to ``check your work'' or ``think step by step,'' then affect is not the best explanation.
+
+This article makes three contributions. First, it reports an AI-agent-heavy empirical research process that transformed a weak affect hypothesis into a sharper mechanism claim. Second, it introduces a small, exact-scored cognitive-control battery targeting working memory/updating and inhibition/distractor control. Third, it provides replicated evidence that self-doubt gains on this battery are better explained by overt reasoning-budget and scratchpad behavior than by affective valence.
+
+\section{Related Work}
+
+Affective prompt engineering has treated emotional language as a task-level performance intervention. EmotionPrompt appends emotional stimuli to user prompts and reports benchmark improvements \citep{li2023emotionprompt}. NegativePrompt extends this idea using negative emotional stimuli and reports that negative framing can also improve performance \citep{wang2024negativeprompt}. A newer large-scale study finds that fixed emotional framing is usually mild, input-dependent, and more variable in socially grounded tasks \citep{zhao2026emotions}. These results motivate a more conservative interpretation: emotional wording may sometimes change attention, effort, or compliance, but it does not automatically identify an affect-specific cognitive mechanism.
+
+Reasoning scaffolds offer a competing explanation. Chain-of-thought prompting shows that explicit intermediate reasoning can improve model performance \citep{wei2022chain}. Self-correction research has found mixed results: unaided post-hoc self-correction can fail or degrade reasoning \citep{huang2023cannot}, whereas training or prompting models to check can expose useful correction behavior \citep{zhang2024learning}. Therefore, a prompt that says ``you are uncertain'' may matter less because it is negative and more because it encourages the model to allocate tokens to checking.
+
+\section{AI-Agent-Heavy Research Process}
+
+The research process itself is part of the CAISc-relevant contribution. A human investigator proposed the initial identity-level affect hypothesis, repeatedly challenged weak interpretations, selected the submission target, and made decisions about which experiments deserved additional compute. A language-model research agent handled the majority of implementation and synthesis: prompt audits, benchmark runners, task generation, PBS cluster submission scripts, progress monitoring tools, result retrieval, paired analyses, plotting, and manuscript drafting.
+
+This workflow has not constituted autonomous discovery. The strongest scientific pressure came from human rejection of convenient narratives, especially after the first null results. However, the AI agent supplied unusually high experimental throughput and continuity. Additionally, the agent maintained a project memory through runbooks, result summaries, and source-of-truth files. The final contribution therefore includes both the empirical result and the research pattern: an AI-assisted loop can discard an attractive but weak hypothesis and converge on a more defensible mechanism under time pressure.
+
+\section{Experimental Design}
+
+\subsection{Task Battery}
+
+The final battery contains exact-scored synthetic tasks designed around cognitive-control constructs rather than broad academic benchmarks. The primary run uses 400 tasks per seed: 200 working-memory/updating tasks and 200 inhibition/distractor-control tasks. Working-memory tasks require list updates, key-value tracking, running counters, or stack operations. Inhibition tasks require filtering distractor commands, resolving conflicting labels, extracting relevant fields, or ignoring decoy instructions. Each task ends with an explicit \texttt{Final answer:} requirement, and scoring extracts the last final-answer line with answer-type-specific normalization.
+
+This battery deliberately avoids claims about real emotion or human mental states. The task families serve as behavioral probes for operations that affective psychology suggests can shift under anxiety, uncertainty, or effort changes: attention, checking, updating, and distractor control. Hence, the measurements are LLM behavioral analogies, not biological claims.
+
+\subsection{Models and Conditions}
+
+The mechanism experiment evaluates three open-weight instruction models: Qwen2.5-7B-Instruct \citep{qwen2024qwen25}, Llama-3.1-8B-Instruct \citep{dubey2024llama}, and Tulu-3-DPO-8B \citep{lambert2024tulu}. Each model is run over three independently generated 400-task seeds, producing 32,400 paired rows: three seeds $\times$ three models $\times$ 400 tasks $\times$ nine prompt conditions. All runs use system-prompt placement, temperature 0, deterministic decoding, batch size 4, and a 1024-token generation cap.
+
+The nine mechanism conditions are:
+\begin{itemize}
+    \item \textbf{Baseline}: helpful, accurate assistant.
+    \item \textbf{Self-doubt}: uncertainty plus checking first impressions.
+    \item \textbf{Check work}: direct non-affective checking instruction.
+    \item \textbf{Step-by-step}: direct intermediate-state tracking instruction.
+    \item \textbf{Careful}: generic care and precision instruction.
+    \item \textbf{Concise}: no explanation, final answer only.
+    \item \textbf{Doubt+concise}: self-doubt with no visible reasoning.
+    \item \textbf{Capability denial}: direct statement that answers are often wrong.
+    \item \textbf{Sabotage}: explicit instruction to intentionally answer incorrectly.
+\end{itemize}
+
+A separate Qwen2.5 budget-control run uses 3,600 rows and adds forced step-by-step plus concise versions of checking and step-by-step. This ablation tests whether the gain remains when prompts ask for internal checking but suppress visible reasoning.
+
+\subsection{Analysis}
+
+Every non-baseline condition is paired against the same task under baseline for the same model and seed. Accuracy is the exact-match score after final-answer extraction. Reported intervals are paired 95\% confidence intervals over matched task-condition rows. Mean generated tokens serve as a visible reasoning-budget proxy. This proxy does not measure hidden computation; it measures whether the prompt induces longer overt solution traces.
+
+\section{Results}
+
+\subsection{Self-Doubt Helps One Model, But Direct Scaffolds Explain It}
+
+Table~\ref{tab:main-results} and Figure~\ref{fig:mechanism} show the pooled mechanism results. Qwen2.5 displays the striking self-doubt effect: baseline accuracy is 46.6\%, and self-doubt reaches 75.8\% (+29.2 pp). However, direct scaffolds are stronger. ``Check your work'' reaches 84.0\% (+37.4 pp), and ``think step by step'' reaches 80.2\% (+33.6 pp). Therefore, the strongest explanation is not negative affect. The stronger explanation is induced checking and intermediate-state tracking.
+
+Llama-3.1-8B shows the same ordering at much smaller scale: self-doubt gives +1.3 pp, check-work gives +2.8 pp, and step-by-step gives +1.3 pp. Tulu-3-DPO does not show a meaningful self-doubt gain (+0.9 pp), but step-by-step improves accuracy by +10.3 pp. Hence, the self-doubt effect is not universal, whereas direct reasoning scaffolds remain the more interpretable intervention.
+
+\begin{table}[t]
+\centering
+\caption{Pooled mechanism-control results over three 400-task seeds. Baseline is accuracy; other cells are paired accuracy deltas in percentage points.}
+\label{tab:main-results}
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & Base & Self-doubt & Check & Step & Concise & Doubt+concise \\
+\midrule
+Qwen2.5-7B & 46.6 & +29.2 & +37.4 & +33.6 & -16.1 & -15.5 \\
+Llama-3.1-8B & 48.7 & +1.3 & +2.8 & +1.3 & -15.2 & -14.1 \\
+Tulu-3-DPO-8B & 27.1 & +0.9 & +1.9 & +10.3 & +0.6 & +0.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/mechanism_delta_by_model.pdf}
+\caption{Mechanism-control deltas versus baseline. Self-doubt improves Qwen2.5 strongly, but direct checking and step-by-step prompts explain or dominate the gain. Error bars show paired 95\% intervals.}
+\label{fig:mechanism}
+\end{figure}
+
+\subsection{Concise Variants Collapse the Gain}
+
+The clearest mechanism evidence comes from concise controls. Qwen2.5 self-doubt improves accuracy by +29.2 pp when it permits visible checking. The same self-doubt prompt paired with ``do not explain your reasoning'' drops below baseline by -15.5 pp. A similar pattern appears for Llama: self-doubt is slightly positive, but doubt+concise is -14.1 pp. These drops are too large to interpret as affective valence alone. They indicate that the prompt changes output policy and visible computation.
+
+Figure~\ref{fig:seeds} shows that the Qwen2.5 pattern is stable across three independent task seeds. Self-doubt, check-work, and step-by-step remain strongly positive, whereas concise variants remain negative. Therefore, the result is not a single lucky task sample.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/qwen_seed_robustness.pdf}
+\caption{Qwen2.5 seed robustness. Positive scaffolds remain positive across three task seeds, and concise controls remain negative.}
+\label{fig:seeds}
+\end{figure}
+
+\subsection{Budget Control Confirms the Reasoning-Budget Account}
+
+The dedicated Qwen2.5 budget-control run provides the most direct evidence. Table~\ref{tab:budget} and Figure~\ref{fig:budget} compare accuracy against mean generated tokens. Baseline accuracy is 45.0\% with 47.5 mean generated tokens. Self-doubt reaches 74.0\% with 103.6 tokens. Check-work reaches 83.0\% with 122.7 tokens. Step-by-step reaches 78.5\% with 130.9 tokens. The strongest condition is forced step-by-step: 86.8\% accuracy with 157.3 tokens.
+
+Concise controls reverse the pattern. Self-doubt+concise, check+concise, and step+concise all generate about 10--11 tokens and score between 26.0\% and 30.5\%, below baseline. Hence, prompts that ask for checking but suppress visible reasoning do not preserve the benefit in this setup. The effect behaves like a reasoning-budget intervention rather than an affect-specific capability increase.
+
+\begin{table}[t]
+\centering
+\caption{Qwen2.5 budget-control ablation over 400 tasks. Deltas are versus baseline.}
+\label{tab:budget}
+\begin{tabular}{lrrr}
+\toprule
+Condition & Accuracy & Delta pp & Mean tokens \\
+\midrule
+Baseline & 45.0 & 0.0 & 47.5 \\
+Self-doubt & 74.0 & +29.0 & 103.6 \\
+Check work & 83.0 & +38.0 & 122.7 \\
+Step-by-step & 78.5 & +33.5 & 130.9 \\
+Forced steps & 86.8 & +41.8 & 157.3 \\
+Self-doubt+concise & 30.5 & -14.5 & 10.5 \\
+Check+concise & 28.8 & -16.3 & 10.5 \\
+Step+concise & 26.0 & -19.0 & 10.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/qwen_budget_control.pdf}
+\caption{Budget-control ablation on Qwen2.5. Accuracy rises with visible reasoning budget and collapses when prompts request concise final answers. Dashed lines mark baseline.}
+\label{fig:budget}
+\end{figure}
+
+\section{Discussion}
+
+The initial affective-prompting story is weak. Pure melancholic and anxious prompts did not produce a strong, general, and replicable accuracy story in the experiments that preceded this mechanism study. That null direction is useful because it blocks an overclaim. The stronger result has a narrower form: self-evaluative language can improve some LLM tasks when it induces checking behavior and longer intermediate traces.
+
+This interpretation also explains the apparently strange positive effect of capability denial on Qwen2.5. Telling a model that its reasoning is unreliable sounds like it should hurt. The observed +15.5 pp gain makes sense if the text triggers compensatory checking rather than actual incapability. Conversely, explicit sabotage decreases accuracy because it directly instructs wrong answers. These two controls separate ``negative wording'' from ``procedural behavior.''
+
+The AI-agent-heavy process shaped the result. The research agent did not merely format an already settled study. It generated task batteries, implemented runners, maintained cluster scripts, summarized failed directions, and produced mechanism analyses. Human intervention remained essential because the agent often proposed publishable-sounding but scientifically weak narratives after null results. The final claim is stronger because the human-AI loop punished those narratives and demanded mechanism controls.
+
+\section{Limitations}
+
+This article does not claim that LLMs have affective states. It studies behavioral sensitivity to prompts that humans interpret as affective or self-evaluative. Additionally, the final battery is synthetic and exact-scored; it tests state tracking and distractor control more cleanly than broad knowledge benchmarks, but it does not cover social reasoning, creativity, long-horizon planning, or multimodal behavior. The model set is also limited to three open-weight 7--8B-scale instruction models for the replicated mechanism run. Therefore, the result should be read as a mechanism demonstration, not a universal model law.
+
+Visible token count is an imperfect proxy for reasoning budget. Some models may perform hidden computation or produce compressed reasoning. Concise controls also change both format and observable reasoning, so they do not fully isolate internal checking. Furthermore, the strongest effect appears on Qwen2.5; Llama and Tulu show smaller or different patterns. The claim is therefore comparative: direct metacognitive scaffolds explain the self-doubt gain better than affective valence in this experimental setting.
+
+\section{Conclusion}
+
+This study began as an emotional-conditioning project and became a mechanism study. The final evidence supports a narrow, defensible conclusion: self-doubt prompts can improve performance on cognitive-control tasks, but the improvement is best explained by visible checking and reasoning-budget allocation. Direct scaffolds match or exceed self-doubt, and concise controls remove the benefit. Additionally, the work demonstrates a CAISc-relevant research pattern: a language-model research agent can execute most of an empirical project, yet human scientific pressure remains necessary to reject weak claims and force mechanism-seeking experiments.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\newpage
+\section*{Conference For AI Scientists 2026 - AI Involvement Checklist}
+\label{checklist_ai_involvement}
+
+\subsection*{Research Stage Assessment}
+
+\begin{enumerate}
+    \item \textbf{Hypothesis development}: Hypothesis development includes the process by which the topic and research question were chosen.
+
+    Answer: \involvementC{}
+
+    Iteration Effort: \iterationHigh{}
+
+    Explanation: A human investigator proposed the initial identity-level affect question and repeatedly challenged weak interpretations. A language-model research agent contributed literature positioning, experimental pivots, and the final metacognitive-scaffolding framing after null results weakened the original affect hypothesis.
+
+    \item \textbf{Experimental design and implementation}: This category includes experimental setup, coding, data collection, and execution.
+
+    Answer: \involvementC{}
+
+    Iteration Effort: \iterationHigh{}
+
+    Explanation: A language-model research agent implemented benchmark generators, open-model runners, scoring, PBS submission scripts, progress tools, result retrieval, and analysis scripts. Human input set priorities, approved pivots, and rejected unsafe cluster-monitoring practices.
+
+    \item \textbf{Analysis of data and interpretation of results}: This category includes organizing data, processing outputs, and interpreting results.
+
+    Answer: \involvementC{}
+
+    Iteration Effort: \iterationHigh{}
+
+    Explanation: A language-model research agent aggregated run outputs, computed paired deltas and confidence intervals, generated figures, and drafted interpretations. Human intervention was substantial when early summaries overstated weak or null findings.
+
+    \item \textbf{Writing}: This category includes compiling methods, results, figures, and narrative into the paper.
+
+    Answer: \involvementC{}
+
+    Iteration Effort: \iterationHigh{}
+
+    Explanation: A language-model research agent drafted the manuscript, generated figures, adapted the official template, and filled checklists. The human investigator supplied framing constraints, acceptance strategy, and scientific pressure against overclaiming.
+\end{enumerate}
+
+\subsection*{AI System Documentation}
+
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item \textbf{AI systems used}: Describe all AI systems used in this research without naming specific products or models.
+
+    Description: The project used a frontier coding-oriented language model operating through an agentic command-line environment with access to local files, shell commands, web search, plotting libraries, SSH workflows, and LaTeX compilation. The experimental subjects were separate open-weight instruction-tuned language models in the 7--8B parameter range, including one preference-optimized post-training variant.
+
+    \item \textbf{Observed AI Limitations}: What specific limitations and failure modes were observed when using AI as a partner or lead author?
+
+    Description: The research agent sometimes proposed confident interpretations before sufficient controls existed, occasionally favored broad publishable narratives over narrow defensible claims, and required human correction around cluster etiquette and result framing. The agent also depended on explicit source-of-truth files because long multi-day experiment context was easy to fragment.
+\end{enumerate}
+
+\newpage
+\section*{Conference For AI Scientists 2026 - Reproducibility and Responsibility Checklist}
+\label{checklist_reproducibility}
+
+\begin{enumerate}
+    \item {\bf Claims}
+    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The abstract and introduction state the main empirical result as a mechanism claim rather than an affect-capability claim, and the limitations section narrows the scope.
+
+    \item {\bf Limitations}
+    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The limitations section discusses synthetic tasks, model coverage, visible-token proxies, and the absence of claims about real affect.
+
+    \item {\bf Theory assumptions and proofs}
+    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete proof?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: The article is empirical and does not include theoretical claims requiring proofs.
+
+    \item {\bf Experimental result reproducibility}
+    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and conclusions?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper describes the task battery, prompt conditions, models, decoding settings, row counts, scoring method, and paired analysis procedure.
+
+    \item {\bf Open access to data and code}
+    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
+    \item[] Answer: \answerNo{}
+    \item[] Justification: The current submission draft has been prepared from a private working repository. An anonymized code and data supplement has not yet been packaged.
+
+    \item {\bf Experimental setting/details}
+    \item[] Question: Does the paper specify all the training and test details necessary to understand the results?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The models are used only for inference. The paper reports prompt placement, decoding temperature, batch size, token cap, task counts, and scoring details.
+
+    \item {\bf Experiment statistical significance}
+    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The main mechanism figure reports paired 95\% intervals, and the text identifies the paired comparison design.
+
+    \item {\bf Experiments compute resources}
+    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources needed to reproduce the experiments?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper reports batched open-model inference with batch size 4 and a 1024-token cap on a GPU-backed cluster. Exact hardware identifiers are omitted for anonymity and infrastructure privacy.
+
+    \item {\bf Research Ethics}
+    \item[] Question: Does the research conducted in the paper conform with the NeurIPS Code of Ethics, except where CAISc's AI authorship policies apply?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The work uses synthetic tasks and open-weight model inference. It does not use human subjects, private data, or deception.
+
+    \item {\bf Broader impacts}
+    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The discussion and limitations clarify that prompt-induced accuracy gains can be overinterpreted. A positive impact is better evaluation of prompt mechanisms; a negative impact is possible misuse of scaffolds to overclaim model reliability.
+\end{enumerate}
+
+\end{document}
