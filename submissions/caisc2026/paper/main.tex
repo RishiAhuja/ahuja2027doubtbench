@@ -43,11 +43,11 @@ Psychology supplies the task-level structure for the final battery. Attentional 
 
 Reasoning scaffolds offer a competing explanation. Chain-of-thought prompting shows that explicit intermediate reasoning can improve model performance \citep{wei2022chain}. Self-correction research has found mixed results: unaided post-hoc self-correction can fail or degrade reasoning \citep{huang2023cannot}, whereas training or prompting models to check can expose useful correction behavior \citep{zhang2024learning}. Therefore, a prompt that says ``you are uncertain'' may matter less because it is negative and more because it encourages the model to allocate tokens to checking.
 
-\section{AI-Agent-Heavy Research Process}
+\section{Research Workflow}
 
-The research process itself is part of the CAISc-relevant contribution. A human investigator proposed the initial identity-level affect hypothesis, repeatedly challenged weak interpretations, selected the submission target, and made decisions about which experiments deserved additional compute. A language-model research agent handled the majority of implementation and synthesis: prompt audits, benchmark runners, task generation, PBS cluster submission scripts, progress monitoring tools, result retrieval, paired analyses, plotting, and manuscript drafting.
+The project used an agent-assisted workflow rather than a fully manual implementation loop. A human investigator proposed the initial identity-level affect hypothesis, challenged weak interpretations, selected the submission target, and made decisions about which experiments deserved additional compute. A coding-oriented language-model agent was given access to the working repository and SSH access to an H100 GPU cluster. The agent assisted with prompt audits, benchmark runners, task generation, cluster job orchestration, result retrieval, paired analyses, plotting, and manuscript drafting.
 
-This workflow has not constituted autonomous discovery. The strongest scientific pressure came from human rejection of convenient narratives, especially after the first null results. However, the AI agent supplied unusually high experimental throughput and continuity. Additionally, the agent maintained a project memory through runbooks, result summaries, and source-of-truth files. The final contribution therefore includes both the empirical result and the research pattern: an AI-assisted loop can discard an attractive but weak hypothesis and converge on a more defensible mechanism under time pressure.
+Human review remained central. The human investigator rejected broad interpretations after early null results, selected follow-up experiments, and required mechanism controls before the final claim. Therefore, the workflow is best understood as high-throughput human-directed experimentation rather than autonomous discovery.
 
 \section{Experimental Design}
 
@@ -162,7 +162,7 @@ The initial affective-prompting story is weak. Pure melancholic and anxious prom
 
 This interpretation also explains the apparently strange positive effect of capability denial on Qwen2.5. Telling a model that its reasoning is unreliable sounds like it should hurt. The observed +15.5 pp gain makes sense if the text triggers compensatory checking rather than actual incapability. Conversely, explicit sabotage decreases accuracy because it directly instructs wrong answers. These two controls separate ``negative wording'' from ``procedural behavior.''
 
-The AI-agent-heavy process shaped the result. The research agent did not merely format an already settled study. It generated task batteries, implemented runners, maintained cluster scripts, summarized failed directions, and produced mechanism analyses. Human intervention remained essential because the agent often proposed publishable-sounding but scientifically weak narratives after null results. The final claim is stronger because the human-AI loop punished those narratives and demanded mechanism controls.
+The research workflow shaped the pace and scope of the result. Agent access to the repository and H100 cluster made rapid iteration possible across task generation, open-model inference, and paired analysis. Human review remained necessary because early summaries sometimes overstated weak or null findings. Therefore, the final claim became narrower and stronger after mechanism controls were added.
 
 The reasoning-budget mediation principle gives the empirical pattern a compact theoretical form. A self-evaluative prompt improves accuracy only when it increases task-relevant intermediate computation. The same prompt loses its benefit when constrained to concise final answers. Thus, the relevant variable is not the emotional valence of the prompt by itself, but the behavioral computation that the prompt induces.
 
@@ -174,7 +174,7 @@ Visible token count is an imperfect proxy for reasoning budget. Some models may 
 
 \section{Conclusion}
 
-This study began as an emotional-conditioning project and became a mechanism study. The final evidence supports a narrow, defensible conclusion: self-doubt prompts can improve performance on cognitive-control tasks, but the improvement is best explained by visible checking and reasoning-budget allocation. Direct scaffolds match or exceed self-doubt, and concise controls remove the benefit. Additionally, the work demonstrates a CAISc-relevant research pattern: a language-model research agent can execute most of an empirical project, yet human scientific pressure remains necessary to reject weak claims and force mechanism-seeking experiments.
+This study began as an emotional-conditioning project and became a mechanism study. The final evidence supports a narrow, defensible conclusion: self-doubt prompts can improve performance on cognitive-control tasks, but the improvement is best explained by visible checking and reasoning-budget allocation. Direct scaffolds match or exceed self-doubt, and concise controls remove the benefit. Additionally, the workflow shows how agent-assisted implementation can accelerate empirical iteration when human review keeps the claims narrow.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
@@ -200,7 +200,7 @@ This study began as an emotional-conditioning project and became a mechanism stu
 
     Iteration Effort: \iterationHigh{}
 
-    Explanation: A language-model research agent implemented benchmark generators, open-model runners, scoring, PBS submission scripts, progress tools, result retrieval, and analysis scripts. Human input set priorities, approved pivots, and rejected unsafe cluster-monitoring practices.
+    Explanation: A language-model research agent implemented benchmark generators, open-model runners, scoring, H100 cluster job orchestration, progress tools, result retrieval, and analysis scripts. Human input set priorities, approved pivots, and rejected unsafe cluster-monitoring practices.
 
     \item \textbf{Analysis of data and interpretation of results}: This category includes organizing data, processing outputs, and interpreting results.
 
@@ -225,7 +225,7 @@ This study began as an emotional-conditioning project and became a mechanism stu
     \setcounter{enumi}{4}
     \item \textbf{AI systems used}: Describe all AI systems used in this research without naming specific products or models.
 
-    Description: The project used a frontier coding-oriented language model operating through an agentic command-line environment with access to local files, shell commands, web search, plotting libraries, SSH workflows, and LaTeX compilation. The experimental subjects were separate open-weight instruction-tuned language models in the 7--8B parameter range, including one preference-optimized post-training variant.
+    Description: The project used a frontier coding-oriented language model operating through an agentic command-line environment with access to local files, shell commands, web search, plotting libraries, SSH access to an H100 GPU cluster, and LaTeX compilation. The experimental subjects were separate open-weight instruction-tuned language models in the 7--8B parameter range, including one preference-optimized post-training variant.
 
     \item \textbf{Observed AI Limitations}: What specific limitations and failure modes were observed when using AI as a partner or lead author?
 
@@ -275,7 +275,7 @@ This study began as an emotional-conditioning project and became a mechanism stu
     \item {\bf Experiments compute resources}
     \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources needed to reproduce the experiments?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The paper reports batched open-model inference with batch size 4 and a 1024-token cap on a GPU-backed cluster. Exact hardware identifiers are omitted for anonymity and infrastructure privacy.
+    \item[] Justification: The paper reports batched open-model inference with batch size 4 and a 1024-token cap on an H100 GPU cluster. Exact machine identifiers are omitted for anonymity and infrastructure privacy.
 
     \item {\bf Research Ethics}
     \item[] Question: Does the research conducted in the paper conform with the NeurIPS Code of Ethics, except where CAISc's AI authorship policies apply?
