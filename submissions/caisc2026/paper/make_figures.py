@@ -175,7 +175,7 @@ def qwen_seed_robustness() -> None:
     ]
     seeds = sorted(df["seed"].unique())
     x = np.arange(len(seeds))
-    fig, ax = plt.subplots(figsize=(5.6, 2.8))
+    fig, ax = plt.subplots(figsize=(6.0, 3.1))
     palette = ["#0072B2", "#009E73", "#D55E00", "#CC79A7", "#999999"]
 
     for color, condition in zip(palette, conditions, strict=True):
@@ -196,7 +196,14 @@ def qwen_seed_robustness() -> None:
     ax.set_ylabel("Qwen2.5 delta (pp)")
     ax.set_ylim(-22, 43)
     ax.grid(axis="y", color="#cccccc", linewidth=0.4, alpha=0.65)
-    ax.legend(ncol=2, frameon=False, loc="lower right")
+    ax.legend(
+        ncol=3,
+        frameon=False,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.14),
+        handlelength=2.2,
+        columnspacing=1.4,
+    )
     save(fig, "qwen_seed_robustness")
 
 
