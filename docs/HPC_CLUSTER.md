@@ -1,6 +1,7 @@
 # NITJ HPC Cluster Runbook
 
-Source docs read on 2026-05-19:
+Source docs read on 2026-05-19. Access was re-verified on 2026-08-08 with the
+current project account:
 
 - `~/git/vlm/GPU_CPU_UserManual.docx`
 - `~/git/vlm/HPC FAQ.docx`
@@ -9,10 +10,23 @@ Source docs read on 2026-05-19:
 Cluster login:
 
 ```text
-ssh <username>@10.10.11.201
+ssh it_FA0618@10.10.11.201
 ```
 
-Do not commit credentials.
+Do not commit credentials. The password is intentionally not recorded in this
+repository.
+
+Two project accounts were verified on 2026-08-08:
+
+| Account | Remote home | Server-reported expiry | Current use |
+|---|---|---|---|
+| `it_FA0618` | `/Data1/it_FA0618` | 2026-08-09 | Qwen/Mistral EXP-18 campaign |
+| `it_FA0571` | `/Data3/it_FA0571` | 2026-08-10 | Multi-model EXP-18 campaign |
+
+The dates embedded in account-creation images can be stale; `chage -l` is the
+operational value observed by the login server. Re-check it before scheduling
+work beyond these dates. Each account remains limited to one GPU job at a time,
+and simultaneous jobs across accounts must use different verified MIG UUIDs.
 
 ## Important Rules
 
@@ -40,19 +54,20 @@ The authors gratefully acknowledge the High Performance Computing (HPC) facility
 Remote home:
 
 ```text
-/Data3/it_FA0571
+/Data1/it_FA0618
 ```
 
-Existing project:
+Current CAISc working copy:
 
 ```text
-/Data3/it_FA0571/vlm
+/Data1/it_FA0618/caisc
 ```
 
-Recommended CAISc clone:
+Current Python environment and model cache:
 
 ```text
-/Data3/it_FA0571/caisc
+/Data1/it_FA0618/vlm-hpc/env/bin/python
+/Data1/it_FA0618/vlm-hpc/hf-cache
 ```
 
 PBS binaries:
@@ -84,18 +99,21 @@ Local machine:
 git push
 ```
 
-Cluster:
+The current account does not have the older CAISc GitHub deploy key. Until a
+new key is installed, synchronize only the required source files from the local
+machine and exclude secrets and large artifacts:
 
 ```bash
-cd /Data3/it_FA0571
-git clone git@github.com:RishiAhuja/caisc.git caisc
-cd caisc
-git pull
+rsync -az --exclude='.git' --exclude='.env' --exclude='outputs' \
+  <required-paths> it_FA0618@10.10.11.201:/Data1/it_FA0618/caisc/
 ```
 
 Do not put `.env` files or API keys in git.
 
-### Current Cluster GitHub Access Status
+### `it_FA0571` GitHub Access Status
+
+The following notes apply specifically to `it_FA0571`; they do not describe
+`it_FA0618`.
 
 Checked on 2026-05-19:
 
@@ -158,7 +176,7 @@ conda activate <env_name>
 export PYTHONNOUSERSITE=1
 export PYTHONUNBUFFERED=1
 export TOKENIZERS_PARALLELISM=false
-export HF_HOME=/Data3/it_FA0571/hf_cache
+export HF_HOME=/Data1/it_FA0618/vlm-hpc/hf-cache
 export HUGGINGFACE_HUB_CACHE=$HF_HOME/hub
 export TRANSFORMERS_CACHE=$HF_HOME/transformers
 ```
@@ -186,7 +204,7 @@ Proper cluster execution order:
 
 ```bash
 export PATH=/opt/pbs/bin:$PATH
-qstat -u it_FA0571
+qstat -u it_FA0618
 tracejob <job_id>
 ```
 
