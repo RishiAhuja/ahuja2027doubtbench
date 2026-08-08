@@ -12,7 +12,15 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
 ANALYSIS_DIR = ROOT / "outputs" / "analysis" / "exp16_final_mechanism_20260529"
+PILOT_DIR = ROOT / "outputs" / "EXP-16" / "exp16_cognitive_pilot_20260525_001616"
 FIG_DIR = Path(__file__).resolve().parent / "figures"
+
+# Models in the EXP-16 cognitive pilot, ordered by default reasoning budget.
+PILOT_MODELS = [
+    ("Qwen_Qwen2.5-7B-Instruct", "Qwen2.5-7B\n(non-reasoning)", "#0072B2"),
+    ("Qwen_Qwen3-14B", "Qwen3-14B\n(thinking)", "#9467BD"),
+    ("deepseek-ai_DeepSeek-R1-Distill-Qwen-14B", "DeepSeek-R1\n14B (distill)", "#E69F00"),
+]
 
 MODEL_LABELS = {
     "Qwen/Qwen2.5-7B-Instruct": "Qwen2.5-7B",
@@ -207,11 +215,52 @@ def qwen_seed_robustness() -> None:
     save(fig, "qwen_seed_robustness")
 
 
+def budget_ceiling_reasoning() -> None:
+    """Self-doubt accuracy gain vs. the model's default reasoning budget.
+
+    Uses the EXP-16 cognitive pilot (single 200-task battery, identical
+    conditions) so all three points are measured on the same tasks.
+    """
+    xs, ys, labels, colors = [], [], [], []
+    for slug, label, color in PILOT_MODELS:
+        cond = pd.read_csv(PILOT_DIR / slug / "tables" / "by_model_condition.csv")
+        trace = pd.read_csv(PILOT_DIR / slug / "tables" / "trace_summary.csv")
+        base_acc = cond.loc[cond["condition"] == "baseline", "accuracy"].item()
+        doubt_acc = cond.loc[cond["condition"] == "self_doubt_only", "accuracy"].item()
+        base_tok = trace.loc[trace["condition"] == "baseline", "mean_visible_reasoning_tokens"].item()
+        xs.append(base_tok)
+        ys.append((doubt_acc - base_acc) * 100)
+        labels.append(label)
+        colors.append(color)
+
+    fig, ax = plt.subplots(figsize=(6.0, 3.1))
+    ax.axhline(0, color="black", linewidth=0.8)
+    for x, y, label, color in zip(xs, ys, labels, colors, strict=True):
+        ax.scatter([x], [y], s=70, color=color, edgecolor="black", linewidth=0.4, zorder=3)
+        va = "bottom" if y >= 0 else "top"
+        off = 1.6 if y >= 0 else -1.6
+        ax.annotate(
+            label,
+            (x, y + off),
+            ha="center",
+            va=va,
+            fontsize=7,
+            linespacing=0.95,
+        )
+    ax.set_xlabel("Baseline default reasoning tokens (mean)")
+    ax.set_ylabel("Self-doubt accuracy gain (pp)")
+    ax.set_xlim(-20, 560)
+    ax.set_ylim(-13, 22)
+    ax.grid(color="#cccccc", linewidth=0.4, alpha=0.65)
+    save(fig, "budget_ceiling_reasoning")
+
+
 def main() -> int:
     set_style()
     mechanism_delta_by_model()
     qwen_budget_control()
     qwen_seed_robustness()
+    budget_ceiling_reasoning()
     return 0
 
 
