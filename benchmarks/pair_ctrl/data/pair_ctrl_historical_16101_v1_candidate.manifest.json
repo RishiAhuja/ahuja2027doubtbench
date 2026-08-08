@@ -1,0 +1,83 @@
+{
+  "base_seed": 16101,
+  "benchmark": "PAIR-CTRL",
+  "components": [
+    {
+      "families": [
+        "flexibility",
+        "inhibition",
+        "rule_learning",
+        "working_memory"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_historical_16101_full.jsonl",
+      "role": "component_1_flexibility_inhibition_rule_learning_working_memory",
+      "sha256": "b96d533dc8c89d7586fbd6a7d3f99e532212433873e3d4d59019d6df37778b07",
+      "task_count": 800
+    },
+    {
+      "families": [
+        "monitoring",
+        "planning"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_historical_16101_breadth_extension.jsonl",
+      "role": "component_2_monitoring_planning",
+      "sha256": "99b46d0658de12f0f4727531b55a9b52b4a17dfacfaffb90d11bb1380666429b",
+      "task_count": 400
+    }
+  ],
+  "counts": {
+    "answer_type": {
+      "assignment_list": 50,
+      "comma_list": 290,
+      "integer": 410,
+      "list": 100,
+      "string": 350
+    },
+    "difficulty": {
+      "easy": 480,
+      "hard": 240,
+      "medium": 480
+    },
+    "family": {
+      "flexibility": 200,
+      "inhibition": 200,
+      "monitoring": 200,
+      "planning": 200,
+      "rule_learning": 200,
+      "working_memory": 200
+    },
+    "task_type": {
+      "action_sequence_selection": 50,
+      "add_then_subtract": 50,
+      "arithmetic_trace_audit": 50,
+      "bracket_parentheses": 40,
+      "candidate_answer_comparison": 50,
+      "checksum_table_audit": 50,
+      "color_then_shape": 50,
+      "conditional_mapping": 50,
+      "conflicting_final": 40,
+      "feature_composition": 50,
+      "key_value_updates": 50,
+      "larger_then_smaller": 50,
+      "list_updates": 50,
+      "minimum_route_cost": 50,
+      "precedence_schedule": 50,
+      "relevant_field_extraction": 40,
+      "resource_constrained_selection": 50,
+      "running_counter": 50,
+      "stack_operations": 50,
+      "state_log_audit": 50,
+      "string_transformation": 50,
+      "symbol_values": 50,
+      "two_switch_rule": 50,
+      "valid_decoy_commands": 40,
+      "word_label_conflict": 40
+    }
+  },
+  "data_file": "benchmarks/pair_ctrl/data/pair_ctrl_historical_16101_v1_candidate.jsonl",
+  "data_sha256": "6d3e3bab021a1c55bce5f2cf26299301d2daabe8281a99c74ce95254e7fd4193",
+  "schema_version": "1.0-candidate",
+  "split_id": "historical_16101_v1_candidate",
+  "status": "historical_replication",
+  "task_count": 1200
+}
