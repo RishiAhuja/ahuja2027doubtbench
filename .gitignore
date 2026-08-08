@@ -16,4 +16,15 @@ results/**/parsed_outputs.jsonl
 *.aux
 *.out
 *.pdf
+!submissions/**/*.pdf
 *.synctex.gz
+*.fdb_latexmk
+*.fls
+*.blg
+*.toc
+submissions/cods2026/results/raw_sources/
+submissions/cods2026/results/canonical_runs/**/sources/
+submissions/cods2026/cods_results_complete_*.tar.gz
+submissions/cods2026/cods_results_complete_*.tar.gz.sha256
+submissions/cods2026/template_current_20260813/
+submissions/cods2026/template_download/
