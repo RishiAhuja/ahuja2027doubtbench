@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="350" viewBox="0 0 1000 350">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#65717E"/></marker></defs>
+<rect x="15" y="55" width="225" height="235" rx="10" fill="#F3F5F7" stroke="#65717E" stroke-width="1.4"/>
+<text x="29" y="80" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#18212B" text-anchor="start">Prompt components</text>
+<text x="29" y="104" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="normal" fill="#18212B"><tspan x="29" dy="0">PURE AFFECT</tspan><tspan x="29" dy="15">“You feel melancholic”</tspan><tspan x="29" dy="15"></tspan><tspan x="29" dy="15">SELF-EVALUATION</tspan><tspan x="29" dy="15">uncertain + check work</tspan><tspan x="29" dy="15"></tspan><tspan x="29" dy="15">CAPABILITY DENIAL</tspan><tspan x="29" dy="15">“reasoning is unreliable”</tspan></text>
+<rect x="300" y="95" width="200" height="150" rx="10" fill="#FFF7E8" stroke="#D88916" stroke-width="1.4"/>
+<text x="314" y="120" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#18212B" text-anchor="start">Policy selection</text>
+<text x="314" y="144" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="normal" fill="#18212B"><tspan x="314" dy="0">Same task, different</tspan><tspan x="314" dy="15">model and instruction</tspan><tspan x="314" dy="15">context can elicit</tspan><tspan x="314" dy="15">different behaviors.</tspan></text>
+<rect x="575" y="20" width="410" height="90" rx="10" fill="#E8F6F1" stroke="#1F9D78" stroke-width="1.4"/>
+<text x="589" y="45" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1F9D78" text-anchor="start">CHECK  |  Qwen2.5 on under-elicited tasks</text>
+<text x="589" y="69" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="normal" fill="#18212B"><tspan x="589" dy="0">self-evaluation +29.2 pp; direct checking +37.4 pp</tspan></text>
+<rect x="575" y="130" width="410" height="90" rx="10" fill="#FCECEC" stroke="#D94B4B" stroke-width="1.4"/>
+<text x="589" y="155" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#D94B4B" text-anchor="start">COLLAPSE  |  base Llama under capability denial</text>
+<text x="589" y="179" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="normal" fill="#18212B"><tspan x="589" dy="0">synthetic −16.6 pp; GSM8K −57.3 pp</tspan></text>
+<rect x="575" y="240" width="410" height="90" rx="10" fill="#EAF1FD" stroke="#2D6CDF" stroke-width="1.4"/>
+<text x="589" y="265" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#2D6CDF" text-anchor="start">RESIST / NULL  |  Tulu-DPO and API models</text>
+<text x="589" y="289" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="normal" fill="#18212B"><tspan x="589" dy="0">self-evaluation and pure affect are mostly small</tspan></text>
+<line x1="240" y1="172" x2="297" y2="172" stroke="#65717E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="500" y1="170" x2="568" y2="65" stroke="#65717E" stroke-width="1.35" marker-end="url(#arrow)"/>
+<line x1="500" y1="170" x2="568" y2="175" stroke="#65717E" stroke-width="1.35" marker-end="url(#arrow)"/>
+<line x1="500" y1="170" x2="568" y2="285" stroke="#65717E" stroke-width="1.35" marker-end="url(#arrow)"/>
+<text x="16" y="320" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="bold" fill="#2D6CDF" text-anchor="start">Boundary condition:</text>
+<text x="132" y="320" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" fill="#18212B" text-anchor="start">GSM8K already asks for visible reasoning; Qwen&#x27;s +29 pp gain becomes −0.7 pp.</text>
+</svg>
