@@ -1,0 +1,63 @@
+{
+  "base_seed": 16102,
+  "benchmark": "PAIR-CTRL",
+  "components": [
+    {
+      "file": "experiments/data/exp16_mechanism_repl_s16102.jsonl",
+      "role": "predecessor_working_memory_and_inhibition",
+      "sha256": "edbc2157a83b3593fd2b4dafee34393b296b540a688d602b47346fe4707c6200",
+      "task_count": 400
+    },
+    {
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_legacy_16102_extension.jsonl",
+      "role": "pair_ctrl_flexibility_and_rule_learning_extension",
+      "sha256": "2daf49b1dbd3a7006eff463cb7c9495d18972638c55245bb850ac9227a3a967d",
+      "task_count": 400
+    }
+  ],
+  "counts": {
+    "answer_type": {
+      "assignment_list": 50,
+      "comma_list": 240,
+      "integer": 310,
+      "list": 100,
+      "string": 100
+    },
+    "difficulty": {
+      "easy": 320,
+      "hard": 160,
+      "medium": 320
+    },
+    "family": {
+      "flexibility": 200,
+      "inhibition": 200,
+      "rule_learning": 200,
+      "working_memory": 200
+    },
+    "task_type": {
+      "add_then_subtract": 50,
+      "bracket_parentheses": 40,
+      "color_then_shape": 50,
+      "conditional_mapping": 50,
+      "conflicting_final": 40,
+      "feature_composition": 50,
+      "key_value_updates": 50,
+      "larger_then_smaller": 50,
+      "list_updates": 50,
+      "relevant_field_extraction": 40,
+      "running_counter": 50,
+      "stack_operations": 50,
+      "string_transformation": 50,
+      "symbol_values": 50,
+      "two_switch_rule": 50,
+      "valid_decoy_commands": 40,
+      "word_label_conflict": 40
+    }
+  },
+  "data_file": "benchmarks/pair_ctrl/data/pair_ctrl_historical_16102_full.jsonl",
+  "data_sha256": "62ca4876b1c18e3480207e56643899a340340cadd85343e29a4e9069b23ba5bf",
+  "schema_version": "1.0-candidate",
+  "split_id": "historical_16102_full",
+  "status": "historical_development_or_replication",
+  "task_count": 800
+}
