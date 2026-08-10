@@ -1,0 +1,67 @@
+{
+  "artifact_role": "evaluation_batch_only",
+  "batch_id": "heldout_19003_tail",
+  "benchmark": "PAIR-CTRL",
+  "components": [
+    {
+      "families": [
+        "monitoring",
+        "planning"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_heldout_19003_breadth_extension.jsonl",
+      "sha256": "7cadf671b7efec3622b8ff947ce10c0040efa647599df0af419db32f857eb154",
+      "task_count": 400
+    },
+    {
+      "families": [
+        "goal_management",
+        "relational_integration"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_heldout_19003_final_breadth_extension.jsonl",
+      "sha256": "c8eeb8a44d8267ce485e43194125412ee4af74132c725e401772f03f72e61f39",
+      "task_count": 400
+    }
+  ],
+  "counts": {
+    "answer_type": {
+      "assignment_list": 50,
+      "comma_list": 150,
+      "integer": 150,
+      "string": 450
+    },
+    "difficulty": {
+      "easy": 320,
+      "hard": 160,
+      "medium": 320
+    },
+    "family": {
+      "goal_management": 200,
+      "monitoring": 200,
+      "planning": 200,
+      "relational_integration": 200
+    },
+    "task_type": {
+      "action_sequence_selection": 50,
+      "arithmetic_trace_audit": 50,
+      "candidate_answer_comparison": 50,
+      "checksum_table_audit": 50,
+      "deferred_action_execution": 50,
+      "family_relation_query": 50,
+      "interrupt_and_resume": 50,
+      "minimum_route_cost": 50,
+      "pending_goal_control": 50,
+      "precedence_schedule": 50,
+      "priority_queue_control": 50,
+      "resource_constrained_selection": 50,
+      "spatial_relation_composition": 50,
+      "state_log_audit": 50,
+      "transitive_order_query": 50,
+      "two_hop_record_join": 50
+    }
+  },
+  "data_file": "benchmarks/pair_ctrl/eval_batches/heldout_19003_tail.jsonl",
+  "data_sha256": "a018c0ec4cd4377ccb3e023e2043c7999b5c3b8e9537621c8dcbde986c6ec28f",
+  "expected_response_rows": 8000,
+  "preserves_source_task_fields": true,
+  "task_count": 800
+}
