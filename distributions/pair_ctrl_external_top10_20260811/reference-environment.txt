@@ -1,0 +1,13 @@
+Reference environment used by the completed FA0571 comparison runs:
+
+Python: 3.11
+Torch: 2.12.0+cu130
+Transformers: 5.8.1
+Precision: bfloat16
+Decoding: greedy (do_sample=false)
+Batch size: 8
+Maximum new tokens: 768
+
+Install a Torch wheel compatible with the external cluster's CUDA driver. Keep
+Transformers at 5.8.1 to match the reference runs.
+
