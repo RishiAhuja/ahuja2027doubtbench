@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Generic PBS template. The operator must adapt queue/account directives.
+#PBS -N pce_job
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l walltime=12:00:00
+#PBS -j oe
+
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?PBS_O_WORKDIR is required}"
+: "${JOB_ORDER:?Submit with JOB_ORDER=<external order>}"
+exec .venv/bin/python scripts/run_job.py --external-order "$JOB_ORDER"
+
