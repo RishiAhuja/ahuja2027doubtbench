@@ -1,0 +1,86 @@
+{
+  "artifact_role": "evaluation_batch_only",
+  "batch_id": "seed16101_tail3",
+  "benchmark": "PAIR-CTRL",
+  "components": [
+    {
+      "families": [
+        "flexibility",
+        "rule_learning"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_legacy_16101_extension.jsonl",
+      "sha256": "e946eee1a3d7b862373c3b7435866841d256f5a9d9c794660d0dda757475bc5d",
+      "task_count": 400
+    },
+    {
+      "families": [
+        "monitoring",
+        "planning"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_historical_16101_breadth_extension.jsonl",
+      "sha256": "99b46d0658de12f0f4727531b55a9b52b4a17dfacfaffb90d11bb1380666429b",
+      "task_count": 400
+    },
+    {
+      "families": [
+        "goal_management",
+        "relational_integration"
+      ],
+      "file": "benchmarks/pair_ctrl/data/pair_ctrl_historical_16101_final_breadth_extension.jsonl",
+      "sha256": "bd9c7d18be10d9f3b9f154aa8b97b3d139f47678fa8aeb5d1d03cdc8097cb712",
+      "task_count": 400
+    }
+  ],
+  "counts": {
+    "answer_type": {
+      "assignment_list": 50,
+      "comma_list": 350,
+      "integer": 250,
+      "string": 550
+    },
+    "difficulty": {
+      "easy": 480,
+      "hard": 240,
+      "medium": 480
+    },
+    "family": {
+      "flexibility": 200,
+      "goal_management": 200,
+      "monitoring": 200,
+      "planning": 200,
+      "relational_integration": 200,
+      "rule_learning": 200
+    },
+    "task_type": {
+      "action_sequence_selection": 50,
+      "add_then_subtract": 50,
+      "arithmetic_trace_audit": 50,
+      "candidate_answer_comparison": 50,
+      "checksum_table_audit": 50,
+      "color_then_shape": 50,
+      "conditional_mapping": 50,
+      "deferred_action_execution": 50,
+      "family_relation_query": 50,
+      "feature_composition": 50,
+      "interrupt_and_resume": 50,
+      "larger_then_smaller": 50,
+      "minimum_route_cost": 50,
+      "pending_goal_control": 50,
+      "precedence_schedule": 50,
+      "priority_queue_control": 50,
+      "resource_constrained_selection": 50,
+      "spatial_relation_composition": 50,
+      "state_log_audit": 50,
+      "string_transformation": 50,
+      "symbol_values": 50,
+      "transitive_order_query": 50,
+      "two_hop_record_join": 50,
+      "two_switch_rule": 50
+    }
+  },
+  "data_file": "benchmarks/pair_ctrl/eval_batches/seed16101_tail3.jsonl",
+  "data_sha256": "91c72c21847f592ecb85e1d702d4bb4aa4a3e00b8dec69ed404ef7a40214c264",
+  "expected_response_rows": 12000,
+  "preserves_source_task_fields": true,
+  "task_count": 1200
+}
