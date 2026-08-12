@@ -1,0 +1,13 @@
+model_slug,model,task_template,homogeneous_cells,quality_passing_cells,mean_cde,median_cde,min_cde,max_cde,positive_cells,negative_cells
+llama3.1-8b,meta-llama/Llama-3.1-8B-Instruct,minimal,3,0,-0.01375,-0.013125,-0.015625,-0.0125,0,3
+llama3.1-8b,meta-llama/Llama-3.1-8B-Instruct,reasoning_requested,3,0,-0.0020833333333333333,-0.005,-0.005625,0.004375,1,2
+mistral7b,mistralai/Mistral-7B-Instruct-v0.3,minimal,4,4,-0.0009375000000000001,-0.00125,-0.00625,0.005,2,2
+mistral7b,mistralai/Mistral-7B-Instruct-v0.3,reasoning_requested,4,4,-0.0084375,-0.00625,-0.023125,0.001875,1,2
+phi3.5-mini,microsoft/Phi-3.5-mini-instruct,minimal,4,4,0.053125000000000006,0.05,0.049375,0.063125,4,0
+phi3.5-mini,microsoft/Phi-3.5-mini-instruct,reasoning_requested,4,4,-0.0014062499999999997,0.0025,-0.01875,0.008125,2,2
+qwen2.5-7b,Qwen/Qwen2.5-7B-Instruct,minimal,3,3,0.007916666666666667,0.009375,-0.006875,0.02125,2,1
+qwen2.5-7b,Qwen/Qwen2.5-7B-Instruct,reasoning_requested,3,3,-0.036875,-0.038125,-0.04625,-0.02625,0,3
+tulu3-dpo-8b,allenai/Llama-3.1-Tulu-3-8B-DPO,minimal,4,4,0.02515625,0.0240625,0.0175,0.035,4,0
+tulu3-dpo-8b,allenai/Llama-3.1-Tulu-3-8B-DPO,reasoning_requested,4,4,0.005,0.005625,-0.003125,0.011875,3,1
+tulu3-sft-8b,allenai/Llama-3.1-Tulu-3-8B-SFT,minimal,4,4,0.011250000000000001,0.0103125,0.006875,0.0175,4,0
+tulu3-sft-8b,allenai/Llama-3.1-Tulu-3-8B-SFT,reasoning_requested,4,4,0.00953125,0.0071874999999999994,0.005625,0.018125,4,0
