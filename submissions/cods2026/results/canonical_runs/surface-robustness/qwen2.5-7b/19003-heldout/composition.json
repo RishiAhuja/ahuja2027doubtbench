@@ -1,0 +1,27 @@
+{
+  "expected_rows": 6600,
+  "expected_tasks": 660,
+  "kind": "surface-robustness",
+  "max_new_token_budgets": [
+    768
+  ],
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_slug": "qwen2.5-7b",
+  "note": "330 canonical tasks with 660 answer-preserving surface variants",
+  "observed_rows": 6600,
+  "observed_tasks": 660,
+  "protocol_status": "homogeneous",
+  "seed": "19003-heldout",
+  "segments_are_disjoint": true,
+  "sources": [
+    {
+      "config_present": true,
+      "metrics_present": true,
+      "observed_rows": 6600,
+      "order": 1,
+      "run_name": "qwen_rem_surface19003_27148.master",
+      "source_path": "/Users/rishi/git/caisc/outputs/hpc_snapshots/it_FA0571_20260809_1609/PAIR-CTRL/qwen_rem_surface19003_27148.master"
+    }
+  ],
+  "unique_response_keys": 6600
+}
