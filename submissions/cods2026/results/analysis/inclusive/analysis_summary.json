@@ -1,0 +1,52 @@
+{
+  "integrity": {
+    "analysis_policy": "inclusive_all_structurally_complete_cells",
+    "checkpoints": 6,
+    "diagnostic_flagged_cells_included": 6,
+    "factorial_cells": 24,
+    "factorial_latent_tasks": 6400,
+    "factorial_responses": 384000,
+    "independent_foundation_families": 4,
+    "mixed_budget_cells_included": 2,
+    "prompt_conditions": 5,
+    "surface_cells": 6,
+    "surface_latent_tasks": 330,
+    "surface_rendered_tasks": 660,
+    "surface_responses": 39600,
+    "task_contexts": 2,
+    "task_families": 8,
+    "task_seeds": 4,
+    "task_types": 33,
+    "total_responses": 423600
+  },
+  "observations": {
+    "checking_gain_range": [
+      -0.0011718750000000004,
+      0.07703125
+    ],
+    "largest_negative_family_mean_cde": [
+      "relational_integration",
+      -0.008854166666666666
+    ],
+    "largest_positive_family_mean_cde": [
+      "inhibition",
+      0.0275
+    ],
+    "median_checking_gain": 0.009804687500000001,
+    "median_concision_accuracy_effect": -0.03742187500000001,
+    "median_concision_token_effect": -85.43703124999999,
+    "models_positive_cde_minimal": 4,
+    "models_positive_cde_reasoning": 2,
+    "models_with_negative_overall_cde": 3,
+    "models_with_positive_overall_cde": 3,
+    "overall_cde_range": [
+      -0.014296875000000002,
+      0.025859374999999997
+    ],
+    "surface_all_three_correctness_agreement_mean": 0.8131818181818182,
+    "surface_cde_shift_abs_median": 0.015151515151515152,
+    "tulu_dpo_minus_sft_cde": 0.004687499999999997,
+    "tulu_dpo_minus_sft_cde_minimal": 0.013906250000000002,
+    "tulu_dpo_minus_sft_cde_reasoning": -0.00453125
+  }
+}
