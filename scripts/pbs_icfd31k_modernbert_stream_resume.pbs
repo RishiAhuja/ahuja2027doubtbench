@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -N icfd31k_mb_resume
+#PBS -q workq
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l walltime=06:00:00
+#PBS -j oe
+#PBS -o /Data3/it_FA0571/icfd31k_extension/logs/modernbert_stream_resume.log
+
+set -euo pipefail
+cd /Data3/it_FA0571/caisc
+source /apps/compilers/anaconda3/etc/profile.d/conda.sh
+conda activate "${ICFD31K_CONDA_ENV:-cultural_env}"
+
+export PYTHONNOUSERSITE=1
+export PYTHONUNBUFFERED=1
+export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export CUDA_VISIBLE_DEVICES="${ICFD31K_MIG_UUID:-MIG-5eef67d0-7e58-5016-8973-1bf2618f6d54}"
+export HF_HOME=/Data3/it_FA0571/hf_cache
+export HUGGINGFACE_HUB_CACHE="${HF_HOME}/hub"
+export TRANSFORMERS_CACHE="${HF_HOME}/transformers"
+export HF_DATASETS_CACHE=/Data3/it_FA0571/icfd31k_extension/datasets_cache
+export ICFD31K_DATA_ROOT=/Data3/it_FA0571/icfd31k_extension/data/final_upload_format
+export ICFD31K_OUTPUT_ROOT=/Data3/it_FA0571/icfd31k_extension/outputs
+
+nvidia-smi -L
+python -m experiments.icfd31k_extension.train_encoder \
+  --model answerdotai/ModernBERT-base \
+  --task streaming \
+  --data-root "${ICFD31K_DATA_ROOT}" \
+  --output-root "${ICFD31K_OUTPUT_ROOT}" \
+  --batch-size 32 \
+  --eval-batch-size 64 \
+  --max-length 512 \
+  --epochs 5 \
+  --learning-rate 2e-5 \
+  --seed 42
