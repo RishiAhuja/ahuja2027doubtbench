@@ -1,0 +1,19 @@
+{
+  "canonical_factorial_cells": 24,
+  "canonical_surface_cells": 6,
+  "medha_manifest_sha256": "a5a33eb649f269d8295da45633aa46ddeaef1363ba25f2ee0107e1d4552f48a5",
+  "mixed_protocol_factorial_cells": 2,
+  "models": {
+    "llama3.1-8b": "meta-llama/Llama-3.1-8B-Instruct",
+    "mistral7b": "mistralai/Mistral-7B-Instruct-v0.3",
+    "phi3.5-mini": "microsoft/Phi-3.5-mini-instruct",
+    "qwen2.5-7b": "Qwen/Qwen2.5-7B-Instruct",
+    "tulu3-dpo-8b": "allenai/Llama-3.1-Tulu-3-8B-DPO",
+    "tulu3-sft-8b": "allenai/Llama-3.1-Tulu-3-8B-SFT"
+  },
+  "protocol_homogeneous_factorial_cells": 22,
+  "raw_runs_inventoried": 70,
+  "schema": 1,
+  "summary_bootstrap_resamples": 300,
+  "warning": "Canonical source links are local links; preserve raw_sources when relocating the archive."
+}
