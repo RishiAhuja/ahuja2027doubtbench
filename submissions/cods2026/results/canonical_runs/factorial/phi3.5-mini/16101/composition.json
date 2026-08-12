@@ -1,0 +1,51 @@
+{
+  "expected_rows": 16000,
+  "expected_tasks": 1600,
+  "kind": "factorial",
+  "max_new_token_budgets": [
+    768
+  ],
+  "model": "microsoft/Phi-3.5-mini-instruct",
+  "model_slug": "phi3.5-mini",
+  "note": "four 400-task segments",
+  "observed_rows": 16000,
+  "observed_tasks": 1600,
+  "protocol_status": "homogeneous",
+  "seed": "16101",
+  "segments_are_disjoint": true,
+  "sources": [
+    {
+      "config_present": true,
+      "metrics_present": true,
+      "observed_rows": 4000,
+      "order": 1,
+      "run_name": "phi35_s16101_26714.master",
+      "source_path": "/Users/rishi/git/caisc/outputs/hpc_snapshots/it_FA0571_20260809_1609/EXP-18/phi35_s16101_26714.master"
+    },
+    {
+      "config_present": true,
+      "metrics_present": true,
+      "observed_rows": 4000,
+      "order": 2,
+      "run_name": "phi35_ext16101_26715.master",
+      "source_path": "/Users/rishi/git/caisc/outputs/hpc_snapshots/it_FA0571_20260809_1609/PAIR-CTRL/phi35_ext16101_26715.master"
+    },
+    {
+      "config_present": true,
+      "metrics_present": true,
+      "observed_rows": 4000,
+      "order": 3,
+      "run_name": "phi35_breadth16101_26716.master",
+      "source_path": "/Users/rishi/git/caisc/outputs/hpc_snapshots/it_FA0571_20260809_1609/PAIR-CTRL/phi35_breadth16101_26716.master"
+    },
+    {
+      "config_present": true,
+      "metrics_present": true,
+      "observed_rows": 4000,
+      "order": 4,
+      "run_name": "phi35_finalbreadth16101_26717.master",
+      "source_path": "/Users/rishi/git/caisc/outputs/hpc_snapshots/it_FA0571_20260809_1609/PAIR-CTRL/phi35_finalbreadth16101_26717.master"
+    }
+  ],
+  "unique_response_keys": 16000
+}
