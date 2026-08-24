@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="275.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="275.5" dy="0">Working</tspan><tspan x="275.5" dy="11">memory</tspan></text>
+<text x="378.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="378.5" dy="0">Inhibition</tspan></text>
+<text x="481.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="481.5" dy="0">Rule</tspan><tspan x="481.5" dy="11">switching</tspan></text>
+<text x="584.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="584.5" dy="0">Novel-rule</tspan><tspan x="584.5" dy="11">learning</tspan></text>
+<text x="687.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="687.5" dy="0">Error</tspan><tspan x="687.5" dy="11">monitoring</tspan></text>
+<text x="790.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="790.5" dy="0">Planning</tspan></text>
+<text x="893.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="893.5" dy="0">Relational</tspan><tspan x="893.5" dy="11">integration</tspan></text>
+<text x="996.5" y="48" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" fill="#1D2733" text-anchor="middle"><tspan x="996.5" dy="0">Goal</tspan><tspan x="996.5" dy="11">management</tspan></text>
+<text x="208" y="131" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#1D2733" text-anchor="end">Qwen 2.5 7B</text>
+<rect x="226" y="107" width="99" height="38" rx="0" fill="#B7C4D8" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="275.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-1.9</text>
+<rect x="329" y="107" width="99" height="38" rx="0" fill="#ADBCD3" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="378.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-2.4</text>
+<rect x="432" y="107" width="99" height="38" rx="0" fill="#4367A1" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="481.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">-8.1</text>
+<rect x="535" y="107" width="99" height="38" rx="0" fill="#DAB5BB" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="584.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+2.1</text>
+<rect x="638" y="107" width="99" height="38" rx="0" fill="#C6D0E0" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="687.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-1.3</text>
+<rect x="741" y="107" width="99" height="38" rx="0" fill="#E1C5CA" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="790.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+1.4</text>
+<rect x="844" y="107" width="99" height="38" rx="0" fill="#DBE0E9" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="893.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-0.6</text>
+<rect x="947" y="107" width="99" height="38" rx="0" fill="#DBE0E9" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="996.5" y="132" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-0.6</text>
+<text x="208" y="173" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#1D2733" text-anchor="end">Mistral 7B</text>
+<rect x="226" y="149" width="99" height="38" rx="0" fill="#C88C95" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="275.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+4.2</text>
+<rect x="329" y="149" width="99" height="38" rx="0" fill="#D4A6AD" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="378.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+2.8</text>
+<rect x="432" y="149" width="99" height="38" rx="0" fill="#C5CFDF" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="481.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-1.4</text>
+<rect x="535" y="149" width="99" height="38" rx="0" fill="#91A5C6" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="584.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-3.7</text>
+<rect x="638" y="149" width="99" height="38" rx="0" fill="#C6D0E0" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="687.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-1.3</text>
+<rect x="741" y="149" width="99" height="38" rx="0" fill="#EADADC" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="790.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.7</text>
+<rect x="844" y="149" width="99" height="38" rx="0" fill="#708BB6" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="893.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">-5.4</text>
+<rect x="947" y="149" width="99" height="38" rx="0" fill="#EFE4E6" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="996.5" y="174" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.4</text>
+<text x="208" y="215" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#1D2733" text-anchor="end">Llama 3.1 8B</text>
+<rect x="226" y="191" width="99" height="38" rx="0" fill="#F2ECED" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="275.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.2</text>
+<rect x="329" y="191" width="99" height="38" rx="0" fill="#B2C0D6" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="378.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-2.1</text>
+<rect x="432" y="191" width="99" height="38" rx="0" fill="#F7F7F7" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="481.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.0</text>
+<rect x="535" y="191" width="99" height="38" rx="0" fill="#3F649F" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="584.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">-8.4</text>
+<rect x="638" y="191" width="99" height="38" rx="0" fill="#C17C87" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="687.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+5.1</text>
+<rect x="741" y="191" width="99" height="38" rx="0" fill="#EADADC" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="790.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.7</text>
+<rect x="844" y="191" width="99" height="38" rx="0" fill="#F7F7F7" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="893.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.0</text>
+<rect x="947" y="191" width="99" height="38" rx="0" fill="#A3B4CF" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="996.5" y="216" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-2.8</text>
+<text x="208" y="257" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#1D2733" text-anchor="end">Phi 3.5 Mini</text>
+<rect x="226" y="233" width="99" height="38" rx="0" fill="#BA6A76" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="275.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+6.1</text>
+<rect x="329" y="233" width="99" height="38" rx="0" fill="#B76471" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="378.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+6.5</text>
+<rect x="432" y="233" width="99" height="38" rx="0" fill="#B96975" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="481.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+6.2</text>
+<rect x="535" y="233" width="99" height="38" rx="0" fill="#F2ECED" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="584.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.2</text>
+<rect x="638" y="233" width="99" height="38" rx="0" fill="#EBEDF1" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="687.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-0.2</text>
+<rect x="741" y="233" width="99" height="38" rx="0" fill="#B8C5D9" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="790.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-1.9</text>
+<rect x="844" y="233" width="99" height="38" rx="0" fill="#E9D8DB" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="893.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.8</text>
+<rect x="947" y="233" width="99" height="38" rx="0" fill="#D2A3AA" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="996.5" y="258" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+3.0</text>
+<text x="208" y="299" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#1D2733" text-anchor="end">Tulu 3 SFT 8B</text>
+<rect x="226" y="275" width="99" height="38" rx="0" fill="#E6E9EF" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="275.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-0.3</text>
+<rect x="329" y="275" width="99" height="38" rx="0" fill="#BE737F" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="378.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+5.6</text>
+<rect x="432" y="275" width="99" height="38" rx="0" fill="#F7F7F7" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="481.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.0</text>
+<rect x="535" y="275" width="99" height="38" rx="0" fill="#A63E4E" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="584.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+8.9</text>
+<rect x="638" y="275" width="99" height="38" rx="0" fill="#EFE4E6" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="687.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.4</text>
+<rect x="741" y="275" width="99" height="38" rx="0" fill="#C3CEDE" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="790.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-1.4</text>
+<rect x="844" y="275" width="99" height="38" rx="0" fill="#F7F7F7" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="893.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.0</text>
+<rect x="947" y="275" width="99" height="38" rx="0" fill="#7B94BC" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="996.5" y="300" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">-4.8</text>
+<text x="208" y="341" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#1D2733" text-anchor="end">Tulu 3 DPO 8B</text>
+<rect x="226" y="317" width="99" height="38" rx="0" fill="#C17B86" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="275.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+5.1</text>
+<rect x="329" y="317" width="99" height="38" rx="0" fill="#BA6A76" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="378.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#FFFFFF" text-anchor="middle">+6.1</text>
+<rect x="432" y="317" width="99" height="38" rx="0" fill="#F7F7F7" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="481.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.0</text>
+<rect x="535" y="317" width="99" height="38" rx="0" fill="#ADBCD3" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="584.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-2.4</text>
+<rect x="638" y="317" width="99" height="38" rx="0" fill="#D5A9B0" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="687.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+2.7</text>
+<rect x="741" y="317" width="99" height="38" rx="0" fill="#EBEDF1" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="790.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">-0.2</text>
+<rect x="844" y="317" width="99" height="38" rx="0" fill="#F7F7F7" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="893.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.0</text>
+<rect x="947" y="317" width="99" height="38" rx="0" fill="#EADADC" stroke="#FFFFFF" stroke-width="1" opacity="1"/>
+<text x="996.5" y="342" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" font-style="normal" fill="#1D2733" text-anchor="middle">+0.7</text>
+<text x="224" y="392" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="normal" font-style="normal" fill="#677381" text-anchor="start">Family-level CDE (percentage points), averaged across four task seeds and both contexts</text>
+</svg>
