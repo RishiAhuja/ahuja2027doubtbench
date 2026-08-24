@@ -1,0 +1,61 @@
+model_slug,model_label,task_template,template_label,condition,condition_label,n_tasks,accuracy_macro,mean_generated_tokens
+qwen2.5-7b,Qwen 2.5 7B,minimal,Minimal,common_neutral,Neutral,6400,0.588125,158.2553125
+qwen2.5-7b,Qwen 2.5 7B,minimal,Minimal,common_self_doubt,Self-doubt,6400,0.70875,199.300625
+qwen2.5-7b,Qwen 2.5 7B,minimal,Minimal,common_check,Check,6400,0.7378125,184.92453125
+qwen2.5-7b,Qwen 2.5 7B,minimal,Minimal,common_self_doubt_check,Doubt + check,6400,0.7435937499999999,206.42296875
+qwen2.5-7b,Qwen 2.5 7B,minimal,Minimal,common_check_concise,Check + concise,6400,0.34,9.72734375
+qwen2.5-7b,Qwen 2.5 7B,reasoning_requested,Reasoning requested,common_neutral,Neutral,6400,0.740625,246.45125
+qwen2.5-7b,Qwen 2.5 7B,reasoning_requested,Reasoning requested,common_self_doubt,Self-doubt,6400,0.7165625,256.46890625
+qwen2.5-7b,Qwen 2.5 7B,reasoning_requested,Reasoning requested,common_check,Check,6400,0.745,256.94078125
+qwen2.5-7b,Qwen 2.5 7B,reasoning_requested,Reasoning requested,common_self_doubt_check,Doubt + check,6400,0.710625,262.58703125
+qwen2.5-7b,Qwen 2.5 7B,reasoning_requested,Reasoning requested,common_check_concise,Check + concise,6400,0.60171875,99.398125
+mistral7b,Mistral 7B,minimal,Minimal,common_neutral,Neutral,6400,0.24078125,78.2778125
+mistral7b,Mistral 7B,minimal,Minimal,common_self_doubt,Self-doubt,6400,0.21078125,108.0475
+mistral7b,Mistral 7B,minimal,Minimal,common_check,Check,6400,0.23453125,86.6603125
+mistral7b,Mistral 7B,minimal,Minimal,common_self_doubt_check,Doubt + check,6400,0.23359375,135.4165625
+mistral7b,Mistral 7B,minimal,Minimal,common_check_concise,Check + concise,6400,0.25390625,17.44328125
+mistral7b,Mistral 7B,reasoning_requested,Reasoning requested,common_neutral,Neutral,6400,0.2584375,206.11046875
+mistral7b,Mistral 7B,reasoning_requested,Reasoning requested,common_self_doubt,Self-doubt,6400,0.25421875,224.335
+mistral7b,Mistral 7B,reasoning_requested,Reasoning requested,common_check,Check,6400,0.27484375,196.3125
+mistral7b,Mistral 7B,reasoning_requested,Reasoning requested,common_self_doubt_check,Doubt + check,6400,0.26640625,208.86875
+mistral7b,Mistral 7B,reasoning_requested,Reasoning requested,common_check_concise,Check + concise,6400,0.2775,115.394375
+llama3.1-8b,Llama 3.1 8B,minimal,Minimal,common_neutral,Neutral,6400,0.21312499999999998,196.5425
+llama3.1-8b,Llama 3.1 8B,minimal,Minimal,common_self_doubt,Self-doubt,6400,0.20578125,286.33671875
+llama3.1-8b,Llama 3.1 8B,minimal,Minimal,common_check,Check,6400,0.23140625,203.6021875
+llama3.1-8b,Llama 3.1 8B,minimal,Minimal,common_self_doubt_check,Doubt + check,6400,0.215625,301.65234375
+llama3.1-8b,Llama 3.1 8B,minimal,Minimal,common_check_concise,Check + concise,6400,0.124375,27.7559375
+llama3.1-8b,Llama 3.1 8B,reasoning_requested,Reasoning requested,common_neutral,Neutral,6400,0.186875,291.05203125
+llama3.1-8b,Llama 3.1 8B,reasoning_requested,Reasoning requested,common_self_doubt,Self-doubt,6400,0.1825,384.60171875
+llama3.1-8b,Llama 3.1 8B,reasoning_requested,Reasoning requested,common_check,Check,6400,0.19765625,279.1846875
+llama3.1-8b,Llama 3.1 8B,reasoning_requested,Reasoning requested,common_self_doubt_check,Doubt + check,6400,0.195,355.72171875
+llama3.1-8b,Llama 3.1 8B,reasoning_requested,Reasoning requested,common_check_concise,Check + concise,6400,0.19203125000000001,247.574375
+phi3.5-mini,Phi 3.5 Mini,minimal,Minimal,common_neutral,Neutral,6400,0.37078125,81.16890625
+phi3.5-mini,Phi 3.5 Mini,minimal,Minimal,common_self_doubt,Self-doubt,6400,0.3675,90.3671875
+phi3.5-mini,Phi 3.5 Mini,minimal,Minimal,common_check,Check,6400,0.37953125,106.9646875
+phi3.5-mini,Phi 3.5 Mini,minimal,Minimal,common_self_doubt_check,Doubt + check,6400,0.43265625,130.463125
+phi3.5-mini,Phi 3.5 Mini,minimal,Minimal,common_check_concise,Check + concise,6400,0.30953125,23.09328125
+phi3.5-mini,Phi 3.5 Mini,reasoning_requested,Reasoning requested,common_neutral,Neutral,6400,0.52890625,221.72
+phi3.5-mini,Phi 3.5 Mini,reasoning_requested,Reasoning requested,common_self_doubt,Self-doubt,6400,0.525,224.65359375
+phi3.5-mini,Phi 3.5 Mini,reasoning_requested,Reasoning requested,common_check,Check,6400,0.52921875,217.7734375
+phi3.5-mini,Phi 3.5 Mini,reasoning_requested,Reasoning requested,common_self_doubt_check,Doubt + check,6400,0.5278125,225.8471875
+phi3.5-mini,Phi 3.5 Mini,reasoning_requested,Reasoning requested,common_check_concise,Check + concise,6400,0.44859375,130.77078125
+tulu3-sft-8b,Tulu 3 SFT 8B,minimal,Minimal,common_neutral,Neutral,6400,0.119375,12.5934375
+tulu3-sft-8b,Tulu 3 SFT 8B,minimal,Minimal,common_self_doubt,Self-doubt,6400,0.1303125,47.27484375
+tulu3-sft-8b,Tulu 3 SFT 8B,minimal,Minimal,common_check,Check,6400,0.1121875,14.48890625
+tulu3-sft-8b,Tulu 3 SFT 8B,minimal,Minimal,common_self_doubt_check,Doubt + check,6400,0.12343749999999999,118.71125
+tulu3-sft-8b,Tulu 3 SFT 8B,minimal,Minimal,common_check_concise,Check + concise,6400,0.12203125,10.72953125
+tulu3-sft-8b,Tulu 3 SFT 8B,reasoning_requested,Reasoning requested,common_neutral,Neutral,6400,0.15109375,113.79359375
+tulu3-sft-8b,Tulu 3 SFT 8B,reasoning_requested,Reasoning requested,common_self_doubt,Self-doubt,6400,0.15296875000000001,142.8796875
+tulu3-sft-8b,Tulu 3 SFT 8B,reasoning_requested,Reasoning requested,common_check,Check,6400,0.1559375,57.68578125
+tulu3-sft-8b,Tulu 3 SFT 8B,reasoning_requested,Reasoning requested,common_self_doubt_check,Doubt + check,6400,0.16546875,96.80078125
+tulu3-sft-8b,Tulu 3 SFT 8B,reasoning_requested,Reasoning requested,common_check_concise,Check + concise,6400,0.17250000000000001,41.3503125
+tulu3-dpo-8b,Tulu 3 DPO 8B,minimal,Minimal,common_neutral,Neutral,6400,0.1465625,84.983125
+tulu3-dpo-8b,Tulu 3 DPO 8B,minimal,Minimal,common_self_doubt,Self-doubt,6400,0.17921875,135.50078125
+tulu3-dpo-8b,Tulu 3 DPO 8B,minimal,Minimal,common_check,Check,6400,0.1771875,103.2821875
+tulu3-dpo-8b,Tulu 3 DPO 8B,minimal,Minimal,common_self_doubt_check,Doubt + check,6400,0.20234375,171.40828125
+tulu3-dpo-8b,Tulu 3 DPO 8B,minimal,Minimal,common_check_concise,Check + concise,6400,0.11609375,11.93765625
+tulu3-dpo-8b,Tulu 3 DPO 8B,reasoning_requested,Reasoning requested,common_neutral,Neutral,6400,0.17953125,221.6434375
+tulu3-dpo-8b,Tulu 3 DPO 8B,reasoning_requested,Reasoning requested,common_self_doubt,Self-doubt,6400,0.184375,226.338125
+tulu3-dpo-8b,Tulu 3 DPO 8B,reasoning_requested,Reasoning requested,common_check,Check,6400,0.1846875,192.5328125
+tulu3-dpo-8b,Tulu 3 DPO 8B,reasoning_requested,Reasoning requested,common_self_doubt_check,Doubt + check,6400,0.1896875,212.67484375
+tulu3-dpo-8b,Tulu 3 DPO 8B,reasoning_requested,Reasoning requested,common_check_concise,Check + concise,6400,0.1709375,98.52578125
