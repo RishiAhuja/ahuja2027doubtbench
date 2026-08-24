@@ -1,0 +1,72 @@
+{
+  "additional_answer_preserving_variants": 660,
+  "benchmark": "DoubtBench",
+  "counts": {
+    "answer_type": {
+      "assignment_list": 60,
+      "comma_list": 240,
+      "integer": 300,
+      "list": 60,
+      "string": 330
+    },
+    "difficulty": {
+      "easy": 396,
+      "hard": 198,
+      "medium": 396
+    },
+    "family": {
+      "flexibility": 120,
+      "goal_management": 120,
+      "inhibition": 150,
+      "monitoring": 120,
+      "planning": 120,
+      "relational_integration": 120,
+      "rule_learning": 120,
+      "working_memory": 120
+    },
+    "task_type": {
+      "action_sequence_selection": 30,
+      "add_then_subtract": 30,
+      "arithmetic_trace_audit": 30,
+      "bracket_parentheses": 30,
+      "candidate_answer_comparison": 30,
+      "checksum_table_audit": 30,
+      "color_then_shape": 30,
+      "conditional_mapping": 30,
+      "conflicting_final": 30,
+      "deferred_action_execution": 30,
+      "family_relation_query": 30,
+      "feature_composition": 30,
+      "interrupt_and_resume": 30,
+      "key_value_updates": 30,
+      "larger_then_smaller": 30,
+      "list_updates": 30,
+      "minimum_route_cost": 30,
+      "pending_goal_control": 30,
+      "precedence_schedule": 30,
+      "priority_queue_control": 30,
+      "relevant_field_extraction": 30,
+      "resource_constrained_selection": 30,
+      "running_counter": 30,
+      "spatial_relation_composition": 30,
+      "stack_operations": 30,
+      "state_log_audit": 30,
+      "string_transformation": 30,
+      "symbol_values": 30,
+      "transitive_order_query": 30,
+      "two_hop_record_join": 30,
+      "two_switch_rule": 30,
+      "valid_decoy_commands": 30,
+      "word_label_conflict": 30
+    }
+  },
+  "latent_task_count": 330,
+  "rendering_count": 990,
+  "sha256": "3cb1530cac495f464c447b12715e1ad96c77ab55e77b277215e8973f44e5f10a",
+  "surface_form_counts": {
+    "canonical": 330,
+    "scenario": 330,
+    "structured": 330
+  },
+  "task_set": "surface_forms"
+}
