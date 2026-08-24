@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering\scriptsize
+\caption{Task-family CDE in percentage points, averaged over four task seeds and both task contexts.}
+\label{tab:family-cde}
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Checkpoint & Memory & Inhibition & Switching & Rule learn. & Monitoring & Planning & Relations & Goals \\
+\midrule
+Qwen 2.5 7B & -1.94 & -2.38 & -8.13 & +2.13 & -1.31 & +1.44 & -0.62 & -0.62 \\
+Mistral 7B & +4.19 & +2.81 & -1.38 & -3.69 & -1.31 & +0.69 & -5.44 & +0.38 \\
+Llama 3.1 8B & +0.19 & -2.13 & +0.00 & -8.38 & +5.06 & +0.69 & +0.00 & -2.81 \\
+Phi 3.5 Mini & +6.13 & +6.50 & +6.19 & +0.19 & -0.19 & -1.88 & +0.75 & +3.00 \\
+Tulu 3 SFT 8B & -0.31 & +5.56 & +0.00 & +8.94 & +0.38 & -1.44 & +0.00 & -4.81 \\
+Tulu 3 DPO 8B & +5.13 & +6.13 & +0.00 & -2.38 & +2.69 & -0.19 & +0.00 & +0.69 \\
+\bottomrule
+\end{tabular}
+\end{table*}

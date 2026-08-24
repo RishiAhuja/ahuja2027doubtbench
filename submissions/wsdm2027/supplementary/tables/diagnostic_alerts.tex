@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering\scriptsize
+\caption{Structurally complete factorial evaluations exceeding the 2\% diagnostic threshold. Rates are percentages over all 16,000 responses in the checkpoint--task-set evaluation.}
+\label{tab:alerts}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Checkpoint & Task seed & Output limit & Parse failure & Truncation \\
+\midrule
+Qwen 2.5 7B & 16061 & 384/768 & 2.11\% & 2.69\% \\
+Llama 3.1 8B & 16061 & 384/768 & 8.21\% & 8.44\% \\
+Llama 3.1 8B & 16101 & 768 & 7.54\% & 7.64\% \\
+Llama 3.1 8B & 16102 & 768 & 7.77\% & 7.83\% \\
+Llama 3.1 8B & 19003 & 768 & 7.86\% & 7.96\% \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering\scriptsize
+\caption{Complete checkpoint scorecard. Neutral is exact accuracy in percent; all other numerical entries are percentage-point effects. CDE intervals are paired task-bootstrap intervals.}
+\label{tab:scorecard}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Checkpoint & Neutral & Check gain & CDE [95\% CI] & CDE$_{\min}$ & CDE$_{\mathrm{reason}}$ & Context mod. & Concision \\
+\midrule
+Qwen 2.5 7B & 66.44 & +7.70 & -1.43 [-2.14, -0.69] & +0.58 & -3.44 & -4.02 & -27.05 \\
+Mistral 7B & 24.96 & +0.51 & -0.47 [-1.14, +0.20] & -0.09 & -0.84 & -0.75 & +1.10 \\
+Llama 3.1 8B & 20.00 & +1.45 & -0.92 [-1.34, -0.49] & -1.58 & -0.27 & +1.31 & -5.63 \\
+Phi 3.5 Mini & 44.98 & +0.45 & +2.59 [+1.95, +3.27] & +5.31 & -0.14 & -5.45 & -7.53 \\
+Tulu 3 SFT 8B & 13.52 & -0.12 & +1.04 [+0.60, +1.48] & +1.13 & +0.95 & -0.17 & +1.32 \\
+Tulu 3 DPO 8B & 16.30 & +1.79 & +1.51 [+1.12, +1.92] & +2.52 & +0.50 & -2.02 & -3.74 \\
+\bottomrule
+\end{tabular}
+\end{table*}

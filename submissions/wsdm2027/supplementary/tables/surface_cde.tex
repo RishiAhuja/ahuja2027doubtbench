@@ -1,0 +1,28 @@
+\begin{table}[t]
+\centering\scriptsize
+\caption{Surface-form CDE in percentage points on the same 330 latent tasks.}
+\label{tab:surface-cde}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Checkpoint & Context & Canonical & Structured & Scenario \\
+\midrule
+Qwen 2.5 7B & Minimal & +0.91 & +0.91 & +1.82 \\
+Qwen 2.5 7B & Reasoning & -6.36 & -3.64 & -3.94 \\
+\addlinespace[1.5pt]
+Mistral 7B & Minimal & +0.30 & +5.45 & +5.76 \\
+Mistral 7B & Reasoning & -0.30 & -2.12 & -3.03 \\
+\addlinespace[1.5pt]
+Llama 3.1 8B & Minimal & -3.64 & +1.52 & -2.12 \\
+Llama 3.1 8B & Reasoning & -2.12 & -1.82 & -4.85 \\
+\addlinespace[1.5pt]
+Phi 3.5 Mini & Minimal & +7.27 & +5.76 & +0.00 \\
+Phi 3.5 Mini & Reasoning & -0.30 & +0.91 & -1.82 \\
+\addlinespace[1.5pt]
+Tulu 3 SFT 8B & Minimal & +3.64 & +6.36 & +5.45 \\
+Tulu 3 SFT 8B & Reasoning & -0.30 & +0.61 & +0.00 \\
+\addlinespace[1.5pt]
+Tulu 3 DPO 8B & Minimal & +3.33 & +2.12 & +3.03 \\
+Tulu 3 DPO 8B & Reasoning & +1.21 & +0.61 & -0.30 \\
+\bottomrule
+\end{tabular}
+\end{table}

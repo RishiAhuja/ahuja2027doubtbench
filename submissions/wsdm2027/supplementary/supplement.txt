@@ -1,0 +1,765 @@
+1
+2
+     Supplementary Material for DoubtBench: Does Self-Doubt Help                                                                                         59
+                                                                                                                                                         60
+3           Language Models—or Just Make Them Check?                                                                                                     61
+4                                                                                                                                                        62
+5
+                                                             Anonymous Author(s)                                                                         63
+6                                                                                                                                                        64
+7    This supplement provides the complete task inventory, exact                 under all five prompt conditions and both task contexts. The task       65
+8    prompt interventions, evaluation and scoring protocol, full numer-          identifier is therefore the unit of pairing.                            66
+9    ical results, and diagnostic analyses for DoubtBench. It reports                                                                                    67
+10   only analyses supported by the released task and response records.                                                                                  68
+11   In particular, it distinguishes checks performed over all tasks                     Property                                         Count          69
+12   from checks available for a subset, and it does not claim prompt-                   Task families                                          8        70
+13   paraphrase or held-out-schema generalization.                                       Task types                                            33        71
+14                                                                                       Independently seeded task sets                         4        72
+15                                                                                       Tasks per set                                      1,600        73
+                                 Contents
+16                                                                                       Latent tasks                                       6,400        74
+17      Contents                                                        1                Prompt conditions                                      5        75
+18      1    Benchmark Construction and Contents                        1                Task contexts                                          2        76
+        1.1      Evaluation Unit and Counting Reconciliation            1                Responses per checkpoint and latent task              10
+19                                                                                                                                                       77
+                                                                                         Evaluated checkpoints                                  6
+20      1.2      Complete Task-Type Inventory                           1                                                                                78
+                                                                                         Main factorial responses                         384,000
+21      1.3      Hidden-Answer-First Construction                       1                Canonical tasks selected for surface analysis        330        79
+22      1.4      Representative Tasks and Gold Derivations              2                Additional answer-preserving renderings              660        80
+23      1.5      Validation Coverage and Its Boundary                   3                Additional surface-analysis responses             39,600        81
+24      2    Exact Prompt Interventions                                 3                Total completed responses                       423,600         82
+25      2.1      Shared Prefix and Component Strings                    3        Table 1: Counting reconciliation. The surface analysis reuses           83
+26      2.2      Five Conditions and Two Task Contexts                  4        the canonical responses already present in the main factorial           84
+27      2.3      Paired Contrasts                                       4        and adds two renderings for each of 330 latent tasks.                   85
+28      3    Evaluation Protocol                                        4                                                                                86
+29      3.1      Checkpoints and Inference                              4                                                                                87
+30      3.2      Scoring and Inclusion                                  4                                                                                88
+31      4    Complete Results                                           5           The main factorial count is 6,400 × 5 × 2 × 6 = 384,000. The         89
+32      4.1      Primary Scorecard                                      5        additional surface count is 660 × 5 × 2 × 6 = 39,600. The four task     90
+33      4.2      Accuracy in All Ten Cells                              5        sets contain independently generated instances from the same 33         91
+34      4.3      Variation Across Task Seeds                            5        task types. They are not training, validation, and test partitions,     92
+35      4.4      Task-Family and Difficulty Decomposition               5        and they do not test previously unseen task types. Three seeds          93
+36      4.5      Within-Lineage Post-Training Comparison                5        were used during development; seed 19003 was reserved before its        94
+37      5    Surface Robustness and Completion Diagnostics              5        checkpoint evaluations and supplies the latent tasks used for the       95
+38      5.1      Answer-Preserving Surface Forms                        5        surface analysis.                                                       96
+39      5.2      Parsing and Truncation Alerts                          5           Each task set contains 200 tasks from every family. Within each      97
+40      5.3      Complete-Pair Sensitivity                              5        family, 80 tasks are easy, 80 are medium, and 40 are hard. Task         98
+41      5.4      Output-Limit Sensitivity                               5        types are allocated as evenly as possible within a family. Across all   99
+42      5.5      Concision as an Output-Format Intervention             6        four task sets, each family therefore contributes 800 tasks with a      100
+43      6    Reproducibility and Scope                                  7        40/40/20 difficulty distribution.                                       101
+44      6.1      Released Records                                       7                                                                                102
+45      6.2      Evidence Boundaries                                    8        1.2    Complete Task-Type Inventory                                     103
+46                                                                                                                                                       104
+                                                                                 Table 2 states the operation and answer representation for all 33
+47                                                                                                                                                       105
+                                                                                 task types. The family names describe operational demands in these
+48                                                                                                                                                       106
+                                                                                 program-generated tasks; they do not assert equivalence to human
+49
+     1 Benchmark Construction and Contents                                       clinical or psychometric constructs.
+                                                                                                                                                         107
+50                                                                                                                                                       108
+51
+     1.1 Evaluation Unit and Counting                                                                                                                    109
+52       Reconciliation                                                          1.3    Hidden-Answer-First Construction                                 110
+53   A latent task contains model-visible instructions, a hidden struc-          Every task type is defined by a human-authored schema specifying        111
+54   tured state, an exact gold answer, a task family, a task type, a dif-       admissible latent values, difficulty parameters, an answer function,    112
+55   ficulty level, and the seed used to generate it. The model receives         a renderer, an answer representation, and deterministic normaliza-      113
+56   the instructions but not the structured state, answer function, or          tion rules. Generation follows the same order for every task:           114
+57   gold answer. For a fixed checkpoint, each latent task is evaluated          (1) initialize a pseudorandom generator with the task-set seed;         115
+58                                                                           1                                                                           116
+      WSDM 2027, February 2027, Hong Kong, China                                                                                                                           Anon.
+
+
+117   Family                      Task type                   Required operation                                                                                 Answer             175
+                                                                                                                                                                 representation
+118                                                                                                                                                                                 176
+119                               List updates                Apply ordered append, replacement, removal, and reversal operations                                Ordered list       177
+      Working memory and          Key-value updates           Apply assignments and swaps to labeled values                                                      Key-value list
+120   updating                    Running counter             Update a numerical state while ignoring marked distractors                                         Integer            178
+121                               Stack operations            Apply ordered push and pop operations                                                              Ordered list       179
+122                               Bracket filtering           Sum values in square brackets and ignore parenthesized values                                      Integer            180
+123   Inhibition and distractor   Valid-command filtering     Execute commands marked valid and ignore decoy commands                                            Integer            181
+                                  Conflicting final           Compute the requested sum while ignoring a misleading answer string                                Integer
+124   control                     Word-label conflict         Return label fields rather than conflicting word fields                                            Ordered labels     182
+125                               Relevant-field extraction   Aggregate only the specified field from structured records                                         Integer            183
+126                               Color then shape            Change the selected object attribute at a specified position                                       Ordered labels     184
+      Flexibility and rule        Larger then smaller         Change the comparison rule partway through a sequence                                              Ordered integers
+127                                                                                                                                                                                 185
+      switching                   Add then subtract           Change the arithmetic rule after a switch marker                                                   Ordered integers
+128                               Two-switch rule             Alternate between two arithmetic rules at two markers                                              Ordered integers   186
+129                               Symbol values               Infer numerical symbol values from demonstrations                                                  Integer            187
+130                               Feature composition         Infer how component features combine, then apply the rule                                          Integer            188
+      Novel rule learning
+                                  String transformation       Infer and apply a demonstrated string transformation                                               Short string
+131                                                                                                                                                                                 189
+                                  Conditional mapping         Infer a mapping whose output depends on an observed condition                                      Label
+132                                                                                                                                                                                 190
+                                  Arithmetic trace audit      Locate the first incorrect state in a reported calculation trace                                   Step number
+133   Consistency and error       Checksum audit              Locate the row whose reported sum is incorrect                                                     Row label          191
+134   monitoring                  Candidate comparison        Determine which proposed answers satisfy the stated calculation                                    Label              192
+                                  State-log audit             Locate the key whose reported final state is incorrect                                             Key or “none”
+135                                                                                                                                                                                 193
+136                               Precedence schedule         Select the ordering that satisfies all precedence constraints                                      Candidate label    194
+      Constrained multi-step      Minimum route cost          Compute the least-cost path in a weighted undirected graph                                         Integer
+137   planning                    Resource-constrained        Maximize value under a budget with fixed tie-breaking rules                                        Selected labels    195
+138                               selection                                                                                                                                         196
+                                  Action-sequence selection   Select the action sequence that reaches a target state                                             Candidate label
+139                                                                                                                                                                                 197
+140                               Transitive order            Compose pairwise order facts to answer a relation query                                            Item label         198
+                                  Spatial composition         Compose cardinal relations on a square grid                                                        Direction
+141   Relational integration                                                                                                                                                        199
+                                  Two-hop record join         Join two lookup tables through an intermediate identifier                                          Group label
+142                               Family relation             Compose parent facts to identify a relation                                                        Relation label     200
+143                               Deferred actions            Execute a deferred action only on its first matching signal                                        Integer            201
+                                  Interrupt and resume        Update only the active goal while switching between two goals                                      Key-value list
+144   Goal management                                                                                                                                                               202
+                                  Priority queue              Process the highest-priority pending goal with stable tie-breaking                                 Ordered labels
+145                               Pending goals               Maintain a set under add, complete, cancel, and noise events                                       Sorted labels      203
+146                                                                                                                                                                                 204
+                  Table 2: Complete task-type inventory. Names describe the model-visible operations exercised by each task.
+147                                                                                                                                                                                 205
+148                                                                                                                                                                                 206
+149                                                                                                                                                                                 207
+150   (2) sample a latent state satisfying the schema and difficulty con-                           Working memory and updating                                                     208
+151       straints;                                                                                                                                                                 209
+                                                                                                    Model-visible task. Maintain a list. Start: [27, 15, 3]. Apply these updates
+152   (3) compute the exact answer from that state;                                                 in order: (1) Append 12. (2) Append 39. (3) Reverse the list. What is           210
+153   (4) render the model-visible instructions; and                                                the final list? End with exactly one line in the form: Final answer:            211
+154   (5) append the required final-answer format.                                                  <answer>.                                                                       212
+155                                                                                                    Hidden derivation. The two appends give [27, 15, 3, 12, 39]; reversal        213
+156                                                                                                 gives [39, 12, 3, 15, 27].                                                      214
+157                                                                                                                                                                                 215
+158      The answer is therefore fixed before the natural-language task                             Inhibition and distractor control                                               216
+159   is presented to the model. The scorer never uses a language model.                            Model-visible task. Add only the numbers inside square brackets. Ig-            217
+160   It extracts the last “Final answer:” field when present, otherwise                            nore numbers inside parentheses. (999) [3] [3] (50) (100) [2]. What is the      218
+161   uses the final nonempty line, normalizes it according to one of five                          sum? End with exactly one line in the form: Final answer: <answer>.             219
+162   answer representations (integer, short string, ordered list, comma-                              Hidden derivation. 3 + 3 + 2 = 8; all parenthesized values are               220
+163   separated list, or key-value list), and compares the normalized value                         excluded.                                                                       221
+164   with the normalized gold answer.                                                                                                                                              222
+                                                                                                    Flexibility and rule switching
+165                                                                                                                                                                                 223
+166                                                                                                 Model-visible task. For pairs 1–2, choose the larger number. For pairs          224
+167                                                                                                 3–4, choose the smaller number. 1. (6, 9) 2. (14, 7) 3. (16, 5) 4. (21, 3).     225
+                                                                                                    Give the chosen numbers in order. End with exactly one line in the form:
+168   1.4      Representative Tasks and Gold Derivations                                            Final answer: <answer>.
+                                                                                                                                                                                    226
+169                                                                                                                                                                                 227
+      The following examples are copied from the reserved task set. The                                Hidden derivation. The first rule yields 9 and 14; the second yields
+170                                                                                                                                                                                 228
+      full task content and values are preserved while the layout is com-                           5 and 3. Gold: 9, 14, 5, 3.
+171                                                                                                                                                                                 229
+      pacted. The hidden derivation after each prompt is never shown to
+172                                                                                                                                                                                 230
+      the evaluated checkpoint.
+173                                                                                                                                                                                 231
+174                                                                                           2                                                                                     232
+      Supplementary Material for DoubtBench: Does Self-Doubt Help Language Models—or Just Make Them Check?                           WSDM 2027, February 2027, Hong Kong, China
+
+
+233    Novel rule learning                                                              Check                          Observed scope        Result                                 291
+234                                                                                     Manifest hash and row          12 files              All match                              292
+       Model-visible task. Infer the string transformation from the examples.           count
+235                                                                                     Required fields and task-set   6,400 tasks           All valid                              293
+       Examples: CAT → TAC, MIP → PIM, DOG → GOD. Question: MTL →
+236                                                                                     metadata                                                                                    294
+       ? End with exactly one line in the form: Final answer: <answer>.                 Unique task identifiers        6,400 tasks           6,400 unique
+237       Hidden derivation. Each demonstrated string is reversed, so MTL               Gold-answer parser             6,400 tasks           All pass                               295
+                                                                                        self-check
+238    becomes LTM.                                                                     Independent answer             3,200 tasks; 16       All agree
+                                                                                                                                                                                    296
+239                                                                                     reconstruction                 types                                                        297
+240    Consistency and error monitoring                                                 Difficulty allocation          Four sets; eight      40/40/20 in every family
+                                                                                                                                                                                    298
+                                                                                                                       families
+241    Model-visible task. Add the values in odd-numbered positions only.               Surface pairing                330 latent tasks;     Gold answer retained by construction   299
+                                                                                                                       660 variants
+242    Values: 3, 7, 6. Candidate A: 9. Candidate B: 9. Which candidate gives the       Independent annotation of      Not present           No reliability claim made              300
+243    required sum? Answer A, B, both, or neither. End with exactly one line           the final treatment strings                                                                 301
+                                                                                        Held-out task-type             Not present           All sets reuse the same 33 types
+244    in the form: Final answer: <answer>.                                             evaluation                                                                                  302
+245        Hidden derivation. Positions 1 and 3 sum to 3 + 6 = 9, so both                                                                                                           303
+       candidates are correct.
+                                                                                             Table 3: Validation evidence and explicit boundaries.
+246                                                                                                                                                                                 304
+247                                                                                                                                                                                 305
+       Constrained multi-step planning
+248                                                                                                                                                                                 306
+249    Model-visible task. Travel costs are undirected. Find the minimum                                                                                                            307
+250
+       total cost from A to D. Edges: A–B: 3, B–C: 6, B–D: 4, C–D: 5. What is                                                                                                       308
+       the minimum total travel cost? End with exactly one line in the form:
+251                                                                                                                                                                                 309
+       Final answer: <answer>.
+252                                                                                                                                                                                 310
+          Hidden derivation. The path A–B–D costs 3 + 4 = 7, less than the                 An exact audit of the model-visible task text paired with its gold
+253                                                                                                                                                                                 311
+       alternatives.                                                                    answer finds 61 repeated groups, comprising 121 rows beyond the
+254                                                                                                                                                                                 312
+                                                                                        first occurrence (1.89% of the benchmark). The associated latent
+255    Relational integration                                                                                                                                                       313
+                                                                                        metadata remains unique. Consequently, we claim unique latent
+256                                                                                                                                                                                 314
+       Model-visible task. Join the two lookup tables through the owner                 records and identifiers, not unique rendered prompts or seman-
+257                                                                                                                                                                                 315
+       identifier. Code to owner: K2→P4, K4→P3, K1→P1, K3→P2. Owner to                  tic deduplication. A post-hoc sensitivity analysis retaining one
+258    group: P2→G3, P4→G2, P3→G1, P1→G4. Which group is associated                                                                                                                 316
+                                                                                        instance per distinct task-text–gold pair preserves the signs of all
+259    with code K1? End with exactly one line in the form: Final answer:               six overall CDEs: Qwen −1.51 𝑝𝑝, Mistral −0.37 𝑝𝑝, Llama −1.07 𝑝𝑝,
+                                                                                                                                                                                    317
+260    <answer>.                                                                                                                                                                    318
+                                                                                        Phi +2.61 𝑝𝑝, Tulu-SFT +1.22 𝑝𝑝, and Tulu-DPO +1.47 𝑝𝑝.
+261       Hidden derivation. K1 → P1 → G4.                                                                                                                                          319
+262                                                                                                                                                                                 320
+       Goal management
+263                                                                                                                                                                                 321
+264    Model-visible task. Track the pending goal set. ADD inserts a goal;
+                                                                                        2 Exact Prompt Interventions                                                                322
+265    COMPLETE and CANCEL both remove it. NOISE changes nothing. Initial               2.1 Shared Prefix and Component Strings                                                     323
+266    pending goals: A, B, C. Events: (1) ADD E. (2) ADD D. (3) ADD F. (4) ADD                                                                                                     324
+                                                                                        Every condition uses the following system-level prefix verbatim.
+267
+       G. Which goals remain pending? Give them in alphabetical order, or                                                                                                           325
+       none. End with exactly one line in the form: Final answer: <answer>.               Shared prefix
+268                                                                                                                                                                                 326
+          Hidden derivation. No goal is removed; the sorted set is A, B, C, D,
+269                                                                                       You are a helpful, accurate, and knowledgeable AI assistant. Answer all                   327
+       E, F, G.
+270                                                                                       questions to the best of your ability.                                                    328
+271                                                                                        The controlled components are appended to that prefix exactly                            329
+272                                                                                     as follows.                                                                                 330
+273   1.5    Validation Coverage and Its Boundary                                                                                                                                   331
+                                                                                          Self-doubt component
+274   We reran the available deterministic validation over the frozen task                                                                                                          332
+275   files. All 12 component files have matching SHA-256 manifests and                   While answering, you experience uncertainty and self-doubt about                          333
+276   declared row counts. All 6,400 rows contain the required fields, use                whether your first impression is correct.                                                 334
+277   the declared task-set metadata, have globally unique task identifiers,                                                                                                        335
+                                                                                          Direct-checking component
+278   and accept their own stored gold answer under the released parser.                                                                                                            336
+279   The family, task-type, difficulty, and answer-format inventories                    Before giving your final response, check your work for arithmetic, or-                    337
+280   exactly match their manifests.                                                      dering, and instruction-following mistakes.                                               338
+281       An independently implemented answer reconstruction is avail-                                                                                                              339
+282   able for the 16 task types in error monitoring, planning, relational                Concision component                                                                       340
+283   integration, and goal management. It reconstructs all 3,200 corre-                  Do not show intermediate reasoning. Give only the requested final-                        341
+284   sponding tasks from latent metadata and agrees with every stored                    answer line.                                                                              342
+285   gold answer. The other 17 task types have deterministic generator                    The self-doubt component contains no instruction to check, ver-                          343
+286   answers and parser self-consistency checks, but the available re-                 ify, recompute, or revise the answer. The checking component                                344
+287   lease does not contain a second implementation of their answer                    contains no uncertainty or self-doubt language. This lexical separa-                        345
+288   functions. We therefore do not describe all 33 types as indepen-                  tion is visible in the disclosed strings. We do not report a separate                       346
+289   dently reconstructed.                                                             blinded annotation study for these exact final strings.                                     347
+290                                                                                 3                                                                                               348
+      WSDM 2027, February 2027, Hong Kong, China                                                                                                          Anon.
+
+
+349   2.2    Five Conditions and Two Task Contexts                                     3 Evaluation Protocol                                                        407
+350                                                                                                                                                                 408
+                                                                                       3.1 Checkpoints and Inference
+351                                                                                                                                                                 409
+352                                                                                                                                                                 410
+353       Condition                     Self-doubt    Checking     Concision           Checkpoint         Public model repository                Role in analysis   411
+354                                                                                    Qwen 2.5 7B        Qwen/Qwen2.5-7B-Instruct               Foundation-        412
+          Neutral                           ✗             ✗            ✗
+355                                                                                                                                              family             413
+          Self-doubt                        ✓             ✗            ✗                                                                         comparison
+356                                                                                    Mistral 7B         mistralai/Mistral-7B-Instruct-v0.3     Foundation-        414
+          Checking                          ✗             ✓            ✗
+357                                                                                                                                              family             415
+          Self-doubt + checking             ✓             ✓            ✗                                                                         comparison
+358       Checking + concise output         ✗             ✓            ✓               Llama 3.1 8B       meta-llama/Llama-3.1-8B-Instruct       Foundation-        416
+                                                                                                                                                 family
+359                                                                                                                                                                 417
+      Table 4: The first four rows form the 2×2 component factorial.                                                                             comparison
+360                                                                                    Phi 3.5 Mini       microsoft/Phi-3.5-mini-instruct        Foundation-        418
+      The last row is an additional output-format control.                                                                                       family
+361                                                                                                                                              comparison         419
+362                                                                                    Tulu 3 SFT 8B      allenai/Llama-3.1-Tulu-3-8B-SFT        Within-lineage     420
+                                                                                                                                                 comparison
+363                                                                                    Tulu 3 DPO 8B      allenai/Llama-3.1-Tulu-3-8B-DPO        Within-lineage     421
+364                                                                                                                                              comparison         422
+365                                                                                    Table 5: Evaluated checkpoints. The two Tulu checkpoints                     423
+366
+      The minimal task context contains the task exactly as gener-                     share a Llama-3.1 foundation and do not constitute additional                424
+367
+      ated, including its request for a final-answer line. The reasoning-              independent foundation families.                                             425
+368
+      requested context prepends the following sentence to the other-                                                                                               426
+369
+      wise identical task:                                                                                                                                          427
+370    Reasoning-requested context                                                                                                                                  428
+371                                                                                    Models are loaded through their public Hugging Face repositories             429
+       Show the intermediate steps you use to solve the task before the required
+372                                                                                    in bfloat16 when CUDA is available, using the tokenizer’s chat tem-          430
+       Final answer line.
+373                                                                                    plate and left padding. Generation uses the model’s end-of-sequence          431
+        Thus, for a fixed checkpoint and latent task, the ten responses
+374                                                                                    token, greedy decoding, do_sample=false, and one completion per              432
+      share the same gold answer, task instructions, task identifier, de-
+375                                                                                    checkpoint–task–condition–context cell. Most evaluations use a               433
+      coding rule, and output limit. Only the prompt component and the
+376                                                                                    768-token output limit. Historical portions of Qwen seed 16061 and           434
+      explicit request for visible steps change.
+377                                                                                    Llama seed 16061 use 384 tokens; the remaining disjoint portions of          435
+378                                                                                    those task sets use 768 tokens. The output-limit sensitivity analysis        436
+379   2.3    Paired Contrasts                                                          in Section 5 reports the effect of excluding these mixed-limit sets.         437
+380   Let 𝐴𝑚 (𝑐, 𝑡) denote the macro accuracy of checkpoint 𝑚 under                       Batch size affects throughput but not the prompt, decoding rule,          438
+381   prompt condition 𝑐 and task context 𝑡. Let N, D, C, D+C, and C+Q                 or scoring. Raw records preserve the model repository, model con-            439
+382   denote neutral, self-doubt, checking, self-doubt plus checking, and              figuration commit when available, tokenizer metadata, software               440
+383   checking plus concise output. The reported scorecard contains:                   versions, prompt messages, output limit, raw completion, extracted           441
+384                                                                                    answer, exact score, token count, parse error, and truncation flag.          442
+385                                                                                                                                                                 443
+386                                                                                    3.2       Scoring and Inclusion                                              444
+                        Self-doubt gain = 𝐴𝑚 (D, 𝑡) − 𝐴𝑚 (N, 𝑡),
+387                                                                                    Exact correctness is computed after answer-type normalization.               445
+388                      Checking gain = 𝐴𝑚 (C, 𝑡) − 𝐴𝑚 (N, 𝑡),                        A response that reaches its output limit without an explicit final-          446
+389                            CDE𝑚 (𝑡) = 𝐴𝑚 (D+C, 𝑡) − 𝐴𝑚 (C, 𝑡),                     answer field is marked truncated and incorrect. Other extraction             447
+390
+              Checking beyond doubt = 𝐴𝑚 (D+C, 𝑡) − 𝐴𝑚 (D, 𝑡),                         or normalization errors are marked as parse failures and incorrect.          448
+391                                                                                    These outcomes remain in the denominator.                                    449
+                       Concision effect = 𝐴𝑚 (C+Q, 𝑡) − 𝐴𝑚 (C, 𝑡).
+392                                                                                       An evaluation is structurally complete when it contains exactly           450
+393                                                                                    one response for every expected task–condition–context key. All              451
+394      The Conditional Doubt Effect (CDE) is the primary attribution                 24 structurally complete checkpoint–task-set evaluations are in-             452
+395   endpoint. It is the incremental accuracy change from adding the                  cluded in the primary analysis. A predeclared 2% rate for parsing or         453
+396   tested self-doubt string after direct checking is already present.               truncation is treated as a diagnostic alert, not as a post-hoc deletion      454
+397   Overall CDE averages the two contexts. Its context modulation is                 rule. Evaluations missing expected response keys are incomplete              455
+398                                                                                    and are not substituted or partially aggregated.                             456
+399                                                                                       Macro accuracy first averages within each task-set–family stra-           457
+                  CM𝑚 = CDE𝑚 (reason) − CDE𝑚 (minimal).
+400                                                                                    tum and then averages the 32 strata equally. A family with more              458
+401                                                                                    task types therefore does not receive greater weight. Confidence             459
+402   All contrasts are paired by latent task. Positive and negative CDE               intervals use 3,000 nonparametric bootstrap replicates. Latent task          460
+403   values mean that the disclosed self-doubt string respectively raises             identifiers are resampled within each of the 32 strata while their           461
+404   or lowers exact accuracy beyond checking for the evaluated check-                ten responses remain together. The intervals describe paired task            462
+405   point and tasks. They do not measure an internal emotional state.                variation conditional on the fixed schemas and four generator seeds;         463
+406                                                                                4                                                                                464
+      Supplementary Material for DoubtBench: Does Self-Doubt Help Language Models—or Just Make Them Check?            WSDM 2027, February 2027, Hong Kong, China
+
+
+465   they are not intervals over arbitrary future task schemas or model                DPO increases neutral accuracy and minimal-context CDE relative            523
+466   families.                                                                         to SFT, while slightly decreasing reasoning-requested CDE. The             524
+467                                                                                     evidence supports the narrow claim that these two post-training            525
+468   4 Complete Results                                                                checkpoints have different prompt-response profiles, not that DPO          526
+469                                                                                     generally increases or decreases susceptibility to self-doubt word-        527
+      4.1 Primary Scorecard
+470                                                                                     ing.                                                                       528
+471   All quantities except neutral accuracy are accuracy differences in                                                                                           529
+472   percentage points. Confidence intervals are paired task-bootstrap                                                                                            530
+473   intervals.                                                                        5  Surface Robustness and Completion                                       531
+474      The six overall CDEs span −1.43 𝑝𝑝 to +2.59 𝑝𝑝, with three posi-                  Diagnostics                                                             532
+      tive and three negative estimates. Four checkpoints have positive
+475
+                                                                                        5.1 Answer-Preserving Surface Forms                                        533
+476   CDE under the minimal context, but only two remain positive when                                                                                             534
+      visible intermediate steps are already requested. Direct checking is              For every task type, ten latent tasks are selected with a 4/4/2 easy–
+477                                                                                                                                                                535
+      also not uniformly beneficial: Qwen improves by 7.70 𝑝𝑝, whereas                  medium–hard allocation. Each is evaluated in its canonical form
+478                                                                                                                                                                536
+      the other five checking gains range from −0.12 𝑝𝑝 to +1.79 𝑝𝑝.                    and in two answer-preserving forms: a sectioned structured form
+479                                                                                                                                                                537
+                                                                                        and a short scenario-framed form. The same latent task and gold
+480                                                                                                                                                                538
+      4.2    Accuracy in All Ten Cells                                                  answer are used across all three renderings.
+481                                                                                                                                                                539
+                                                                                            Across the 60 checkpoint–condition–context cells, mean three-
+482   Table 7 exposes the accuracies from which the paired contrasts                                                                                               540
+                                                                                        way correctness agreement is 81.3%. The median absolute CDE shift
+483   are calculated. This prevents a treatment effect from being read                                                                                             541
+                                                                                        from the canonical form is 1.52 𝑝𝑝. Seven of the 12 checkpoint–
+484   without its underlying competence level.                                                                                                                     542
+                                                                                        context CDE signs remain unchanged across all three forms. Qwen
+485                                                                                                                                                                543
+                                                                                        and Mistral preserve their minimal-positive and reasoning-negative
+486   4.3    Variation Across Task Seeds                                                patterns; several smaller effects cross zero. The robust conclusion
+                                                                                                                                                                   544
+487                                                                                                                                                                545
+      Qwen’s overall CDE is negative in all four task sets. Phi is positive in          is therefore coarse heterogeneity rather than invariance of an exact
+488                                                                                                                                                                546
+      all four, as are both Tulu checkpoints. Mistral is small and changes              numerical effect.
+489                                                                                                                                                                547
+      sign. These task-set results are more informative about generator
+490                                                                                                                                                                548
+      replication than a narrow pooled interval alone.
+491                                                                                     5.2     Parsing and Truncation Alerts                                      549
+492                                                                                                                                                                550
+      4.4    Task-Family and Difficulty Decomposition                                   Five of the 24 factorial evaluations exceed the predefined 2% di-
+493                                                                                                                                                                551
+      Family means span approximately −8.4 𝑝𝑝 to +8.9 𝑝𝑝. Exam-                         agnostic threshold for parsing or truncation. They remain in the
+494                                                                                                                                                                552
+      ples include Qwen on rule switching (−8.1 𝑝𝑝) versus novel-rule                   primary analysis because all expected response keys are present.
+495                                                                                                                                                                553
+      learning (+2.1 𝑝𝑝), Llama on error monitoring (+5.1 𝑝𝑝) versus                       All other factorial evaluations remain below both thresholds.
+496                                                                                                                                                                554
+      novel-rule learning (−8.4 𝑝𝑝), and Tulu-SFT on novel-rule learning                The Llama surface-form evaluation is also structurally complete but
+497                                                                                                                                                                555
+      (+8.9 𝑝𝑝) versus goal management (−4.8 𝑝𝑝). Twenty-one nonzero                    has 7.03% parse failures and 7.05% truncation. Because completion
+498                                                                                                                                                                556
+      checkpoint–family effects retain the same direction in all four                   behavior can depend on the prompt condition, excluding responses
+499                                                                                                                                                                557
+      task sets. These decompositions are descriptive; CDE pooled over                  after observing completion may itself be selective. The inclusive all-
+500                                                                                                                                                                558
+      families is the primary endpoint.                                                 task analysis therefore remains primary, while the next subsection
+501                                                                                                                                                                559
+         Difficulty moderates some checkpoints but not in a common                      reports a diagnostic complete-pair comparison.
+502                                                                                                                                                                560
+503
+      monotonic direction. For example, Phi rises from +0.82 𝑝𝑝 on easy                                                                                            561
+504
+      tasks to +4.49 𝑝𝑝 on hard tasks, while Qwen and Mistral do not                    5.3     Complete-Pair Sensitivity                                          562
+505
+      show the same pattern.                                                                                                                                       563
+                                                                                        For this sensitivity analysis, a task contributes to a context-specific
+506                                                                                     CDE only if both the checking and self-doubt-plus-checking re-             564
+507
+      4.5    Within-Lineage Post-Training Comparison                                                                                                               565
+                                                                                        sponses are parsed and not truncated. This changes the estimand
+508                                                                                     and is not substituted for the inclusive primary result.                   566
+509                                                                                        For Qwen, Mistral, Phi, and both Tulu checkpoints, the context-         567
+          Endpoint                     Tulu SFT     Tulu DPO     DPO − SFT
+510                                                                                     specific shift is at most 0.47 𝑝𝑝. Llama is the exception: the             568
+511       Neutral accuracy                 13.52        16.30          +2.78            reasoning-requested estimate moves from −0.27 𝑝𝑝 to +1.15 𝑝𝑝               569
+512       Checking gain                    -0.12        +1.79          +1.91            while retaining 5,283 of 6,400 pairs. We therefore treat Llama’s           570
+513       Overall CDE                      +1.04        +1.51          +0.47                                                                                       571
+                                                                                        exact directional estimate as completion-sensitive.
+514
+          CDE, minimal                     +1.13        +2.52          +1.39                                                                                       572
+          CDE, reasoning requested         +0.95        +0.50          -0.45
+515                                                                                                                                                                573
+          Context modulation               -0.17        -2.02          -1.84            5.4     Output-Limit Sensitivity
+516                                                                                                                                                                574
+          Concision effect                 +1.32        -3.74          -5.06
+517                                                                                     Only Qwen seed 16061 and Llama seed 16061 combine historical               575
+518
+      Table 11: Within-lineage comparison in percentage points.                         384-token responses with later 768-token responses. Excluding              576
+519
+      This single foundation lineage does not identify a general                        these task sets and averaging the remaining three homogeneous              577
+520
+      effect of SFT or DPO.                                                             768-token task sets changes overall CDE by +0.02 𝑝𝑝 for Qwen and           578
+521                                                                                     −0.13 𝑝𝑝 for Llama.                                                        579
+522                                                                                 5                                                                              580
+      WSDM 2027, February 2027, Hong Kong, China                                                                                                                                                                       Anon.
+
+
+581   Table 6: Complete checkpoint scorecard. Neutral is exact accuracy in percent; all other numerical entries are percentage-point                                                                                           639
+582   effects. CDE intervals are paired task-bootstrap intervals.                                                                                                                                                              640
+583                                                                                                                                                                                                                            641
+584                                         Checkpoint              Neutral          Check gain             CDE [95% CI]            CDEmin         CDEreason        Context mod.      Concision                                642
+585                                         Qwen 2.5 7B                  66.44                +7.70     -1.43 [-2.14, -0.69]            +0.58           -3.44              -4.02           -27.05                              643
+                                            Mistral 7B                   24.96                +0.51    -0.47 [-1.14, +0.20]             -0.09           -0.84              -0.75            +1.10
+586                                                                                                                                                                                                                            644
+                                            Llama 3.1 8B                 20.00                +1.45     -0.92 [-1.34, -0.49]            -1.58           -0.27              +1.31            -5.63
+587                                         Phi 3.5 Mini                 44.98                +0.45   +2.59 [+1.95, +3.27]              +5.31           -0.14              -5.45            -7.53                              645
+                                            Tulu 3 SFT 8B                13.52                -0.12   +1.04 [+0.60, +1.48]              +1.13           +0.95              -0.17            +1.32
+588                                         Tulu 3 DPO 8B                16.30                +1.79   +1.51 [+1.12, +1.92]              +2.52           +0.50              -2.02            -3.74                              646
+589                                                                                                                                                                                                                            647
+590                                                                                                                                                                                                                            648
+      Table 7: Macro exact accuracy (percent) in every prompt-condition and task-context cell, averaged equally over four task seeds
+591                                                                                                                                                                                                                            649
+      and eight families.
+592                                                                                                                                                                                                                            650
+593                                                                                                                                                                                                                            651
+                                                     Checkpoint                  Task context                  Neutral        Doubt        Check    Doubt+check         Check+concise
+594                                                                                                                                                                                                                            652
+                                                     Qwen 2.5 7B                 Minimal                          58.81       70.88        73.78                74.36              34.00
+595                                                  Qwen 2.5 7B                 Reasoning requested              74.06       71.66        74.50                71.06              60.17                                       653
+596                                                  Mistral 7B                  Minimal                          24.08       21.08        23.45                23.36              25.39                                       654
+                                                     Mistral 7B                  Reasoning requested              25.84       25.42        27.48                26.64              27.75
+597                                                                                                                                                                                                                            655
+                                                     Llama 3.1 8B                Minimal                          21.31       20.58        23.14                21.56              12.44
+598                                                  Llama 3.1 8B                Reasoning requested              18.69       18.25        19.77                19.50              19.20                                       656
+599                                                  Phi 3.5 Mini                Minimal                          37.08       36.75        37.95                43.27              30.95                                       657
+                                                     Phi 3.5 Mini                Reasoning requested              52.89       52.50        52.92                52.78              44.86
+600                                                  Tulu 3 SFT 8B               Minimal                          11.94       13.03        11.22                12.34              12.20                                       658
+601                                                  Tulu 3 SFT 8B               Reasoning requested              15.11       15.30        15.59                16.55              17.25                                       659
+                                                     Tulu 3 DPO 8B               Minimal                          14.66       17.92        17.72                20.23              11.61
+602                                                  Tulu 3 DPO 8B               Reasoning requested              17.95       18.44        18.47                18.97              17.09                                       660
+603                                                                                                                                                                                                                            661
+604                                                                                                                                                                                                                            662
+605                                                                                                                                                                                                                            663
+                                                      Working                    Inhibition             Rule                  Novel-rule             Error              Planning             Relational      Goal
+606                                                   memory                                          switching                learning            monitoring                               integration   management           664
+607                                                                                                                                                                                                                            665
+608                                                                                                                                                                                                                            666
+609                             Qwen 2.5 7B               -1.9                     -2.4                 -8.1                    +2.1                  -1.3                +1.4                 -0.6          -0.6              667
+610                                                                                                                                                                                                                            668
+                                   Mistral 7B             +4.2                     +2.8                 -1.4                     -3.7                 -1.3                +0.7                 -5.4          +0.4
+611                                                                                                                                                                                                                            669
+612                                                                                                                                                                                                                            670
+                                Llama 3.1 8B              +0.2                     -2.1                 +0.0                     -8.4                +5.1                 +0.7                 +0.0          -2.8
+613                                                                                                                                                                                                                            671
+614                              Phi 3.5 Mini             +6.1                     +6.5                 +6.2                    +0.2                  -0.2                -1.9                 +0.8          +3.0              672
+615                                                                                                                                                                                                                            673
+616                         Tulu 3 SFT 8B                 -0.3                     +5.6                 +0.0                    +8.9                 +0.4                 -1.4                 +0.0          -4.8              674
+617                                                                                                                                                                                                                            675
+                            Tulu 3 DPO 8B                 +5.1                     +6.1                 +0.0                     -2.4                +2.7                 -0.2                 +0.0          +0.7
+618                                                                                                                                                                                                                            676
+619                                                                                                                                                                                                                            677
+                                                Family-level CDE (percentage points), averaged across four task seeds and both contexts
+620                                                                                                                                                                                                                            678
+621                                                                                                                                                                                                                            679
+622                                                                                                                                                                                                                            680
+623   Figure 1: CDE by checkpoint and task family, averaged across four task sets and both contexts. The same prompt component                                                                                                 681
+624   can help one family and harm another within a checkpoint.                                                                                                                                                                682
+625                                                                                                                                                                                                                            683
+626   Table 8: Overall CDE (percentage points) in each indepen-                                                                  5.5         Concision as an Output-Format Intervention                                        684
+627   dently seeded task set. The final column is the four-set mean.                                                                                                                                                           685
+628
+                                                                                                                                 Across the 12 checkpoint–context cells, checking plus concision                               686
+629
+                                                                                                                                 changes accuracy by a median −3.74 𝑝𝑝 and generated length by a                               687
+                   Checkpoint          16061     16101           16102      19003         Mean
+630
+                                                                                                                                 median −85.4 tokens relative to checking alone. The relationship                              688
+                   Qwen 2.5 7B         -1.38      -0.25          -2.66      -1.44         -1.43
+631                Mistral 7B          +0.25      +0.22          -0.94      -1.41         -0.47
+                                                                                                                                 is not uniform: some Mistral and Tulu-SFT cells become slightly                               689
+632
+                   Llama 3.1 8B        -1.31      -0.41          -1.03      -0.94         -0.92                                  more accurate, whereas Qwen under a minimal request loses ap-                                 690
+                   Phi 3.5 Mini        +2.91      +1.53          +3.13      +2.78         +2.59
+633                Tulu 3 SFT 8B       +0.91      +0.75          +1.25      +1.25         +1.04                                  proximately 40 accuracy points while generating about 175 fewer                               691
+634
+                   Tulu 3 DPO 8B       +1.66      +1.59          +0.94      +1.84         +1.51                                  tokens. This control demonstrates that an apparently simple output                            692
+635
+                                                                                                                                 constraint can change both format and correctness.                                            693
+636                                                                                                                                                                                                                            694
+637                                                                                                                                                                                                                            695
+638                                                                                                                       6                                                                                                    696
+      Supplementary Material for DoubtBench: Does Self-Doubt Help Language Models—or Just Make Them Check?                                                              WSDM 2027, February 2027, Hong Kong, China
+
+
+697                  Table 9: Task-family CDE in percentage points, averaged over four task seeds and both task contexts.                                                                                                 755
+698                                                                                                                                                                                                                       756
+699                                                 Checkpoint            Memory      Inhibition     Switching     Rule learn.   Monitoring    Planning     Relations     Goals                                           757
+700                                                 Qwen 2.5 7B               -1.94         -2.38         -8.13          +2.13        -1.31        +1.44        -0.62     -0.62                                           758
+                                                    Mistral 7B                +4.19         +2.81         -1.38          -3.69        -1.31        +0.69        -5.44     +0.38
+701                                                                                                                                                                                                                       759
+                                                    Llama 3.1 8B              +0.19         -2.13         +0.00          -8.38        +5.06        +0.69        +0.00     -2.81
+702                                                 Phi 3.5 Mini              +6.13         +6.50         +6.19          +0.19        -0.19        -1.88        +0.75     +3.00                                           760
+                                                    Tulu 3 SFT 8B             -0.31         +5.56         +0.00          +8.94        +0.38        -1.44        +0.00     -4.81
+703                                                 Tulu 3 DPO 8B             +5.13         +6.13         +0.00          -2.38        +2.69        -0.19        +0.00     +0.69                                           761
+704                                                                                                                                                                                                                       762
+705                                                                                                                                                                                                                       763
+706                                                             Minimal task request                                                                   Reasoning already requested                                        764
+707                                                                                                                                                                                                                       765
+708                                                                                                                                                                                                                       766
+709                   Qwen 2.5 7B                                                                                                                                                                                         767
+710                                                                                                                                                                                                                       768
+                        Mistral 7B
+711                                                                                                                                                                                                                       769
+712                                                                                                                                                                                                                       770
+                      Llama 3.1 8B
+713                                                                                                                                                                                                                       771
+714                                                                                                                                                                                                                       772
+                       Phi 3.5 Mini
+715                                                                                                                                                                                                                       773
+716                                                                                                                                                                                                                       774
+                     Tulu 3 SFT 8B
+717                                                                                                                                                                                                                       775
+718                 Tulu 3 DPO 8B                                                                                                                                                                                         776
+719                                                                                                                                                                                                                       777
+720                                                                                                                                                                                                                       778
+721                                          -6            -3             0            +3            +6                                   -6               -3             0             +3              +6
+                                                                                                                                                                                                                          779
+722                                                                                                                                                                                                                       780
+723                                                                                      Canonical                Structured        Scenario                                                                              781
+724                                                                                                                                                                                                                       782
+725                                                                                                                                                                                                                       783
+      Figure 2: CDE on 330 paired latent tasks under canonical, structured, and scenario renderings. Exact effect sizes move under
+726                                                                                                                                                                                                                       784
+      answer-preserving wording, especially for effects near zero.
+727                                                                                                                                                                                                                       785
+728                                                                                                                                                                                                                       786
+729   Table 10: CDE by generated difficulty (percentage points),                                                          Table 13: Structurally complete factorial evaluations exceed-                                   787
+730   averaged over four task seeds and both contexts.                                                                    ing the 2% diagnostic threshold. Rates are percentages over                                     788
+731                                                                                                                       all 16,000 responses in the checkpoint–task-set evaluation.                                     789
+732                          Checkpoint           Easy      Medium            Hard                                                                                                                                        790
+733                          Qwen 2.5 7B          -1.25           -2.05    -0.55                                                    Checkpoint        Task seed     Output limit        Parse failure        Truncation   791
+                             Mistral 7B           -1.48           -0.80    +2.23
+734                                                                                                                                 Qwen 2.5 7B            16061              384/768          2.11%              2.69%   792
+                             Llama 3.1 8B         -1.33           -0.45    -1.05
+                             Phi 3.5 Mini         +0.82           +3.40    +4.49                                                    Llama 3.1 8B           16061              384/768          8.21%              8.44%
+735                                                                                                                                                                                                                       793
+                                                                                                                                    Llama 3.1 8B           16101                  768          7.54%              7.64%
+                             Tulu 3 SFT 8B        -0.39           +1.62    +2.73
+736                                                                                                                                 Llama 3.1 8B           16102                  768          7.77%              7.83%   794
+                             Tulu 3 DPO 8B        +1.46           +0.96    +2.70
+                                                                                                                                    Llama 3.1 8B           19003                  768          7.86%              7.96%
+737                                                                                                                                                                                                                       795
+738                                                                                                                                                                                                                       796
+      Table 12: Surface-form CDE in percentage points on the same
+739                                                                                                                                                                                                                       797
+      330 latent tasks.                                                                                                   6 Reproducibility and Scope
+740                                                                                                                                                                                                                       798
+741                                                                                                                       6.1 Released Records                                                                            799
+                Checkpoint        Context          Canonical         Structured       Scenario
+742                                                                                                                       A complete response record contains the checkpoint identifier, la-                              800
+                Qwen 2.5 7B       Minimal                 +0.91            +0.91         +1.82
+743             Qwen 2.5 7B       Reasoning               -6.36            -3.64         -3.94                            tent task identifier, family, task type, difficulty, answer representa-                         801
+744             Mistral 7B        Minimal                 +0.30            +5.45         +5.76                            tion, system and user messages, rendered chat prompt, decoding                                  802
+                Mistral 7B        Reasoning               -0.30            -2.12         -3.03
+745
+                Llama 3.1 8B      Minimal                 -3.64            +1.52         -2.12
+                                                                                                                          parameters, raw output, generated-token count, extracted final                                  803
+746             Llama 3.1 8B      Reasoning               -2.12            -1.82         -4.85                            answer, gold answer, exact score, parse error, truncation flag, and                             804
+747             Phi 3.5 Mini      Minimal                 +7.27            +5.76         +0.00                            timestamps. Task manifests contain the task-set identifier, counts by                           805
+                Phi 3.5 Mini      Reasoning               -0.30            +0.91         -1.82
+748             Tulu 3 SFT 8B     Minimal                 +3.64            +6.36         +5.45                            family/type/difficulty/answer format, and a file hash. The machine-                             806
+749             Tulu 3 SFT 8B     Reasoning               -0.30            +0.61         +0.00                            readable result tables used in this supplement report condition                                 807
+                Tulu 3 DPO 8B     Minimal                 +3.33            +2.12         +3.03
+750
+                Tulu 3 DPO 8B     Reasoning               +1.21            +0.61         -0.30                            accuracy, model and task-set scorecards, family and difficulty de-                              808
+751                                                                                                                       compositions, surface effects, completion diagnostics, output-limit                             809
+752                                                                                                                       sensitivity, and the within-lineage comparison.                                                 810
+753                                                                                                                          The reproduction sequence is:                                                                811
+754                                                                                                                 7                                                                                                     812
+      WSDM 2027, February 2027, Hong Kong, China                                                                                                                            Anon.
+
+
+813   Table 14: CDE sensitivity to retaining only complete checking and self-doubt-plus-checking response pairs. CDE and differences                                                871
+814   are percentage points.                                                                                                                                                        872
+815                                                                                                                                                                                 873
+816                                                  Checkpoint       Context               All tasks   Complete pairs   Difference       Retained                                  874
+817                                                  Qwen 2.5 7B      Minimal                  +0.58             +0.60       +0.02      6,323/6,400                                 875
+                                                     Qwen 2.5 7B      Reasoning requested      -3.44             -3.84       -0.40      6,217/6,400
+818                                                                                                                                                                                 876
+                                                     Mistral 7B       Minimal                  -0.09             +0.10       +0.20      6,289/6,400
+819                                                  Mistral 7B       Reasoning requested      -0.84             -0.90       -0.05      6,259/6,400                                 877
+                                                     Llama 3.1 8B     Minimal                  -1.58             -0.60       +0.98      5,548/6,400
+820                                                  Llama 3.1 8B     Reasoning requested      -0.27             +1.15       +1.42      5,283/6,400                                 878
+821                                                  Phi 3.5 Mini     Minimal                  +5.31             +5.32       +0.01      6,373/6,400                                 879
+                                                     Phi 3.5 Mini     Reasoning requested      -0.14             -0.07       +0.07      6,308/6,400
+822                                                  Tulu 3 SFT 8B    Minimal                  +1.13             +1.60       +0.47      5,896/6,400                                 880
+823                                                  Tulu 3 SFT 8B    Reasoning requested      +0.95             +1.14       +0.19      6,208/6,400                                 881
+                                                     Tulu 3 DPO 8B    Minimal                  +2.52             +2.50       -0.01      6,342/6,400
+824                                                  Tulu 3 DPO 8B    Reasoning requested      +0.50             +0.79       +0.29      6,293/6,400                                 882
+825                                                                                                                                                                                 883
+826                                                                                                                                                                                 884
+827                                                                                                           Minimal                 Reasoning requested                           885
+828                                                                                                                                                                                 886
+829                                                                                                                                                                                 887
+830                                                                                                                                                         Tulu 3 SFT 8B           888
+                                     0
+831                                                                                                                                                                                 889
+832                                                                                                                                                                                 890
+833                                                                                                                                                                                 891
+834                                 -10                                                                                                                                             892
+835                                                                                                                                                                                 893
+836                                                                                                                                                                                 894
+             Accuracy effect (pp)
+837                                                                                                                                                                                 895
+                                    -20
+838                                                                                                                                                                                 896
+839                                                                                                                                                                                 897
+840                                                                                                                                                                                 898
+                                    -30
+841                                                                                                                                                                                 899
+842                                                                                                                                                                                 900
+843                                                                                                                                                                                 901
+                                               Qwen 2.5 7B
+844                                 -40                                                                                                                                             902
+845                                                                                                                                                                                 903
+846                                                                                                                                                                                 904
+                                                             -150                             -100                               -50                        0
+847                                                                                                                                                                                 905
+848                                                                                                                                                                                 906
+                                                                            Change in generated tokens: check + concise minus check
+849                                                                                                                                                                                 907
+850                                                                                                                                                                                 908
+851   Figure 3: Change in exact accuracy and generated tokens when concise output is required in addition to checking. Output                                                       909
+852   length is an observable behavior, not a measure of hidden computation.                                                                                                        910
+853                                                                                                                                                                                 911
+854                                                                                                                                                                                 912
+      Table 15: Overall CDE with all four task sets and with only ho-                                   (6) macro-average within task-set–family strata; and
+855                                                                                                                                                                                 913
+      mogeneous 768-token task sets. Values are percentage points.                                      (7) resample paired tasks within those strata to obtain intervals.
+856                                                                                                                                                                                 914
+857                                                                                                                                                                                 915
+858
+                    Checkpoint      All four sets   768-token sets   Difference                         6.2     Evidence Boundaries                                                 916
+                    Qwen 2.5 7B            -1.43             -1.45       +0.02
+859
+                    Llama 3.1 8B           -0.92             -0.79       -0.13
+                                                                                                        Task-family, difficulty, and surface decompositions are reported to         917
+860                                                                                                     expose heterogeneity rather than to create additional confirmatory          918
+861                                                                                                     hypotheses. No multiple-comparison-adjusted significance claims             919
+862                                                                                                     are made for these slices. Likewise, generated-token counts describe        920
+863
+      (1) validate task manifests and deterministic scorers;                                            visible output allocation and are not interpreted as hidden reasoning       921
+864   (2) load the frozen latent tasks and exact prompt strings;                                        quantity. The principal practical result is correspondingly narrow:         922
+865   (3) evaluate every task in the ten paired cells for each checkpoint;                              neither the disclosed self-doubt string nor direct checking is a            923
+866   (4) retain only structurally complete checkpoint–task-set evalua-                                 checkpoint-independent correction policy, so prompt components              924
+867       tions;                                                                                        should be validated on the intended checkpoint, task distribution,          925
+868   (5) score parse and truncation outcomes as incorrect in the inclu-                                and existing instructions.                                                  926
+869       sive analysis;                                                                                                                                                            927
+870                                                                                               8                                                                                 928
+      Supplementary Material for DoubtBench: Does Self-Doubt Help Language Models—or Just Make Them Check?              WSDM 2027, February 2027, Hong Kong, China
+
+
+929   Design boundary                Supported conclusion                                             Unsupported conclusion                                         987
+930                                                                                                                                                                  988
+      One exact self-doubt string    Effects of the disclosed strings and their combination           Transfer to arbitrary paraphrases or emotional prompts
+931                                                                                                                                                                  989
+      and one exact checking
+932   string                                                                                                                                                         990
+933   Program-generated              Controlled prompt attribution within the 33 task types           General reasoning ability or natural conversational            991
+934   exact-answer tasks                                                                              performance                                                    992
+935   Four task sets from the        Robustness to independently generated instances                  Generalization to unseen task schemas                          993
+936   same schemas                                                                                                                                                   994
+937   Six checkpoints from four      Heterogeneity within the evaluated checkpoints                   A universal effect over all open or proprietary models         995
+938
+      foundation families                                                                                                                                            996
+      Greedy single completion       Behavior under the specified deterministic decoding rule         Sampling-induced model-level stochasticity
+939                                                                                                                                                                  997
+      per cell
+940                                                                                                                                                                  998
+      Visible-step request           Interaction with a request to display intermediate steps         Direct observation of latent deliberation
+941                                                                                                                                                                  999
+      Three answer-preserving        Controlled surface-form sensitivity                              Robustness to unrestricted natural paraphrases
+942   task renderings                                                                                                                                                1000
+943   Two Tulu checkpoints from      A within-lineage difference in prompt sensitivity                A general causal effect of SFT or DPO                          1001
+944   one lineage                                                                                                                                                    1002
+945                                                                                                                                                                  1003
+      Table 16: Scope of the evidence. DoubtBench is an instrument for paired prompt attribution, not a general capability leaderboard
+946                                                                                                                                                                  1004
+      or a test of model emotion.
+947                                                                                                                                                                  1005
+948                                                                                                                                                                  1006
+949                                                                                                                                                                  1007
+950                                                                                                                                                                  1008
+951                                                                                                                                                                  1009
+952                                                                                                                                                                  1010
+953                                                                                                                                                                  1011
+954                                                                                                                                                                  1012
+955                                                                                                                                                                  1013
+956                                                                                                                                                                  1014
+957                                                                                                                                                                  1015
+958                                                                                                                                                                  1016
+959                                                                                                                                                                  1017
+960                                                                                                                                                                  1018
+961                                                                                                                                                                  1019
+962                                                                                                                                                                  1020
+963                                                                                                                                                                  1021
+964                                                                                                                                                                  1022
+965                                                                                                                                                                  1023
+966                                                                                                                                                                  1024
+967                                                                                                                                                                  1025
+968                                                                                                                                                                  1026
+969                                                                                                                                                                  1027
+970                                                                                                                                                                  1028
+971                                                                                                                                                                  1029
+972                                                                                                                                                                  1030
+973                                                                                                                                                                  1031
+974                                                                                                                                                                  1032
+975                                                                                                                                                                  1033
+976                                                                                                                                                                  1034
+977                                                                                                                                                                  1035
+978                                                                                                                                                                  1036
+979                                                                                                                                                                  1037
+980                                                                                                                                                                  1038
+981                                                                                                                                                                  1039
+982                                                                                                                                                                  1040
+983                                                                                                                                                                  1041
+984                                                                                                                                                                  1042
+985                                                                                                                                                                  1043
+986                                                                                 9                                                                                1044
+
