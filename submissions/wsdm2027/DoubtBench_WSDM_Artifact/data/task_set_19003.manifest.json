@@ -1,0 +1,67 @@
+{
+  "benchmark": "DoubtBench",
+  "counts": {
+    "answer_type": {
+      "assignment_list": 100,
+      "comma_list": 390,
+      "integer": 460,
+      "list": 100,
+      "string": 550
+    },
+    "difficulty": {
+      "easy": 640,
+      "hard": 320,
+      "medium": 640
+    },
+    "family": {
+      "flexibility": 200,
+      "goal_management": 200,
+      "inhibition": 200,
+      "monitoring": 200,
+      "planning": 200,
+      "relational_integration": 200,
+      "rule_learning": 200,
+      "working_memory": 200
+    },
+    "task_type": {
+      "action_sequence_selection": 50,
+      "add_then_subtract": 50,
+      "arithmetic_trace_audit": 50,
+      "bracket_parentheses": 40,
+      "candidate_answer_comparison": 50,
+      "checksum_table_audit": 50,
+      "color_then_shape": 50,
+      "conditional_mapping": 50,
+      "conflicting_final": 40,
+      "deferred_action_execution": 50,
+      "family_relation_query": 50,
+      "feature_composition": 50,
+      "interrupt_and_resume": 50,
+      "key_value_updates": 50,
+      "larger_then_smaller": 50,
+      "list_updates": 50,
+      "minimum_route_cost": 50,
+      "pending_goal_control": 50,
+      "precedence_schedule": 50,
+      "priority_queue_control": 50,
+      "relevant_field_extraction": 40,
+      "resource_constrained_selection": 50,
+      "running_counter": 50,
+      "spatial_relation_composition": 50,
+      "stack_operations": 50,
+      "state_log_audit": 50,
+      "string_transformation": 50,
+      "symbol_values": 50,
+      "transitive_order_query": 50,
+      "two_hop_record_join": 50,
+      "two_switch_rule": 50,
+      "valid_decoy_commands": 40,
+      "word_label_conflict": 40
+    }
+  },
+  "expected_factorial_responses_per_checkpoint": 16000,
+  "generation_seed": 19003,
+  "sha256": "1eb8457208190788306ed3ae225d3d52beded061776846b86a334bbe62b724ac",
+  "task_count": 1600,
+  "task_set": "task_set_19003"
+}
