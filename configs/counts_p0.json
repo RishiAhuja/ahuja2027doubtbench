@@ -1,8 +1,0 @@
-{
-  "gsm8k": 200,
-  "mmlu_stratified": 200,
-  "math": 100,
-  "triviaqa": 200,
-  "bigbench": 150,
-  "creative": 10
-}

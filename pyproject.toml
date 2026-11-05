@@ -1,7 +1,7 @@
 [project]
 name = "caisc"
 version = "0.1.0"
-description = "Identity-level emotional conditioning experiments"
+description = "DoubtBench task generation and factorial evaluation"
 requires-python = ">=3.10"
 dependencies = []
 

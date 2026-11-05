@@ -1,7 +1,0 @@
-{
-  "gsm8k": 100,
-  "math": 100,
-  "mmlu_stratified": 150,
-  "triviaqa": 100,
-  "bigbench": 150
-}

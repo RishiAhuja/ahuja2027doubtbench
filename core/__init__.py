@@ -1,2 +1,2 @@
-"""Reusable code for the CAISc identity-emotion experiments."""
+"""Shared helpers for the DoubtBench runners."""
 
