@@ -1,2 +1,1 @@
-"""Shared helpers for the DoubtBench runners."""
-
+"""Shared I/O helpers for DoubtBench."""

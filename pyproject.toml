@@ -1,7 +1,7 @@
 [project]
-name = "caisc"
+name = "doubtbench"
 version = "0.1.0"
-description = "DoubtBench task generation and factorial evaluation"
+description = "DoubtBench task generation, evaluation, and reported results"
 requires-python = ">=3.10"
 dependencies = []
 
